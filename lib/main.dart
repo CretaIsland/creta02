@@ -1,11 +1,13 @@
 import 'package:creta02/common/util/config.dart';
 import 'package:flutter/material.dart';
 import 'common/util/logger.dart';
+import 'hycop/hycop_factory.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
   myConfig = CretaConfig(enterprise: 'creta', serverType: ServerType.firebase);
+  HycopFactory.selectDatabase();
   runApp(const MyApp());
 }
 

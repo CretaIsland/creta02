@@ -45,7 +45,7 @@ class FirebaseDatabase extends AbsDatabase {
   }
 
   @override
-  Future<void> createData(String collectionId, Map<dynamic, dynamic> data) async {
+  Future<void> createData(String collectionId, String? key, Map<dynamic, dynamic> data) async {
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
     await collectionRef.add(data);
   }
