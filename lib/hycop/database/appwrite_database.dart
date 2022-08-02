@@ -1,0 +1,85 @@
+// ignore_for_file: depend_on_referenced_packages
+//import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:appwrite/appwrite.dart';
+import 'abs_database.dart';
+import '../../common/util/config.dart';
+import '../../common/util/exceptions.dart';
+
+class AppwriteDatabase extends AbsDatabase {
+  Client? dbConn;
+  Databases? database;
+
+  @override
+  void initialize() {
+    dbConn = Client()
+      ..setProject(myConfig!.serverConfig!.projectId)
+      ..setSelfSigned(status: true)
+      ..setEndpoint(myConfig!.serverConfig!.databaseURL);
+
+    database = Databases(dbConn!, databaseId: myConfig!.serverConfig!.appId);
+  }
+
+  @override
+  Future<Map<String, dynamic>> getData(String collectionId, String key) async {
+    final doc = await database!.getDocument(
+      collectionId: collectionId,
+      documentId: key,
+    );
+    return doc.data;
+  }
+
+  @override
+  Future<List> getAllData(String collectionId) async {
+    final result = await database!.listDocuments(collectionId: collectionId);
+    return result.documents.map((element) {
+      return element.data;
+    }).toList();
+  }
+
+  @override
+  Future<void> setData(String collectionId, String key, Object data) async {
+    database!.updateDocument(
+      collectionId: collectionId,
+      documentId: key,
+      data: data as Map<String, dynamic>,
+    );
+  }
+
+  @override
+  Future<void> createData(String collectionId, String? key, Map<dynamic, dynamic> data) async {
+    if (key == null) {
+      throw const CretaException(message: 'key cant be null');
+    }
+    database!.createDocument(
+      collectionId: collectionId,
+      documentId: key,
+      data: data,
+    );
+  }
+
+  @override
+  Future<List> queryData(String collectionId,
+      {required String name,
+      required String value,
+      required String orderBy,
+      bool descending = true,
+      int? limit,
+      int? offset}) async {
+    String orderType = descending ? 'DESC' : 'ASC';
+    final result = await database!.listDocuments(
+      collectionId: collectionId,
+      queries: [Query.equal(name, value)], // index 를 만들어줘야 함.
+      orderAttributes: [orderBy],
+      orderTypes: [orderType],
+    );
+    return result.documents.map((element) {
+      return element.data;
+    }).toList();
+  }
+
+  @override
+  Future<bool> removeData(String collectionId, String? key) async {
+    return true;
+  }
+}
