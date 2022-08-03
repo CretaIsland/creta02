@@ -228,8 +228,10 @@ body 바로 아래...
 
 <body>
 
-  <script> src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"</script>
-  <script> src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"</script>
+   <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"</script>
+  <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore.js"</script>
+  <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-storage.js"</script>
+  
 
 
 

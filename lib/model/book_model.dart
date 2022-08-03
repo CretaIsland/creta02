@@ -38,8 +38,20 @@ class BookModel extends AbsModel {
         thumbnailAspectRatio,
         viewCount
       ];
+  BookModel() : super(type: ModelType.book, parent: '') {
+    name = UndoAble<String>('', mid);
+    thumbnailUrl = UndoAble<String>('', mid);
+    thumbnailType = UndoAble<ContentsType>(ContentsType.none, mid);
+    thumbnailAspectRatio = UndoAble<double>(1, mid);
+    isSilent = UndoAble<bool>(false, mid);
+    isAutoPlay = UndoAble<bool>(false, mid);
+    bookType = UndoAble<BookType>(BookType.presentaion, mid);
+    readOnly = UndoAble<bool>(false, mid);
+    viewCount = UndoAble<int>(0, mid);
+    description = UndoAble<String>("You could do it simple and plain", mid);
+  }
 
-  BookModel(String nameStr, this.creator) : super(type: ModelType.book, parent: '') {
+  BookModel.withName(String nameStr, this.creator) : super(type: ModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     thumbnailUrl = UndoAble<String>('', mid);
     thumbnailType = UndoAble<ContentsType>(ContentsType.none, mid);
