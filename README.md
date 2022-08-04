@@ -295,13 +295,16 @@ appwrite.json 파일에 써 놓고, 이를 deploy 하는 방식으로 진행한�
 ./appwrite deploy collection --all
 
 기존에 collection 이 이미 있는 경우, 데이터가 모두 날아가게 된다는 점에 유의한다.
+다만, field 가 추가되는 경우는 안날아가는 것 같다.
 collection 을 특정한 것만 create 하고 싶으면  --all 옵션을 뺀다.
 
 현 project 의  database/appwrite/ 폴더 밑에 있는 appwrite.json 파일을 참고한다.
 
 5. alter table 하기
 
-아직 연구 못했음.
+다음과 같이 field 를 추가할 수 있다. (test 라는  field 추가 예제)
+
+./appwrite databases createStringAttribute --databaseId  62d79f2e5fda513f4807  --collectionId creta_book --key  test  --size 128  --required false
 
 
 
