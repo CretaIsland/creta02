@@ -1,0 +1,208 @@
+{
+  "projectId": "62d79f0b36f4029ce40f",
+  "projectName": "creta01",
+  "collections": [
+    {
+      "$id": "creta_book",
+      "$read": [
+        "role:all"
+      ],
+      "$write": [
+        "role:all"
+      ],
+      "databaseId": "62d79f2e5fda513f4807",
+      "name": "creta_book",
+      "enabled": true,
+      "permission": "collection",
+      "attributes": [
+        {
+          "key": "mid",
+          "type": "string",
+          "status": "available",
+          "required": true,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "parentMid",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "order",
+          "type": "double",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "hashTag",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 4096,
+          "default": null
+        },
+        {
+          "key": "isRemoved",
+          "type": "boolean",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": false
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 255,
+          "default": null
+        },
+        {
+          "key": "width",
+          "type": "integer",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "height",
+          "type": "integer",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "isSilent",
+          "type": "boolean",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": false
+        },
+        {
+          "key": "isAutoPlay",
+          "type": "boolean",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": false
+        },
+        {
+          "key": "bookType",
+          "type": "integer",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "description",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 4096,
+          "default": null
+        },
+        {
+          "key": "isReadOnly",
+          "type": "boolean",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": false
+        },
+        {
+          "key": "thumbnailUrl",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 1024,
+          "default": null
+        },
+        {
+          "key": "thumbnailType",
+          "type": "integer",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "thumbnailAspectRatio",
+          "type": "double",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "viewCount",
+          "type": "integer",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "default": null
+        },
+        {
+          "key": "creator",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 128,
+          "default": null
+        },
+        {
+          "key": "updateTime",
+          "type": "string",
+          "status": "available",
+          "required": false,
+          "array": false,
+          "size": 32,
+          "default": null
+        }
+      ],
+      "indexes": [
+        {
+          "key": "updateTime",
+          "type": "key",
+          "status": "available",
+          "attributes": [
+            "updateTime"
+          ],
+          "orders": [
+            "DESC"
+          ]
+        },
+        {
+          "key": "index1",
+          "type": "key",
+          "status": "available",
+          "attributes": [
+            "creator",
+            "isRemoved"
+          ],
+          "orders": [
+            "ASC",
+            "ASC"
+          ]
+        }
+      ]
+    }
+  ]
+}
+

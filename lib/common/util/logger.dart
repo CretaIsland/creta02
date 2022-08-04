@@ -8,6 +8,10 @@ import 'package:logging/logging.dart';
 
 final logger = Logger('App');
 
+void showSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+}
+
 void setupLogger() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
@@ -24,7 +28,8 @@ void setupLogger() {
       debugPrint('👉 ${record.error}');
     }
     if (record.level == Level.SEVERE) {
-      debugPrintStack(stackTrace: record.stackTrace);
+      debugPrint('👉 ${record.error}');
+      //debugPrintStack(stackTrace: record.stackTrace);
     }
   });
 }
@@ -52,10 +57,6 @@ extension RefX on WidgetRef {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
       }
     }));
-  }
-
-  void showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 

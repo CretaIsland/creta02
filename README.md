@@ -85,6 +85,7 @@ D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\scroll_loop_auto_scrol
 ## effect 관련 수정
 copy D:\Flutter\project\creta00\source_modify\vitality.daxt D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\vitality-1.0.2\lib\vitality.dart
 
+copy D:\Flutter\project\creta00\source_modify\flutter_web_auth.daxt  D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\flutter_web_auth-0.4.1\lib\flutter_web_auth.daxt
 
 #############################################
 ### Flutter Web fireStore dataabse 사용하기
@@ -228,10 +229,82 @@ body 바로 아래...
 
 <body>
 
-   <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"</script>
+  <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"</script>
   <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore.js"</script>
   <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-storage.js"</script>
   
+
+
+##############################
+## DB 별 인덱스 잡는 법
+###############################
+1. firebase
+ : where 조건절과 order by 에 사용된  attribute 를 복합 index 로 잡는다.
+ 예를 들어 다음과 같은 Query 라면
+  where attr1 = 'abc' and attr2 = 'cdf' order by updateTime desc;
+  인덱스는 다음과 같이 하나의 복합 인덱스로 잡아야 한다.
+   
+   index = attr1 ASC + attr2 ASC + updateTime desc
+
+2. appwrite 
+ : where 조건절과 order by 에 사용된  attribute 를 각각 별도의 index 로 잡는다.
+ 예를 들어 다음과 같은 Query 라면
+  where attr1 = 'abc' and attr2 = 'cdf' order by updateTime desc;
+ 
+  index1 = attr1 ASC + attr2 ASC
+  index2 = updateTime desc
+
+  이렇게 2개의 index 를 잡는다.
+
+
+##############################
+## appwrite cli 사용법
+###############################
+
+1. 윈도우즈용 cli 실행파일 다운로드
+
+https://github.com/appwrite/sdk-for-cli/releases/tag/0.18.4
+
+요기서, appwrite-cli-win-x64.exe 를 다운로드 받는다.
+이것은 설치파일이 아니고, 그냥 cli 실행파일이다.
+파일 이름을  appwrite.exe 로 바꾸어즈고 바로 사용할 수 있다.
+
+2. initialize 
+처음 DB 접속 정보를 설정해준다.
+
+./appwrite init project
+
+라고 해주면, projectId, id/pwd 를 물어보는데 묻는 질문에 성실하게 대답해준다.
+처음 설치시 한번만 해주면 된다.
+이 결과로  appwrite.json 파일이 생기게 된다.
+
+3. collection 정보를 json 형태로 보기
+
+./appwrite --help 해보면 대충 알수 있다.
+
+./appwrite databases listCollections --databaseId 62d79f2e5fda513f4807 --json
+
+현재 Collection 정보를 json 형태로 리스트업해서 보여준다.
+
+4. Create Collection 하기
+
+Create Collection 을  Command line 명령으로 하려면 매우 힘드므로
+collection 정보를 appwrite.json 파일에 써놓고
+appwrite.json 파일에 써 놓고, 이를 deploy 하는 방식으로 진행한다.
+
+./appwrite deploy collection --all
+
+기존에 collection 이 이미 있는 경우, 데이터가 모두 날아가게 된다는 점에 유의한다.
+collection 을 특정한 것만 create 하고 싶으면  --all 옵션을 뺀다.
+
+현 project 의  database/appwrite/ 폴더 밑에 있는 appwrite.json 파일을 참고한다.
+
+5. alter table 하기
+
+아직 연구 못했음.
+
+
+
 
 
 

@@ -2,6 +2,7 @@
 //import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:appwrite/appwrite.dart';
+import '../../common/util/logger.dart';
 import 'abs_database.dart';
 import '../../common/util/config.dart';
 import '../../common/util/exceptions.dart';
@@ -59,7 +60,7 @@ class AppwriteDatabase extends AbsDatabase {
   }
 
   @override
-  Future<List> queryData(String collectionId,
+  Future<List> simpleQueryData(String collectionId,
       {required String name,
       required String value,
       required String orderBy,
@@ -75,6 +76,33 @@ class AppwriteDatabase extends AbsDatabase {
     );
     return result.documents.map((element) {
       return element.data;
+    }).toList();
+  }
+
+  @override
+  Future<List> queryData(String collectionId,
+      {required Map<String, dynamic> where,
+      required String orderBy,
+      bool descending = true,
+      int? limit,
+      int? offset}) async {
+    String orderType = descending ? 'DESC' : 'ASC';
+
+    List<dynamic> queryList = [];
+    where.map((key, value) {
+      queryList.add(Query.equal(key, value));
+      return MapEntry(key, value);
+    });
+
+    final result = await database!.listDocuments(
+      collectionId: collectionId,
+      queries: queryList, // index 를 만들어줘야 함.
+      orderAttributes: [orderBy],
+      orderTypes: [orderType],
+    );
+    return result.documents.map((doc) {
+      logger.finest(doc.data.toString());
+      return doc.data;
     }).toList();
   }
 

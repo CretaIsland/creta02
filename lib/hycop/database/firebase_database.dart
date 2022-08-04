@@ -51,7 +51,7 @@ class FirebaseDatabase extends AbsDatabase {
   }
 
   @override
-  Future<List> queryData(String collectionId,
+  Future<List> simpleQueryData(String collectionId,
       {required String name,
       required String value,
       required String orderBy,
@@ -70,6 +70,29 @@ class FirebaseDatabase extends AbsDatabase {
       }
     });
     return resultList;
+  }
+
+  @override
+  Future<List> queryData(String collectionId,
+      {required Map<String, dynamic> where,
+      required String orderBy,
+      bool descending = true,
+      int? limit,
+      int? offset}) async {
+    CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
+    Query<Object?> query = collectionRef.orderBy(orderBy, descending: true);
+
+    where.map((key, value) {
+      query.where(key, isEqualTo: value);
+      return MapEntry(key, value);
+    });
+
+    return await query.get().then((snapshot) {
+      return snapshot.docs.map((doc) {
+        logger.finest(doc.data()!.toString());
+        return doc.data()! as Map<String, dynamic>;
+      }).toList();
+    });
   }
 
   @override

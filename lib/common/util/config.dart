@@ -40,12 +40,26 @@ class FirebaseConfig extends AbsServerConfig {
       messagingSenderId = "878607742856";
       appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
     }
+    if (enterprise == 'skpark') {
+      apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
+      authDomain = "creta01-ef955.firebaseapp.com";
+      databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
+      projectId = "creta01-ef955";
+      storageBucket = "creta01-ef955.appspot.com";
+      messagingSenderId = "878607742856";
+      appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
+    }
   }
 }
 
 class AppwriteConfig extends AbsServerConfig {
   AppwriteConfig({String enterprise = 'creta'}) : super(enterprise) {
     if (enterprise == 'creta') {
+      databaseURL = "http://localhost/v1"; // endPoint
+      projectId = "62d79f0b36f4029ce40f";
+      appId = "62d79f2e5fda513f4807"; // databaseId
+    }
+    if (enterprise == 'skpark') {
       databaseURL = "http://localhost/v1"; // endPoint
       projectId = "62d79f0b36f4029ce40f";
       appId = "62d79f2e5fda513f4807"; // databaseId

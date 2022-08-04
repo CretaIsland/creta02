@@ -6,12 +6,27 @@ import 'package:equatable/equatable.dart';
 //import '../common/util/logger.dart';
 import '../common/undo/save_manager.dart';
 import '../common/undo/undo.dart';
+import '../common/util/config.dart';
 import 'model_enums.dart';
 
 String genMid(ModelType type) {
   String mid = '${type.name}=';
   mid += const Uuid().v4();
   return mid;
+}
+
+DateTime dateTimeFromDB(dynamic src) {
+  if (myConfig!.serverType == ServerType.appwrite) {
+    return DateTime.parse(src);
+  }
+  return src.toDate();
+}
+
+dynamic dateTimeToDB(DateTime src) {
+  if (myConfig!.serverType == ServerType.appwrite) {
+    return src.toString();
+  }
+  return src;
 }
 
 class AbsModel extends Equatable {
@@ -54,18 +69,18 @@ class AbsModel extends Equatable {
 
   void fromMap(Map<String, dynamic> map) {
     _mid = map["mid"];
-    _updateTime = map["updateTime"].toDate();
-    parentMid.set(map["parentMid"], save: false);
-    order.set(map["order"], save: false);
-    hashTag.set(map["hashTag"], save: false);
-    isRemoved.set(map["isRemoved"], save: false);
+    _updateTime = dateTimeFromDB(map["updateTime"]);
+    parentMid.set(map["parentMid"] ?? '', save: false, noUndo: true);
+    order.set(map["order"] ?? 0, save: false, noUndo: true);
+    hashTag.set(map["hashTag"] ?? '', save: false, noUndo: true);
+    isRemoved.set(map["isRemoved"] ?? false, save: false, noUndo: true);
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "type": type.index,
+      //"type": type.index,
       "mid": mid,
-      "updateTime": updateTime,
+      "updateTime": dateTimeToDB(updateTime),
       "parentMid": parentMid.value,
       "order": order.value,
       "hashTag": hashTag.value,
