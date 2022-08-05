@@ -15,7 +15,8 @@ abstract class AbsDatabase {
       required String orderBy,
       bool descending = true,
       int? limit,
-      int? offset});
+      int? offset,
+      List<Object?>? startAfter});
 
   Future<void> setData(String collectionId, String key, Map<dynamic, dynamic> data);
   Future<void> createData(String collectionId, String? key, Map<dynamic, dynamic> data);

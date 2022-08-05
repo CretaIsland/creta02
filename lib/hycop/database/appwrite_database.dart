@@ -80,12 +80,15 @@ class AppwriteDatabase extends AbsDatabase {
   }
 
   @override
-  Future<List> queryData(String collectionId,
-      {required Map<String, dynamic> where,
-      required String orderBy,
-      bool descending = true,
-      int? limit,
-      int? offset}) async {
+  Future<List> queryData(
+    String collectionId, {
+    required Map<String, dynamic> where,
+    required String orderBy,
+    bool descending = true,
+    int? limit,
+    int? offset, // appwrite only
+    List<Object?>? startAfter, // firebase only
+  }) async {
     String orderType = descending ? 'DESC' : 'ASC';
 
     List<dynamic> queryList = [];
@@ -99,6 +102,8 @@ class AppwriteDatabase extends AbsDatabase {
       queries: queryList, // index 를 만들어줘야 함.
       orderAttributes: [orderBy],
       orderTypes: [orderType],
+      limit: limit,
+      offset: offset,
     );
     return result.documents.map((doc) {
       logger.finest(doc.data.toString());

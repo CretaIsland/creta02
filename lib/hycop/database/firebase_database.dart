@@ -78,14 +78,17 @@ class FirebaseDatabase extends AbsDatabase {
       required String orderBy,
       bool descending = true,
       int? limit,
-      int? offset}) async {
+      int? offset,
+      List<Object?>? startAfter}) async {
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
     Query<Object?> query = collectionRef.orderBy(orderBy, descending: true);
-
     where.map((key, value) {
-      query.where(key, isEqualTo: value);
+      query = query.where(key, isEqualTo: value);
       return MapEntry(key, value);
     });
+
+    if (limit != null) query = query.limit(limit);
+    if (startAfter != null && startAfter.isNotEmpty) query = query.startAfter(startAfter);
 
     return await query.get().then((snapshot) {
       return snapshot.docs.map((doc) {

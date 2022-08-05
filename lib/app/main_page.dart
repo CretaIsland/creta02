@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../data_io/book_manager.dart';
 import '../model/book_model.dart';
@@ -35,28 +35,31 @@ class _MainPageState extends State<MainPage> {
           value: bookManagerHolder!,
         ),
       ],
-      child: FutureBuilder<List<BookModel>>(
-          future: bookManagerHolder!.getMyBookList(userId),
-          builder: (context, AsyncSnapshot<List<BookModel>> snapshot) {
-            //child: Text('Main Page ver 0.00.01'),
-            if (snapshot.hasError) {
-              //error가 발생하게 될 경우 반환하게 되는 부분
-              logger.severe("data fetch error");
-              return const Center(child: Text('data fetch error'));
-            }
-            if (snapshot.hasData == false) {
-              logger.severe("No data founded");
-              return const Center(child: Text("No data founded"));
-            }
-            if (snapshot.connectionState == ConnectionState.done) {
-              logger.finest("book founded ${snapshot.data!.length}");
-              if (snapshot.data!.isEmpty) {
-                return const Center(child: Text('no book founded'));
+      child: Scaffold(
+        body: FutureBuilder<List<BookModel>>(
+            future: bookManagerHolder!.getMyBookList(userId),
+            builder: (context, AsyncSnapshot<List<BookModel>> snapshot) {
+              if (snapshot.hasError) {
+                //error가 발생하게 될 경우 반환하게 되는 부분
+                logger.severe("data fetch error");
+                return const Center(child: Text('data fetch error'));
               }
-              return Center(child: Text('${snapshot.data!.length} book founded'));
-            }
-            return Container();
-          }),
+              if (snapshot.hasData == false) {
+                logger.severe("No data founded");
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                logger.finest("book founded ${snapshot.data!.length}");
+                if (snapshot.data!.isEmpty) {
+                  return const Center(child: Text('no book founded'));
+                }
+                return Center(child: Text(bookManagerHolder!.debugText()));
+              }
+              return Container();
+            }),
+      ),
     );
   }
 }

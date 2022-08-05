@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import 'logger.dart';
+
 enum ServerType {
   none,
   firebase,
@@ -73,8 +75,19 @@ class AssetConfig {
 
   int savePeriod = 1000;
   Future<void> loadAsset(BuildContext context) async {
-    final jsonString =
-        await DefaultAssetBundle.of(context).loadString('assets/${enterprise}_config.json');
+    String jsonString = '';
+    try {
+      jsonString =
+          await DefaultAssetBundle.of(context).loadString('assets/${enterprise}_config.json');
+    } catch (e) {
+      logger.info('assets/${enterprise}_config.json not exist, creta_config.json will be used');
+      try {
+        jsonString = await DefaultAssetBundle.of(context).loadString('assets/creta_config.json');
+      } catch (e) {
+        logger.severe('load assets/${enterprise}_config.json failed', e);
+        return;
+      }
+    }
     final dynamic jsonMap = jsonDecode(jsonString);
     savePeriod = jsonMap['savePeriod'] ?? 1000;
   }
