@@ -90,6 +90,16 @@ class AbsModel extends Equatable {
 
   bool isChanged(AbsModel other) => !(this == other);
 
+  String debugText() {
+    Map<String, dynamic> data = toMap();
+    String retval = '';
+    data.map((key, value) {
+      retval += '$key=${value.toString()}\n';
+      return MapEntry(key, value);
+    });
+    return retval;
+  }
+
   void save() {
     saveManagerHolder?.pushChanged(mid, 'save model');
   }

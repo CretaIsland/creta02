@@ -16,6 +16,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  String _bookModelStr = '';
   @override
   void initState() {
     super.initState();
@@ -55,7 +56,31 @@ class _MainPageState extends State<MainPage> {
                 if (snapshot.data!.isEmpty) {
                   return const Center(child: Text('no book founded'));
                 }
-                return Center(child: Text(bookManagerHolder!.debugText()));
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(child: Text(bookManagerHolder!.debugText())),
+                    ElevatedButton(
+                        onPressed: () async {
+                          BookModel book = await bookManagerHolder!
+                              .getBook(bookManagerHolder!.bookList.first.mid);
+                          setState(() {
+                            _bookModelStr = book.debugText();
+                          });
+                        },
+                        child: const Text('get first data')),
+                    Text(_bookModelStr),
+                    ElevatedButton(
+                        onPressed: () async {
+                          BookModel book = BookModel();
+                          book.copyFrom(bookManagerHolder!.bookList.first, newMid: book.mid);
+                          book.name.set('new created book');
+                          await bookManagerHolder!.createBook(book);
+                          setState(() {});
+                        },
+                        child: const Text('create data')),
+                  ],
+                );
               }
               return Container();
             }),

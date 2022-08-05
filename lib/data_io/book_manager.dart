@@ -29,9 +29,9 @@ class BookManager extends ChangeNotifier {
         "creta_book",
         where: query,
         orderBy: 'updateTime',
-        limit: 2,
-        offset: 1, // appwrite only
-        startAfter: [DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
+        //limit: 2,
+        //offset: 1, // appwrite only
+        //startAfter: [DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
       );
       return resultList.map((ele) {
         BookModel model = BookModel();
@@ -43,5 +43,20 @@ class BookManager extends ChangeNotifier {
       logger.severe('databaseError', e);
       throw CretaException(message: 'databaseError', exception: e as Exception);
     }
+  }
+
+  Future<BookModel> getBook(String mid) async {
+    try {
+      BookModel book = BookModel();
+      book.fromMap(await HycopFactory.myDataBase!.getData('creta_book', mid));
+      return book;
+    } catch (e) {
+      logger.severe('databaseError', e);
+      throw CretaException(message: 'databaseError', exception: e as Exception);
+    }
+  }
+
+  Future<void> createBook(BookModel book) async {
+    await HycopFactory.myDataBase!.createData('creta_book', book.mid, book.toMap());
   }
 }

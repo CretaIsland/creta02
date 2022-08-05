@@ -45,9 +45,12 @@ class FirebaseDatabase extends AbsDatabase {
   }
 
   @override
-  Future<void> createData(String collectionId, String? key, Map<dynamic, dynamic> data) async {
+  Future<void> createData(String collectionId, String key, Map<dynamic, dynamic> data) async {
+    logger.finest('createData $key!');
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
-    await collectionRef.add(data);
+    await collectionRef.doc(key).set(data, SetOptions(merge: false));
+    //await collectionRef.add(data);
+    logger.finest('$key! created');
   }
 
   @override
@@ -92,14 +95,14 @@ class FirebaseDatabase extends AbsDatabase {
 
     return await query.get().then((snapshot) {
       return snapshot.docs.map((doc) {
-        logger.finest(doc.data()!.toString());
+        //logger.finest(doc.data()!.toString());
         return doc.data()! as Map<String, dynamic>;
       }).toList();
     });
   }
 
   @override
-  Future<bool> removeData(String collectionId, String? key) async {
+  Future<bool> removeData(String collectionId, String key) async {
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
     await collectionRef.doc(key).delete();
     logger.finest('$key deleted');

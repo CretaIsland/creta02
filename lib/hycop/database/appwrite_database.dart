@@ -5,7 +5,6 @@ import 'package:appwrite/appwrite.dart';
 import '../../common/util/logger.dart';
 import 'abs_database.dart';
 import '../../common/util/config.dart';
-import '../../common/util/exceptions.dart';
 
 class AppwriteDatabase extends AbsDatabase {
   Client? dbConn;
@@ -23,11 +22,14 @@ class AppwriteDatabase extends AbsDatabase {
 
   @override
   Future<Map<String, dynamic>> getData(String collectionId, String key) async {
-    final doc = await database!.getDocument(
-      collectionId: collectionId,
-      documentId: key,
-    );
-    return doc.data;
+    List resultList =
+        await simpleQueryData(collectionId, name: 'mid', value: key, orderBy: 'updateTime');
+    return resultList.first;
+    // final doc = await database!.getDocument(
+    //   collectionId: collectionId,
+    //   documentId: key,
+    // );
+    // return doc.data;
   }
 
   @override
@@ -48,10 +50,8 @@ class AppwriteDatabase extends AbsDatabase {
   }
 
   @override
-  Future<void> createData(String collectionId, String? key, Map<dynamic, dynamic> data) async {
-    if (key == null) {
-      throw const CretaException(message: 'key cant be null');
-    }
+  Future<void> createData(String collectionId, String key, Map<dynamic, dynamic> data) async {
+    logger.finest('createData($key)');
     database!.createDocument(
       collectionId: collectionId,
       documentId: key,
@@ -106,13 +106,13 @@ class AppwriteDatabase extends AbsDatabase {
       offset: offset,
     );
     return result.documents.map((doc) {
-      logger.finest(doc.data.toString());
+      //logger.finest(doc.data.toString());
       return doc.data;
     }).toList();
   }
 
   @override
-  Future<bool> removeData(String collectionId, String? key) async {
+  Future<bool> removeData(String collectionId, String key) async {
     return true;
   }
 }
