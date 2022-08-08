@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
+import '../hycop/database/db_utils.dart';
 import 'navigation/routes.dart';
 import '../common/widgets/text_field.dart';
 import '../common/util/logger.dart';
@@ -33,6 +34,8 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
 
+  String _errMsg = '';
+
   @override
   void dispose() {
     _emailTextEditingController.dispose();
@@ -42,7 +45,17 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
 
   Future<void> _signIn() async {
     logger.finest('_signIn pressed');
-    Routemaster.of(context).push(AppRoutes.main);
+    _errMsg = '';
+
+    String email = _emailTextEditingController.text;
+    String password = _passwordTextEditingController.text;
+    if (await DBUtils.login(email, password)) {
+      Routemaster.of(context).push(AppRoutes.main);
+    } else {
+      _errMsg = 'login failed, try again';
+      showSnackBar(context, _errMsg);
+      setState(() {});
+    }
   }
 
   @override
@@ -82,6 +95,14 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
                   child: const Text('Sign in'),
                 ),
               ),
+              _errMsg.isNotEmpty
+                  ? Text(
+                      _errMsg,
+                      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                    )
+                  : const SizedBox(
+                      height: 10,
+                    ),
               Text.rich(
                 TextSpan(
                   text: 'Don\'t have an account? ',

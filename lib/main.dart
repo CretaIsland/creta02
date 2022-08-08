@@ -11,7 +11,7 @@ import 'hycop/hycop_factory.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
-  myConfig = CretaConfig(enterprise: 'skpark', serverType: ServerType.appwrite);
+  myConfig = CretaConfig(enterprise: 'skpark', serverType: ServerType.firebase);
   HycopFactory.selectDatabase();
   runApp(const ProviderScope(child: CretaApp()));
 }

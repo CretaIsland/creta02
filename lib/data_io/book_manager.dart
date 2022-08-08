@@ -57,6 +57,29 @@ class BookManager extends ChangeNotifier {
   }
 
   Future<void> createBook(BookModel book) async {
-    await HycopFactory.myDataBase!.createData('creta_book', book.mid, book.toMap());
+    try {
+      await HycopFactory.myDataBase!.createData('creta_book', book.mid, book.toMap());
+    } catch (e) {
+      logger.severe('databaseError', e);
+      throw CretaException(message: 'databaseError', exception: e as Exception);
+    }
+  }
+
+  Future<void> setBook(BookModel book) async {
+    try {
+      await HycopFactory.myDataBase!.setData('creta_book', book.mid, book.toMap());
+    } catch (e) {
+      logger.severe('databaseError', e);
+      throw CretaException(message: 'databaseError', exception: e as Exception);
+    }
+  }
+
+  Future<void> removeBook(String mid) async {
+    try {
+      await HycopFactory.myDataBase!.removeData('creta_book', mid);
+    } catch (e) {
+      logger.severe('databaseError', e);
+      throw CretaException(message: 'databaseError', exception: e as Exception);
+    }
   }
 }

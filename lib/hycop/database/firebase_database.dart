@@ -18,10 +18,10 @@ class FirebaseDatabase extends AbsDatabase {
   }
 
   @override
-  Future<Map<String, dynamic>> getData(String collectionId, String key) async {
+  Future<Map<String, dynamic>> getData(String collectionId, String mid) async {
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
 
-    DocumentSnapshot<Object?> result = await collectionRef.doc(key).get();
+    DocumentSnapshot<Object?> result = await collectionRef.doc(mid).get();
     return result.data() as Map<String, dynamic>;
   }
 
@@ -38,19 +38,19 @@ class FirebaseDatabase extends AbsDatabase {
   }
 
   @override
-  Future<void> setData(String collectionId, String key, Map<dynamic, dynamic> data) async {
+  Future<void> setData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
-    await collectionRef.doc(key).set(data, SetOptions(merge: false));
-    logger.finest('$key saved');
+    await collectionRef.doc(mid).set(data, SetOptions(merge: false));
+    logger.finest('$mid saved');
   }
 
   @override
-  Future<void> createData(String collectionId, String key, Map<dynamic, dynamic> data) async {
-    logger.finest('createData $key!');
+  Future<void> createData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
+    logger.finest('createData $mid!');
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
-    await collectionRef.doc(key).set(data, SetOptions(merge: false));
+    await collectionRef.doc(mid).set(data, SetOptions(merge: false));
     //await collectionRef.add(data);
-    logger.finest('$key! created');
+    logger.finest('$mid! created');
   }
 
   @override
@@ -85,9 +85,9 @@ class FirebaseDatabase extends AbsDatabase {
       List<Object?>? startAfter}) async {
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
     Query<Object?> query = collectionRef.orderBy(orderBy, descending: true);
-    where.map((key, value) {
-      query = query.where(key, isEqualTo: value);
-      return MapEntry(key, value);
+    where.map((mid, value) {
+      query = query.where(mid, isEqualTo: value);
+      return MapEntry(mid, value);
     });
 
     if (limit != null) query = query.limit(limit);
@@ -102,10 +102,9 @@ class FirebaseDatabase extends AbsDatabase {
   }
 
   @override
-  Future<bool> removeData(String collectionId, String key) async {
+  Future<void> removeData(String collectionId, String mid) async {
     CollectionReference collectionRef = FirebaseFirestore.instance.collection(collectionId);
-    await collectionRef.doc(key).delete();
-    logger.finest('$key deleted');
-    return true;
+    await collectionRef.doc(mid).delete();
+    logger.finest('$mid deleted');
   }
 }

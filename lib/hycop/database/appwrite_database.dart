@@ -2,12 +2,12 @@
 //import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:appwrite/appwrite.dart';
+import 'package:creta02/hycop/database/db_utils.dart';
 import '../../common/util/logger.dart';
 import 'abs_database.dart';
 import '../../common/util/config.dart';
 
 class AppwriteDatabase extends AbsDatabase {
-  Client? dbConn;
   Databases? database;
 
   @override
@@ -21,15 +21,16 @@ class AppwriteDatabase extends AbsDatabase {
   }
 
   @override
-  Future<Map<String, dynamic>> getData(String collectionId, String key) async {
-    List resultList =
-        await simpleQueryData(collectionId, name: 'mid', value: key, orderBy: 'updateTime');
-    return resultList.first;
-    // final doc = await database!.getDocument(
-    //   collectionId: collectionId,
-    //   documentId: key,
-    // );
-    // return doc.data;
+  Future<Map<String, dynamic>> getData(String collectionId, String mid) async {
+    // List resultList =
+    //     await simpleQueryData(collectionId, name: 'mid', value: mid, orderBy: 'updateTime');
+    // return resultList.first;
+    String key = DBUtils.midToKey(mid);
+    final doc = await database!.getDocument(
+      collectionId: collectionId,
+      documentId: key,
+    );
+    return doc.data;
   }
 
   @override
@@ -41,16 +42,23 @@ class AppwriteDatabase extends AbsDatabase {
   }
 
   @override
-  Future<void> setData(String collectionId, String key, Object data) async {
+  Future<void> setData(String collectionId, String mid, Object data) async {
+    String key = DBUtils.midToKey(mid);
+    logger.finest('setData($key)');
+    logger.finest('setData(${(data as Map<String, dynamic>)["name"]})');
+    logger.finest('setData(${(data)["hashTag"]})');
+
     database!.updateDocument(
       collectionId: collectionId,
       documentId: key,
-      data: data as Map<String, dynamic>,
+      data: data,
     );
   }
 
   @override
-  Future<void> createData(String collectionId, String key, Map<dynamic, dynamic> data) async {
+  Future<void> createData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
+    logger.finest('createData($mid)');
+    String key = DBUtils.midToKey(mid);
     logger.finest('createData($key)');
     database!.createDocument(
       collectionId: collectionId,
@@ -92,9 +100,9 @@ class AppwriteDatabase extends AbsDatabase {
     String orderType = descending ? 'DESC' : 'ASC';
 
     List<dynamic> queryList = [];
-    where.map((key, value) {
-      queryList.add(Query.equal(key, value));
-      return MapEntry(key, value);
+    where.map((mid, value) {
+      queryList.add(Query.equal(mid, value));
+      return MapEntry(mid, value);
     });
 
     final result = await database!.listDocuments(
@@ -112,7 +120,11 @@ class AppwriteDatabase extends AbsDatabase {
   }
 
   @override
-  Future<bool> removeData(String collectionId, String key) async {
-    return true;
+  Future<void> removeData(String collectionId, String mid) async {
+    String key = DBUtils.midToKey(mid);
+    database!.deleteDocument(
+      collectionId: collectionId,
+      documentId: key,
+    );
   }
 }

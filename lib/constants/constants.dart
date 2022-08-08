@@ -1,8 +1,8 @@
-const String nonePrefix = 'None=';
-const String pagePrefix = 'Page=';
-const String accPrefix = 'ACC=';
-const String contentsPrefix = 'Con=';
-const String bookPrefix = 'Book=';
+const String nonePrefix = 'none=';
+const String pagePrefix = 'page=';
+const String accPrefix = 'acc=';
+const String contentsPrefix = 'contents=';
+const String bookPrefix = 'book=';
 
 List<String> languages = [
   '한국어',

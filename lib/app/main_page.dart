@@ -2,9 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:routemaster/routemaster.dart';
+
 import '../data_io/book_manager.dart';
 import '../model/book_model.dart';
 import '../common/util/logger.dart';
+import 'navigation/routes.dart';
 
 const String userId = 'b49@sqisoft.com';
 
@@ -17,6 +20,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   String _bookModelStr = '';
+  int counter = 0;
   @override
   void initState() {
     super.initState();
@@ -59,6 +63,12 @@ class _MainPageState extends State<MainPage> {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    ElevatedButton(
+                        onPressed: () async {
+                          //Navigator.of(context).pop();
+                          Routemaster.of(context).push(AppRoutes.login);
+                        },
+                        child: const Text('logout')),
                     Center(child: Text(bookManagerHolder!.debugText())),
                     ElevatedButton(
                         onPressed: () async {
@@ -74,11 +84,35 @@ class _MainPageState extends State<MainPage> {
                         onPressed: () async {
                           BookModel book = BookModel();
                           book.copyFrom(bookManagerHolder!.bookList.first, newMid: book.mid);
-                          book.name.set('new created book');
+                          book.name.set('(${counter++}) new created book', save: false);
                           await bookManagerHolder!.createBook(book);
                           setState(() {});
                         },
                         child: const Text('create data')),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          BookModel book = bookManagerHolder!.bookList.first;
+                          book.name.set('change #${++counter}th book', save: false);
+                          book.hashTag.set("#${counter}th Tag", save: false);
+                          await bookManagerHolder!.setBook(book);
+                          setState(() {
+                            _bookModelStr = '';
+                          });
+                        },
+                        child: const Text('set data')),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          await bookManagerHolder!
+                              .removeBook(bookManagerHolder!.bookList.first.mid);
+                          setState(() {});
+                        },
+                        child: const Text('remove data')),
                   ],
                 );
               }
