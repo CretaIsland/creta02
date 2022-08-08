@@ -1,16 +1,16 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:appwrite/appwrite.dart';
-import 'package:creta02/hycop/hycop_factory.dart';
 import '../../common/util/config.dart';
 import '../../common/util/logger.dart';
+import 'abs_database.dart';
 
 class DBUtils {
   static Future<bool> login(String email, String password) async {
     if (myConfig!.serverType == ServerType.appwrite) {
       logger.finest('login($email, $password)');
       try {
-        Account account = Account(HycopFactory.myDataBase!.dbConn!);
+        Account account = Account(AbsDatabase.awDBConn!);
         //await account.create(userId: userId, email: email, password: password);
         await account.createEmailSession(email: email, password: password);
       } catch (e) {
@@ -22,7 +22,5 @@ class DBUtils {
     return true;
   }
 
-  static String midToKey(String mid) {
-    return mid.substring(mid.indexOf('=') + 1);
-  }
+  static String midToKey(String mid) => mid.substring(mid.indexOf('=') + 1);
 }

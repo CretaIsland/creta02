@@ -17,9 +17,7 @@ enum ServerType {
   }
 }
 
-abstract class AbsServerConfig {
-  final String enterprise;
-
+class DBConnInfo {
   String apiKey = "";
   String authDomain = "";
   String databaseURL = ''; // appwrite endpoint
@@ -27,6 +25,21 @@ abstract class AbsServerConfig {
   String storageBucket = "";
   String messagingSenderId = "";
   String appId = ""; // appwrite databaseId
+}
+
+abstract class AbsServerConfig {
+  final String enterprise;
+
+  DBConnInfo dbConnInfo = DBConnInfo();
+  DBConnInfo rtConnInfo = DBConnInfo();
+
+  // String apiKey = "";
+  // String authDomain = "";
+  // String databaseURL = ''; // appwrite endpoint
+  // String projectId = ""; // appwrite projectId
+  // String storageBucket = "";
+  // String messagingSenderId = "";
+  // String appId = ""; // appwrite databaseId
 
   AbsServerConfig(this.enterprise);
 }
@@ -34,22 +47,42 @@ abstract class AbsServerConfig {
 class FirebaseConfig extends AbsServerConfig {
   FirebaseConfig({String enterprise = 'creta'}) : super(enterprise) {
     if (enterprise == 'creta') {
-      apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
-      authDomain = "creta01-ef955.firebaseapp.com";
-      databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
-      projectId = "creta01-ef955";
-      storageBucket = "creta01-ef955.appspot.com";
-      messagingSenderId = "878607742856";
-      appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
+      // database info
+      dbConnInfo.apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
+      dbConnInfo.authDomain = "creta01-ef955.firebaseapp.com";
+      dbConnInfo.databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
+      dbConnInfo.projectId = "creta01-ef955";
+      dbConnInfo.storageBucket = "creta01-ef955.appspot.com";
+      dbConnInfo.messagingSenderId = "878607742856";
+      dbConnInfo.appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
+
+      // realTime info
+      rtConnInfo.apiKey = "AIzaSyCq3Ap2QXjMfPptFyHLHNCyVTeQl9G2PoY";
+      rtConnInfo.authDomain = "creta02-1a520.firebaseapp.com";
+      rtConnInfo.databaseURL = "https://creta02-1a520-default-rtdb.firebaseio.com";
+      rtConnInfo.projectId = "creta02-1a520";
+      rtConnInfo.storageBucket = "creta02-1a520.appspot.com";
+      rtConnInfo.messagingSenderId = "352118964959";
+      rtConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
     }
     if (enterprise == 'skpark') {
-      apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
-      authDomain = "creta01-ef955.firebaseapp.com";
-      databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
-      projectId = "creta01-ef955";
-      storageBucket = "creta01-ef955.appspot.com";
-      messagingSenderId = "878607742856";
-      appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
+      // database info
+      dbConnInfo.apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
+      dbConnInfo.authDomain = "creta01-ef955.firebaseapp.com";
+      dbConnInfo.databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
+      dbConnInfo.projectId = "creta01-ef955";
+      dbConnInfo.storageBucket = "creta01-ef955.appspot.com";
+      dbConnInfo.messagingSenderId = "878607742856";
+      dbConnInfo.appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
+
+      // realTime info
+      rtConnInfo.apiKey = "AIzaSyCq3Ap2QXjMfPptFyHLHNCyVTeQl9G2PoY";
+      rtConnInfo.authDomain = "creta02-1a520.firebaseapp.com";
+      rtConnInfo.databaseURL = "https://creta02-1a520-default-rtdb.firebaseio.com";
+      rtConnInfo.projectId = "creta02-1a520";
+      rtConnInfo.storageBucket = "creta02-1a520.appspot.com";
+      rtConnInfo.messagingSenderId = "352118964959";
+      rtConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
     }
   }
 }
@@ -57,14 +90,14 @@ class FirebaseConfig extends AbsServerConfig {
 class AppwriteConfig extends AbsServerConfig {
   AppwriteConfig({String enterprise = 'creta'}) : super(enterprise) {
     if (enterprise == 'creta') {
-      databaseURL = "http://localhost/v1"; // endPoint
-      projectId = "62d79f0b36f4029ce40f";
-      appId = "62d79f2e5fda513f4807"; // databaseId
+      dbConnInfo.databaseURL = "http://localhost/v1"; // endPoint
+      dbConnInfo.projectId = "62d79f0b36f4029ce40f";
+      dbConnInfo.appId = "62d79f2e5fda513f4807"; // databaseId
     }
     if (enterprise == 'skpark') {
-      databaseURL = "http://localhost/v1"; // endPoint
-      projectId = "62d79f0b36f4029ce40f";
-      appId = "62d79f2e5fda513f4807"; // databaseId
+      dbConnInfo.databaseURL = "http://localhost/v1"; // endPoint
+      dbConnInfo.projectId = "62d79f0b36f4029ce40f";
+      dbConnInfo.appId = "62d79f2e5fda513f4807"; // databaseId
     }
   }
 }

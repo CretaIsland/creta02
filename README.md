@@ -182,7 +182,7 @@ class CretaDB {
   late CollectionReference collectionRef;
 
   CretaDB(String collectionId) {
-    collectionRef = FirebaseFirestore.instance.collection(collectionId);
+    collectionRef = FirebaseFirestore.instanceFor(app:AbsDatabase.fbDBConn!).collection(collectionId);
   }
 
   Future<List> getData(String? key) async {

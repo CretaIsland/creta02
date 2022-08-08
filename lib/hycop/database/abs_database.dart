@@ -1,9 +1,12 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:appwrite/appwrite.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 abstract class AbsDatabase {
-  Client? dbConn; //appwrite only
+  //connection info
+  static Client? awDBConn; //appwrite only
+  static FirebaseApp? fbDBConn; // firebase only Database connection
 
   void initialize();
 
