@@ -8,7 +8,7 @@ import 'abs_database.dart';
 class FirebaseDatabase extends AbsDatabase {
   @override
   void initialize() async {
-    AbsDatabase.fbDBConn = await Firebase.initializeApp(
+    AbsDatabase.fbDBApp = await Firebase.initializeApp(
         options: FirebaseOptions(
             apiKey: myConfig!.serverConfig!.dbConnInfo.apiKey,
             appId: myConfig!.serverConfig!.dbConnInfo.appId,
@@ -20,7 +20,7 @@ class FirebaseDatabase extends AbsDatabase {
   @override
   Future<Map<String, dynamic>> getData(String collectionId, String mid) async {
     CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBConn!).collection(collectionId);
+        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
 
     DocumentSnapshot<Object?> result = await collectionRef.doc(mid).get();
     return result.data() as Map<String, dynamic>;
@@ -30,7 +30,7 @@ class FirebaseDatabase extends AbsDatabase {
   Future<List> getAllData(String collectionId) async {
     final List resultList = [];
     CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBConn!).collection(collectionId);
+        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
     await collectionRef.get().then((snapshot) {
       for (var result in snapshot.docs) {
         resultList.add(result);
@@ -42,7 +42,7 @@ class FirebaseDatabase extends AbsDatabase {
   @override
   Future<void> setData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
     CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBConn!).collection(collectionId);
+        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
     await collectionRef.doc(mid).set(data, SetOptions(merge: false));
     logger.finest('$mid saved');
   }
@@ -51,7 +51,7 @@ class FirebaseDatabase extends AbsDatabase {
   Future<void> createData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
     logger.finest('createData $mid!');
     CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBConn!).collection(collectionId);
+        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
     await collectionRef.doc(mid).set(data, SetOptions(merge: false));
     //await collectionRef.add(data);
     logger.finest('$mid! created');
@@ -67,7 +67,7 @@ class FirebaseDatabase extends AbsDatabase {
       int? offset}) async {
     final List resultList = [];
     CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBConn!).collection(collectionId);
+        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
     await collectionRef
         .orderBy(orderBy, descending: true)
         .where(name, isEqualTo: value)
@@ -89,7 +89,7 @@ class FirebaseDatabase extends AbsDatabase {
       int? offset,
       List<Object?>? startAfter}) async {
     CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBConn!).collection(collectionId);
+        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
     Query<Object?> query = collectionRef.orderBy(orderBy, descending: true);
     where.map((mid, value) {
       query = query.where(mid, isEqualTo: value);
@@ -110,7 +110,7 @@ class FirebaseDatabase extends AbsDatabase {
   @override
   Future<void> removeData(String collectionId, String mid) async {
     CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBConn!).collection(collectionId);
+        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
     await collectionRef.doc(mid).delete();
     logger.finest('$mid deleted');
 

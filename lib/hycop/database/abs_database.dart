@@ -2,11 +2,20 @@
 
 import 'package:appwrite/appwrite.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
 abstract class AbsDatabase {
   //connection info
-  static Client? awDBConn; //appwrite only
-  static FirebaseApp? fbDBConn; // firebase only Database connection
+  static Client? _awDBConn; //appwrite only
+  static FirebaseApp? _fbDBApp; // firebase only Database connection
+
+  static Client? get awDBConn => _awDBConn;
+  static FirebaseApp? get fbDBApp => _fbDBApp;
+
+  @protected
+  static void setAppWriteApp(Client client) => _awDBConn = client;
+  @protected
+  static void setFirebaseApp(FirebaseApp fb) => _fbDBApp = fb;
 
   void initialize();
 

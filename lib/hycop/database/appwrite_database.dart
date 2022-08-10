@@ -12,10 +12,10 @@ class AppwriteDatabase extends AbsDatabase {
 
   @override
   void initialize() {
-    AbsDatabase.awDBConn = Client()
+    AbsDatabase.setAppWriteApp(Client()
       ..setProject(myConfig!.serverConfig!.dbConnInfo.projectId)
       ..setSelfSigned(status: true)
-      ..setEndpoint(myConfig!.serverConfig!.dbConnInfo.databaseURL);
+      ..setEndpoint(myConfig!.serverConfig!.dbConnInfo.databaseURL));
 
     database =
         Databases(AbsDatabase.awDBConn!, databaseId: myConfig!.serverConfig!.dbConnInfo.appId);
