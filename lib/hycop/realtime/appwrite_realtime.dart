@@ -9,4 +9,9 @@ class AppwriteRealtime extends AbsRealtime {
 
   @override
   void listen() {}
+
+  @override
+  Future<bool> createExample(String mid) async {
+    return false;
+  }
 }

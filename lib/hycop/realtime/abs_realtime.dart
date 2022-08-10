@@ -12,4 +12,5 @@ abstract class AbsRealtime {
 
   void initialize();
   void listen();
+  Future<bool> createExample(String mid);
 }

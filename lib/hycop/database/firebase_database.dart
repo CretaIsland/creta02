@@ -6,21 +6,24 @@ import '../../common/util/config.dart';
 import 'abs_database.dart';
 
 class FirebaseDatabase extends AbsDatabase {
+  late FirebaseFirestore _db;
+
   @override
   void initialize() async {
-    AbsDatabase.fbDBApp = await Firebase.initializeApp(
+    AbsDatabase.setFirebaseApp(await Firebase.initializeApp(
+        name: "database",
         options: FirebaseOptions(
             apiKey: myConfig!.serverConfig!.dbConnInfo.apiKey,
             appId: myConfig!.serverConfig!.dbConnInfo.appId,
             storageBucket: myConfig!.serverConfig!.dbConnInfo.storageBucket,
             messagingSenderId: myConfig!.serverConfig!.dbConnInfo.messagingSenderId,
-            projectId: myConfig!.serverConfig!.dbConnInfo.projectId)); // for database
+            projectId: myConfig!.serverConfig!.dbConnInfo.projectId)));
+    _db = FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!); // for database
   }
 
   @override
   Future<Map<String, dynamic>> getData(String collectionId, String mid) async {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
+    CollectionReference collectionRef = _db.collection(collectionId);
 
     DocumentSnapshot<Object?> result = await collectionRef.doc(mid).get();
     return result.data() as Map<String, dynamic>;
@@ -29,8 +32,7 @@ class FirebaseDatabase extends AbsDatabase {
   @override
   Future<List> getAllData(String collectionId) async {
     final List resultList = [];
-    CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
+    CollectionReference collectionRef = _db.collection(collectionId);
     await collectionRef.get().then((snapshot) {
       for (var result in snapshot.docs) {
         resultList.add(result);
@@ -41,8 +43,7 @@ class FirebaseDatabase extends AbsDatabase {
 
   @override
   Future<void> setData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
+    CollectionReference collectionRef = _db.collection(collectionId);
     await collectionRef.doc(mid).set(data, SetOptions(merge: false));
     logger.finest('$mid saved');
   }
@@ -50,8 +51,7 @@ class FirebaseDatabase extends AbsDatabase {
   @override
   Future<void> createData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
     logger.finest('createData $mid!');
-    CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
+    CollectionReference collectionRef = _db.collection(collectionId);
     await collectionRef.doc(mid).set(data, SetOptions(merge: false));
     //await collectionRef.add(data);
     logger.finest('$mid! created');
@@ -66,8 +66,7 @@ class FirebaseDatabase extends AbsDatabase {
       int? limit,
       int? offset}) async {
     final List resultList = [];
-    CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
+    CollectionReference collectionRef = _db.collection(collectionId);
     await collectionRef
         .orderBy(orderBy, descending: true)
         .where(name, isEqualTo: value)
@@ -88,8 +87,7 @@ class FirebaseDatabase extends AbsDatabase {
       int? limit,
       int? offset,
       List<Object?>? startAfter}) async {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
+    CollectionReference collectionRef = _db.collection(collectionId);
     Query<Object?> query = collectionRef.orderBy(orderBy, descending: true);
     where.map((mid, value) {
       query = query.where(mid, isEqualTo: value);
@@ -109,8 +107,7 @@ class FirebaseDatabase extends AbsDatabase {
 
   @override
   Future<void> removeData(String collectionId, String mid) async {
-    CollectionReference collectionRef =
-        FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!).collection(collectionId);
+    CollectionReference collectionRef = _db.collection(collectionId);
     await collectionRef.doc(mid).delete();
     logger.finest('$mid deleted');
 

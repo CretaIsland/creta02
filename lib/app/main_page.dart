@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../data_io/book_manager.dart';
+import '../hycop/hycop_factory.dart';
 import '../model/book_model.dart';
 import '../common/util/logger.dart';
 import 'navigation/routes.dart';
@@ -113,6 +114,15 @@ class _MainPageState extends State<MainPage> {
                           setState(() {});
                         },
                         child: const Text('remove data')),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          BookModel book = bookManagerHolder!.bookList.first;
+                          HycopFactory.myRealtime!.createExample(book.mid);
+                        },
+                        child: const Text('create delta sample')),
                   ],
                 );
               }
