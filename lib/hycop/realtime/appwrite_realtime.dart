@@ -8,10 +8,22 @@ class AppwriteRealtime extends AbsRealtime {
   }
 
   @override
-  void listen() {}
+  void start() {}
+
+  @override
+  void stop() {}
 
   @override
   Future<bool> createExample(String mid) async {
+    return false;
+  }
+
+  @override
+  Future<bool> setDelta({
+    required String directive,
+    required String mid,
+    required Map<String, dynamic>? delta,
+  }) async {
     return false;
   }
 }

@@ -2,8 +2,8 @@
 
 import '../common/util/logger.dart';
 import '../common/undo/undo.dart';
-import 'abs_model.dart';
-import 'model_enums.dart';
+import '../hycop/absModel/abs_model.dart';
+import '../hycop/absModel/model_enums.dart';
 
 // ignore: camel_case_types
 class BookModel extends AbsModel {

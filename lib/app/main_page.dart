@@ -1,10 +1,12 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:creta02/hycop/database/db_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../data_io/book_manager.dart';
+import '../hycop/absModel/abs_model.dart';
 import '../hycop/hycop_factory.dart';
 import '../model/book_model.dart';
 import '../common/util/logger.dart';
@@ -26,6 +28,14 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     bookManagerHolder = BookManager();
+    HycopFactory.myRealtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
+    HycopFactory.myRealtime!.start();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    HycopFactory.myRealtime!.stop();
   }
 
   @override
@@ -42,9 +52,9 @@ class _MainPageState extends State<MainPage> {
         ),
       ],
       child: Scaffold(
-        body: FutureBuilder<List<BookModel>>(
-            future: bookManagerHolder!.getMyBookList(userId),
-            builder: (context, AsyncSnapshot<List<BookModel>> snapshot) {
+        body: FutureBuilder<List<AbsModel>>(
+            future: bookManagerHolder!.getListFromDB(userId),
+            builder: (context, AsyncSnapshot<List<AbsModel>> snapshot) {
               if (snapshot.hasError) {
                 //error가 발생하게 될 경우 반환하게 되는 부분
                 logger.severe("data fetch error");
@@ -58,9 +68,9 @@ class _MainPageState extends State<MainPage> {
               }
               if (snapshot.connectionState == ConnectionState.done) {
                 logger.finest("book founded ${snapshot.data!.length}");
-                if (snapshot.data!.isEmpty) {
-                  return const Center(child: Text('no book founded'));
-                }
+                // if (snapshot.data!.isEmpty) {
+                //   return const Center(child: Text('no book founded'));
+                // }
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -74,7 +84,7 @@ class _MainPageState extends State<MainPage> {
                     ElevatedButton(
                         onPressed: () async {
                           BookModel book = await bookManagerHolder!
-                              .getBook(bookManagerHolder!.bookList.first.mid);
+                              .getFromDB(bookManagerHolder!.modelList.first.mid) as BookModel;
                           setState(() {
                             _bookModelStr = book.debugText();
                           });
@@ -83,10 +93,16 @@ class _MainPageState extends State<MainPage> {
                     Text(_bookModelStr),
                     ElevatedButton(
                         onPressed: () async {
-                          BookModel book = BookModel();
-                          book.copyFrom(bookManagerHolder!.bookList.first, newMid: book.mid);
-                          book.name.set('(${counter++}) new created book', save: false);
-                          await bookManagerHolder!.createBook(book);
+                          if (bookManagerHolder!.modelList.isEmpty) {
+                            BookModel book =
+                                BookModel.withName('sample($counter)', DBUtils.currentUserId);
+                            await bookManagerHolder!.createToDB(book);
+                          } else {
+                            BookModel book = BookModel();
+                            book.copyFrom(bookManagerHolder!.modelList.first, newMid: book.mid);
+                            book.name.set('(${counter++}) new created book', save: false);
+                            await bookManagerHolder!.createToDB(book);
+                          }
                           setState(() {});
                         },
                         child: const Text('create data')),
@@ -95,10 +111,10 @@ class _MainPageState extends State<MainPage> {
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          BookModel book = bookManagerHolder!.bookList.first;
+                          BookModel book = bookManagerHolder!.modelList.first as BookModel;
                           book.name.set('change #${++counter}th book', save: false);
                           book.hashTag.set("#${counter}th Tag", save: false);
-                          await bookManagerHolder!.setBook(book);
+                          await bookManagerHolder!.setToDB(book);
                           setState(() {
                             _bookModelStr = '';
                           });
@@ -110,7 +126,7 @@ class _MainPageState extends State<MainPage> {
                     ElevatedButton(
                         onPressed: () async {
                           await bookManagerHolder!
-                              .removeBook(bookManagerHolder!.bookList.first.mid);
+                              .removeToDB(bookManagerHolder!.modelList.first.mid);
                           setState(() {});
                         },
                         child: const Text('remove data')),
@@ -119,7 +135,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     ElevatedButton(
                         onPressed: () async {
-                          BookModel book = bookManagerHolder!.bookList.first;
+                          BookModel book = bookManagerHolder!.modelList.first as BookModel;
                           HycopFactory.myRealtime!.createExample(book.mid);
                         },
                         child: const Text('create delta sample')),

@@ -1,11 +1,15 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:appwrite/appwrite.dart';
+import 'package:uuid/uuid.dart';
 import '../../common/util/config.dart';
 import '../../common/util/logger.dart';
+import '../absModel/model_enums.dart';
 import 'abs_database.dart';
 
 class DBUtils {
+  static String currentUserId = 'b49@sqisoft.com'; // 임시로 사용
+
   static Future<bool> login(String email, String password) async {
     if (myConfig!.serverType == ServerType.appwrite) {
       logger.finest('login($email, $password)');
@@ -13,14 +17,47 @@ class DBUtils {
         Account account = Account(AbsDatabase.awDBConn!);
         //await account.create(userId: userId, email: email, password: password);
         await account.createEmailSession(email: email, password: password);
+        currentUserId = email;
       } catch (e) {
         logger.severe('authentication error', e);
         return false;
         //throw CretaException(message: 'authentication error', exception: e as Exception);
       }
+    } else {
+      if (email.isNotEmpty) currentUserId = email;
     }
     return true;
   }
 
-  static String midToKey(String mid) => mid.substring(mid.indexOf('=') + 1);
+  static String midToKey(String mid) {
+    int pos = mid.indexOf('=');
+    if (pos >= 0 && pos < mid.length - 1) return mid.substring(pos + 1);
+    return mid;
+  }
+
+  static String collectionFromMid(String mid) {
+    int pos = mid.indexOf('=');
+    if (pos >= 0 && pos < mid.length - 1) return 'creta_${mid.substring(0, pos)}';
+    return 'creta_unknown';
+  }
+
+  static String genMid(ModelType type) {
+    String mid = '${type.name}=';
+    mid += const Uuid().v4();
+    return mid;
+  }
+
+  static DateTime dateTimeFromDB(dynamic src) {
+    //if (myConfig!.serverType == ServerType.appwrite) {
+    return DateTime.parse(src);
+    //}
+    //return src.toDate();
+  }
+
+  static dynamic dateTimeToDB(DateTime src) {
+    //if (myConfig!.serverType == ServerType.appwrite) {
+    return src.toString();
+    //}
+    //return src;
+  }
 }

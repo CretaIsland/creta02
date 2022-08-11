@@ -1,33 +1,12 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_final_fields, must_be_immutable
 
-import 'package:uuid/uuid.dart';
 import 'package:equatable/equatable.dart';
 
 //import '../common/util/logger.dart';
-import '../common/undo/save_manager.dart';
-import '../common/undo/undo.dart';
-import '../common/util/config.dart';
+import '../../common/undo/save_manager.dart';
+import '../../common/undo/undo.dart';
+import '../../hycop/database/db_utils.dart';
 import 'model_enums.dart';
-
-String genMid(ModelType type) {
-  String mid = '${type.name}=';
-  mid += const Uuid().v4();
-  return mid;
-}
-
-DateTime dateTimeFromDB(dynamic src) {
-  if (myConfig!.serverType == ServerType.appwrite) {
-    return DateTime.parse(src);
-  }
-  return src.toDate();
-}
-
-dynamic dateTimeToDB(DateTime src) {
-  if (myConfig!.serverType == ServerType.appwrite) {
-    return src.toString();
-  }
-  return src;
-}
 
 class AbsModel extends Equatable {
   bool autoSave = true;
@@ -47,7 +26,7 @@ class AbsModel extends Equatable {
   List<Object?> get props => [mid, type, parentMid, order, hashTag, isRemoved];
 
   AbsModel({required this.type, required String parent}) {
-    _mid = genMid(type);
+    _mid = DBUtils.genMid(type);
     parentMid = UndoAble<String>(parent, mid);
     order = UndoAble<double>(0, mid);
     hashTag = UndoAble<String>('', mid);
@@ -55,7 +34,7 @@ class AbsModel extends Equatable {
   }
 
   void copyFrom(AbsModel src, {String? newMid, String? pMid}) {
-    _mid = newMid ?? genMid(type);
+    _mid = newMid ?? DBUtils.genMid(type);
     parentMid = UndoAble<String>(pMid ?? src.parentMid.value, mid);
     order = UndoAble<double>(src.order.value, mid);
     hashTag = UndoAble<String>(src.hashTag.value, mid);
@@ -69,7 +48,7 @@ class AbsModel extends Equatable {
 
   void fromMap(Map<String, dynamic> map) {
     _mid = map["mid"];
-    _updateTime = dateTimeFromDB(map["updateTime"]);
+    _updateTime = DBUtils.dateTimeFromDB(map["updateTime"]);
     parentMid.set(map["parentMid"] ?? '', save: false, noUndo: true);
     order.set(map["order"] ?? 0, save: false, noUndo: true);
     hashTag.set(map["hashTag"] ?? '', save: false, noUndo: true);
@@ -80,7 +59,7 @@ class AbsModel extends Equatable {
     return {
       //"type": type.index,
       "mid": mid,
-      "updateTime": dateTimeToDB(updateTime),
+      "updateTime": DBUtils.dateTimeToDB(updateTime),
       "parentMid": parentMid.value,
       "order": order.value,
       "hashTag": hashTag.value,

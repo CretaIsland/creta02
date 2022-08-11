@@ -5,7 +5,7 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:synchronized/synchronized.dart';
 
-import '../../model/abs_model.dart';
+import '../../hycop/absModel/abs_model.dart';
 import '../util/config.dart';
 import '../util/logger.dart';
 
