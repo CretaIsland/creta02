@@ -31,6 +31,19 @@ class BookManager extends AbsManager {
           notifyListeners();
         }
       }
+    } else if (directive == 'remove') {
+      String mid = dataMap["mid"] ?? '';
+      logger.finest('removed mid = $mid');
+      if (mid.isEmpty) {
+        return;
+      }
+      for (AbsModel model in modelList) {
+        if (model.mid == mid) {
+          modelList.remove(model);
+          logger.finest('${model.mid} realtime removed');
+          notifyListeners();
+        }
+      }
     }
   }
 }

@@ -73,7 +73,9 @@ abstract class AbsDatabase {
     try {
       await removeData(collectionId, mid);
       // Delta 를 저장한다.
-      HycopFactory.myRealtime!.setDelta(directive: 'remove', mid: mid, delta: {});
+      Map<String, dynamic> delta = {};
+      delta['mid'] = mid;
+      HycopFactory.myRealtime!.setDelta(directive: 'remove', mid: mid, delta: delta);
     } catch (e) {
       logger.severe("setModel(remove) error", e);
       throw CretaException(message: "setModel(remove) error", exception: e as Exception);

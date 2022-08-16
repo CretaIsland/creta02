@@ -14,14 +14,14 @@ import 'navigation/routes.dart';
 
 const String userId = 'b49@sqisoft.com';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class DatabaseRealtimeExamplePage extends StatefulWidget {
+  const DatabaseRealtimeExamplePage({Key? key}) : super(key: key);
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<DatabaseRealtimeExamplePage> createState() => _DatabaseRealtimeExamplePageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _DatabaseRealtimeExamplePageState extends State<DatabaseRealtimeExamplePage> {
   String _bookModelStr = '';
   int counter = 0;
   @override
@@ -75,6 +75,10 @@ class _MainPageState extends State<MainPage> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      const Text('database and realTime example'),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       ElevatedButton(
                           onPressed: () async {
                             //Navigator.of(context).pop();
@@ -85,10 +89,10 @@ class _MainPageState extends State<MainPage> {
                       ElevatedButton(
                           onPressed: () async {
                             BookModel book = await bookManager
-                                .getFromDB(bookManagerHolder!.modelList.first.mid) as BookModel;
-                            //setState(() {
-                            _bookModelStr = book.debugText();
-                            //});
+                                .getFromDB(bookManager.modelList.first.mid) as BookModel;
+                            setState(() {
+                              _bookModelStr = book.debugText();
+                            });
                           },
                           child: const Text('get first data')),
                       Text(_bookModelStr),
@@ -104,7 +108,7 @@ class _MainPageState extends State<MainPage> {
                               book.name.set('(${counter++}) new created book', save: false);
                               await bookManager.createToDB(book);
                             }
-                            //setState(() {});
+                            setState(() {});
                           },
                           child: const Text('create data')),
                       const SizedBox(
@@ -116,9 +120,9 @@ class _MainPageState extends State<MainPage> {
                             book.name.set('change #${++counter}th book', save: false);
                             book.hashTag.set("#${counter}th Tag", save: false);
                             await bookManager.setToDB(book);
-                            //setState(() {
-                            _bookModelStr = '';
-                            //});
+                            setState(() {
+                              _bookModelStr = '';
+                            });
                           },
                           child: const Text('set data')),
                       const SizedBox(
@@ -126,19 +130,19 @@ class _MainPageState extends State<MainPage> {
                       ),
                       ElevatedButton(
                           onPressed: () async {
-                            await bookManager.removeToDB(bookManagerHolder!.modelList.first.mid);
-                            //setState(() {});
+                            await bookManager.removeToDB(bookManager.modelList.first.mid);
+                            setState(() {});
                           },
                           child: const Text('remove data')),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
-                          onPressed: () async {
-                            BookModel book = bookManager.modelList.first as BookModel;
-                            HycopFactory.myRealtime!.createExample(book.mid);
-                          },
-                          child: const Text('create delta sample')),
+                      // const SizedBox(
+                      //   height: 10,
+                      // ),
+                      // ElevatedButton(
+                      //     onPressed: () async {
+                      //       BookModel book = bookManager.modelList.first as BookModel;
+                      //       HycopFactory.myRealtime!.createExample(book.mid);
+                      //     },
+                      //     child: const Text('create delta sample')),
                     ],
                   );
                 });

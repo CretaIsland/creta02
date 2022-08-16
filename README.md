@@ -307,7 +307,22 @@ collection 을 특정한 것만 create 하고 싶으면  --all 옵션을 뺀다.
 ./appwrite databases createStringAttribute --databaseId  62d79f2e5fda513f4807  --collectionId creta_book --key  test  --size 128  --required false
 
 
+#############################
+# appwrite 환경 변수 설정
+##############################
 
+처음에 Appwrite 를 설치했던, 폴더에 appwrite 라는 폴더가 생겨있다.
+여기에 보면 env 라는 파일이 있는데,  이 파일을 메모장으로 열어서
+고치면 된다.
+고친후,  Appwrite 를 도커에서 재기동시켜야 한다.
+
+환경변수
+--------------------------------------------
+1) API 호출량의 일일 limit 가 걸려있는것을 해제하려면
+
+_APP_OPTIONS_ABUSE=disable
+
+로 설정해야 한다.
 
 
 

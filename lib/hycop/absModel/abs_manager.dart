@@ -19,7 +19,10 @@ abstract class AbsManager extends ChangeNotifier {
   String debugText() {
     String retval = '${modelList.length} $collectionId founded\n';
     for (AbsModel model in modelList) {
-      retval += '${model.mid},UpdateTime=${model.updateTime}\n';
+      if (model.isRemoved.value == false) {
+        retval +=
+            '${model.mid.substring(0, 15)}...,time=${model.updateTime},tag=${model.hashTag.value}\n';
+      }
     }
     return retval;
   }

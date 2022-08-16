@@ -30,7 +30,9 @@ class FirebaseRealtime extends AbsRealtime {
             storageBucket: myConfig!.serverConfig!.rtConnInfo.storageBucket,
             messagingSenderId: myConfig!.serverConfig!.rtConnInfo.messagingSenderId,
             projectId: myConfig!.serverConfig!.rtConnInfo.projectId)));
+    logger.finest('realTime initialized');
     _db = FirebaseDatabase.instanceFor(app: AbsRealtime.fbRTApp!).ref();
+
     // for realtime
   }
 
@@ -99,7 +101,7 @@ class FirebaseRealtime extends AbsRealtime {
 
     try {
       await _db.child('creta_delta').child(key).set(sampleData);
-      logger.finest("CRETA_DELTA sample data created");
+      logger.finest("CRETA_DELTA data created");
       return true;
     } catch (e) {
       logger.severe("CRETA_DELTA SET DB ERROR : $e");

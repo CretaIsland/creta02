@@ -80,6 +80,7 @@ class AbsModel extends Equatable {
   }
 
   void save() {
+    _updateTime = DateTime.now();
     saveManagerHolder?.pushChanged(mid, 'save model');
   }
 
