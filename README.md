@@ -324,5 +324,51 @@ _APP_OPTIONS_ABUSE=disable
 
 로 설정해야 한다.
 
+#############################
+# appwrite function 사용법
+#############################
+
+# appwrite cli 가 설치된 디렉토리에서 파워쉘을 연다.
+# 먼저 git 을 최신버전으로 업그레이드 해준다.
+
+git upgrade
+
+# 다음과 같이  function 을 init 해준다.
+
+.\appwrite init function
+
+# 묻은 말에 대답해준다.
+# 여기서는 test2 이라는 함수를 만든다고 했다.  그리고 python 을 쓰겠다고 했다.
+# (아마 로컬 시스템에 파이쎤이 깔려 있어야 하지 않을 까 싶다...)
+# appwrite.json 파일에 test2 function 이 포함된 것을 볼 수 있다.
+# function/test2/src 이라는 폴더가 생기고, index.py 가 생긴것을 볼 수 있다.
+
+# 다음과 같이 이를 deploy 한다.
+# json 파일에 적혀있는 test2 함수가 시스템에 등록되게 한다.
+
+.\appwrite deploy function
+
+# test2 을 space bar 로 선택한 후 enter key 를 누른다.
+# 이제 localhost dashbord 에서 function 에 가보면,,,해당 test2 function 이 만들어져 있고,
+# 실행해 볼 수 있다.
+# 로그 버튼을 눌러보면 실행결과도 볼 수 있다. (오우 예~~)
+
+# 이제 functions/test2/src/index.py 를 수정해서 원하는 로직을 수행한 후에, 다시 deploy를 해주면 된다.
+
+.\appwrite deploy function
+
+# 대쉬보드로 돌아와서 몇초를 인내심을 가지고 기다리면,  과거 function 이 deactivate 상태로 변하는데
+# 그러면 새 함수가 적용된 것이다.
+# 다시 execute 해서 실행해 볼 수 있다.
+
+# python 으로 appwrite database 조회는 다음 web site 를 참조 : 
+# https://dev.to/robimez/python-in-appwrite-378h
+
+
+
+
+
+
+
 
 

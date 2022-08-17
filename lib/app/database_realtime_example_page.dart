@@ -12,8 +12,6 @@ import '../model/book_model.dart';
 import '../common/util/logger.dart';
 import 'navigation/routes.dart';
 
-const String userId = 'b49@sqisoft.com';
-
 class DatabaseRealtimeExamplePage extends StatefulWidget {
   const DatabaseRealtimeExamplePage({Key? key}) : super(key: key);
 
@@ -53,7 +51,7 @@ class _DatabaseRealtimeExamplePageState extends State<DatabaseRealtimeExamplePag
       ],
       child: Scaffold(
         body: FutureBuilder<List<AbsModel>>(
-            future: bookManagerHolder!.getListFromDB(userId),
+            future: bookManagerHolder!.getListFromDB(DBUtils.currentUserId),
             builder: (context, AsyncSnapshot<List<AbsModel>> snapshot) {
               if (snapshot.hasError) {
                 //error가 발생하게 될 경우 반환하게 되는 부분
@@ -130,7 +128,11 @@ class _DatabaseRealtimeExamplePageState extends State<DatabaseRealtimeExamplePag
                       ),
                       ElevatedButton(
                           onPressed: () async {
-                            await bookManager.removeToDB(bookManager.modelList.first.mid);
+                            if (bookManager.modelList.isEmpty) {
+                              await bookManager.removeToDB('wrong mid test');
+                            } else {
+                              await bookManager.removeToDB(bookManager.modelList.first.mid);
+                            }
                             setState(() {});
                           },
                           child: const Text('remove data')),

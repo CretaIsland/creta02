@@ -12,8 +12,6 @@ import '../model/book_model.dart';
 import '../common/util/logger.dart';
 import 'navigation/routes.dart';
 
-const String userId = 'b49@sqisoft.com';
-
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -53,7 +51,7 @@ class _MainPageState extends State<MainPage> {
       ],
       child: Scaffold(
         body: FutureBuilder<List<AbsModel>>(
-            future: bookManagerHolder!.getListFromDB(userId),
+            future: bookManagerHolder!.getListFromDB(DBUtils.currentUserId),
             builder: (context, AsyncSnapshot<List<AbsModel>> snapshot) {
               if (snapshot.hasError) {
                 //error가 발생하게 될 경우 반환하게 되는 부분
@@ -130,15 +128,6 @@ class _MainPageState extends State<MainPage> {
                             //setState(() {});
                           },
                           child: const Text('remove data')),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
-                          onPressed: () async {
-                            BookModel book = bookManager.modelList.first as BookModel;
-                            HycopFactory.myRealtime!.createExample(book.mid);
-                          },
-                          child: const Text('create delta sample')),
                     ],
                   );
                 });

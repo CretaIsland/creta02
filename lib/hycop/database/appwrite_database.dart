@@ -2,6 +2,7 @@
 //import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:appwrite/appwrite.dart';
+import 'package:creta02/common/util/exceptions.dart';
 import 'package:creta02/hycop/database/db_utils.dart';
 import '../../common/util/logger.dart';
 import 'abs_database.dart';
@@ -27,45 +28,82 @@ class AppwriteDatabase extends AbsDatabase {
     //     await simpleQueryData(collectionId, name: 'mid', value: mid, orderBy: 'updateTime');
     // return resultList.first;
     String key = DBUtils.midToKey(mid);
-    final doc = await database!.getDocument(
-      collectionId: collectionId,
-      documentId: key,
-    );
-    return doc.data;
+    try {
+      final doc = await database!.getDocument(
+        collectionId: collectionId,
+        documentId: key,
+      );
+      return doc.data;
+    } on AppwriteException catch (e) {
+      if (e.code == 404) {
+        logger.finest(e.message!);
+        return {};
+      }
+      if (e.message != null) {
+        throw CretaException(message: e.message!, code: e.code);
+      }
+      throw CretaException(message: 'Appwrite error', code: e.code);
+    }
   }
 
   @override
   Future<List> getAllData(String collectionId) async {
-    final result = await database!.listDocuments(collectionId: collectionId);
-    return result.documents.map((element) {
-      return element.data;
-    }).toList();
+    try {
+      final result = await database!.listDocuments(collectionId: collectionId);
+      return result.documents.map((element) {
+        return element.data;
+      }).toList();
+    } on AppwriteException catch (e) {
+      if (e.code == 404) {
+        logger.finest(e.message!);
+        return [];
+      }
+      if (e.message != null) {
+        throw CretaException(message: e.message!, code: e.code);
+      }
+      throw CretaException(message: 'Appwrite error', code: e.code);
+    }
   }
 
   @override
   Future<void> setData(String collectionId, String mid, Object data) async {
-    String key = DBUtils.midToKey(mid);
-    logger.finest('setData($key)');
-    logger.finest('setData(${(data as Map<String, dynamic>)["name"]})');
-    logger.finest('setData(${(data)["hashTag"]})');
-
-    database!.updateDocument(
-      collectionId: collectionId,
-      documentId: key,
-      data: data,
-    );
+    try {
+      String key = DBUtils.midToKey(mid);
+      logger.finest('setData($key)');
+      database!.updateDocument(
+        collectionId: collectionId,
+        documentId: key,
+        data: data as Map<String, dynamic>,
+      );
+    } on AppwriteException catch (e) {
+      if (e.code == 404) {
+        logger.finest(e.message!);
+        return;
+      }
+      if (e.message != null) {
+        throw CretaException(message: e.message!, code: e.code);
+      }
+      throw CretaException(message: 'Appwrite error', code: e.code);
+    }
   }
 
   @override
   Future<void> createData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
-    logger.finest('createData($mid)');
-    String key = DBUtils.midToKey(mid);
-    logger.finest('createData($key)');
-    database!.createDocument(
-      collectionId: collectionId,
-      documentId: key,
-      data: data,
-    );
+    try {
+      logger.finest('createData($mid)');
+      String key = DBUtils.midToKey(mid);
+      logger.finest('createData($key)');
+      database!.createDocument(
+        collectionId: collectionId,
+        documentId: key,
+        data: data,
+      );
+    } on AppwriteException catch (e) {
+      if (e.message != null) {
+        throw CretaException(message: e.message!, code: e.code);
+      }
+      throw CretaException(message: 'Appwrite error', code: e.code);
+    }
   }
 
   @override
@@ -76,16 +114,27 @@ class AppwriteDatabase extends AbsDatabase {
       bool descending = true,
       int? limit,
       int? offset}) async {
-    String orderType = descending ? 'DESC' : 'ASC';
-    final result = await database!.listDocuments(
-      collectionId: collectionId,
-      queries: [Query.equal(name, value)], // index 를 만들어줘야 함.
-      orderAttributes: [orderBy],
-      orderTypes: [orderType],
-    );
-    return result.documents.map((element) {
-      return element.data;
-    }).toList();
+    try {
+      String orderType = descending ? 'DESC' : 'ASC';
+      final result = await database!.listDocuments(
+        collectionId: collectionId,
+        queries: [Query.equal(name, value)], // index 를 만들어줘야 함.
+        orderAttributes: [orderBy],
+        orderTypes: [orderType],
+      );
+      return result.documents.map((element) {
+        return element.data;
+      }).toList();
+    } on AppwriteException catch (e) {
+      if (e.code == 404) {
+        logger.finest(e.message!);
+        return [];
+      }
+      if (e.message != null) {
+        throw CretaException(message: e.message!, code: e.code);
+      }
+      throw CretaException(message: 'Appwrite error', code: e.code);
+    }
   }
 
   @override
@@ -98,34 +147,56 @@ class AppwriteDatabase extends AbsDatabase {
     int? offset, // appwrite only
     List<Object?>? startAfter, // firebase only
   }) async {
-    String orderType = descending ? 'DESC' : 'ASC';
+    try {
+      String orderType = descending ? 'DESC' : 'ASC';
 
-    List<dynamic> queryList = [];
-    where.map((mid, value) {
-      queryList.add(Query.equal(mid, value));
-      return MapEntry(mid, value);
-    });
+      List<dynamic> queryList = [];
+      where.map((mid, value) {
+        queryList.add(Query.equal(mid, value));
+        return MapEntry(mid, value);
+      });
 
-    final result = await database!.listDocuments(
-      collectionId: collectionId,
-      queries: queryList, // index 를 만들어줘야 함.
-      orderAttributes: [orderBy],
-      orderTypes: [orderType],
-      limit: limit,
-      offset: offset,
-    );
-    return result.documents.map((doc) {
-      //logger.finest(doc.data.toString());
-      return doc.data;
-    }).toList();
+      final result = await database!.listDocuments(
+        collectionId: collectionId,
+        queries: queryList, // index 를 만들어줘야 함.
+        orderAttributes: [orderBy],
+        orderTypes: [orderType],
+        limit: limit,
+        offset: offset,
+      );
+      return result.documents.map((doc) {
+        //logger.finest(doc.data.toString());
+        return doc.data;
+      }).toList();
+    } on AppwriteException catch (e) {
+      if (e.code == 404) {
+        logger.finest(e.message!);
+        return [];
+      }
+      if (e.message != null) {
+        throw CretaException(message: e.message!, code: e.code);
+      }
+      throw CretaException(message: 'Appwrite error', code: e.code);
+    }
   }
 
   @override
   Future<void> removeData(String collectionId, String mid) async {
-    String key = DBUtils.midToKey(mid);
-    database!.deleteDocument(
-      collectionId: collectionId,
-      documentId: key,
-    );
+    try {
+      String key = DBUtils.midToKey(mid);
+      database!.deleteDocument(
+        collectionId: collectionId,
+        documentId: key,
+      );
+    } on AppwriteException catch (e) {
+      if (e.code == 404) {
+        logger.finest(e.message!);
+        return;
+      }
+      if (e.message != null) {
+        throw CretaException(message: e.message!, code: e.code);
+      }
+      throw CretaException(message: 'Appwrite error', code: e.code);
+    }
   }
 }

@@ -5,15 +5,16 @@ import 'dart:async';
 import 'logger.dart';
 
 class CretaException implements Exception {
-  const CretaException({required this.message, this.exception, this.stackTrace});
+  const CretaException({required this.message, this.code, this.exception, this.stackTrace});
 
   final String message;
+  final int? code;
   final Exception? exception;
   final StackTrace? stackTrace;
 
   @override
   String toString() {
-    return "CretaException: ($message)";
+    return "CretaException: ($message), code=${code ?? ''}";
   }
 }
 
