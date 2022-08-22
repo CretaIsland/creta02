@@ -4,6 +4,9 @@ import 'database/abs_database.dart';
 import 'realtime/abs_realtime.dart';
 import 'realtime/firebase_realtime.dart';
 import 'realtime/appwrite_realtime.dart';
+import 'function/abs_function.dart';
+import 'function/appwrite_function.dart';
+import 'function/firebase_function.dart';
 import '../common/util/config.dart';
 
 class HycopFactory {
@@ -26,6 +29,17 @@ class HycopFactory {
       myRealtime = FirebaseRealtime();
     }
     myRealtime!.initialize();
+    return;
+  }
+
+  static AbsFunction? myFunction;
+  static void selectFunction() {
+    if (myConfig!.serverType == ServerType.appwrite) {
+      myFunction = AppwriteFunction();
+    } else {
+      myFunction = FirebaseFunction();
+    }
+    myFunction!.initialize();
     return;
   }
 }

@@ -90,12 +90,16 @@ class FirebaseConfig extends AbsServerConfig {
 class AppwriteConfig extends AbsServerConfig {
   AppwriteConfig({String enterprise = 'creta'}) : super(enterprise) {
     if (enterprise == 'creta') {
-      dbConnInfo.databaseURL = "http://localhost/v1"; // endPoint
+      dbConnInfo.apiKey =
+          "163c3964999075adc6b7317f211855832ebb6d464520446280af0f8bbb9e642ffdcd2588a5141ce3ea0011c5780ce10986ed57b742fdb6a641e2ecf7310512cd5349e61385f856eb4789e718d750e2451c1b1519dd20cdf557b5edc1ae066e28430f5cc3e157abc4a13ad6aa112a48b07ce707341edfdc41d2572e95b4728905"; // apiKet
+      dbConnInfo.databaseURL = "http://192.168.10.3/v1"; // endPoint
       dbConnInfo.projectId = "62d79f0b36f4029ce40f";
       dbConnInfo.appId = "62d79f2e5fda513f4807"; // databaseId
     }
     if (enterprise == 'skpark') {
-      dbConnInfo.databaseURL = "http://localhost/v1"; // endPoint
+      dbConnInfo.apiKey =
+          "163c3964999075adc6b7317f211855832ebb6d464520446280af0f8bbb9e642ffdcd2588a5141ce3ea0011c5780ce10986ed57b742fdb6a641e2ecf7310512cd5349e61385f856eb4789e718d750e2451c1b1519dd20cdf557b5edc1ae066e28430f5cc3e157abc4a13ad6aa112a48b07ce707341edfdc41d2572e95b4728905"; // apiKet
+      dbConnInfo.databaseURL = "http://192.168.10.3/v1"; // endPoint
       dbConnInfo.projectId = "62d79f0b36f4029ce40f";
       dbConnInfo.appId = "62d79f2e5fda513f4807"; // databaseId
     }

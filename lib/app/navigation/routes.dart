@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, equal_keys_in_map
 
-import 'package:creta02/app/database_realtime_example_page.dart';
+import '../database_realtime_example_page.dart';
+import '../function_example_page.dart';
 import 'package:routemaster/routemaster.dart';
 import '../login_page.dart';
 import '../register_page.dart';
@@ -10,6 +11,7 @@ import '../main_page.dart';
 abstract class AppRoutes {
   static const String main = '/main';
   static const String databaseExample = '/databaseExample';
+  static const String functionExample = '/functionExample';
   static const String studio = '/studio';
   static const String login = '/login';
   static const String register = '/register';
@@ -28,6 +30,7 @@ final routesLoggedOut = RouteMap(
         ),
     AppRoutes.main: (_) => const TransitionPage(child: MainPage()),
     AppRoutes.databaseExample: (_) => const TransitionPage(child: DatabaseRealtimeExamplePage()),
+    AppRoutes.functionExample: (_) => const TransitionPage(child: FunctionExamplePage()),
   },
 );
 

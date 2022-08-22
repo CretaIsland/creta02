@@ -47,16 +47,16 @@ class DBUtils {
     return mid;
   }
 
-  static DateTime dateTimeFromDB(dynamic src) {
+  static DateTime dateTimeFromDB(String src) {
     //if (myConfig!.serverType == ServerType.appwrite) {
-    return DateTime.parse(src);
+    return DateTime.parse(src); // yyyy-mm-dd hh:mm:ss.sss
     //}
     //return src.toDate();
   }
 
-  static dynamic dateTimeToDB(DateTime src) {
+  static String dateTimeToDB(DateTime src) {
     //if (myConfig!.serverType == ServerType.appwrite) {
-    return src.toString();
+    return src.toString(); // yyyy-mm-dd hh:mm:ss.sss
     //}
     //return src;
   }

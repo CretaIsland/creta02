@@ -20,6 +20,23 @@ samples, guidance on mobile development, and a full API reference.
 ####  - John Ruskin - 
 ####
 
+기본 환경 설정
+
+# project 환경변수의 설정
+# 다음과 같은 Project 환경 변수를 공통으로 설정해주자
+
+CRETA_HOME  D:/Flutter/project/creta02   <-- 사람마다 path 는 다르겠지>
+
+# appwrite 설치시는 다음의 디렉토리에서 설치해주자. (appwrite cli 설치 위치)
+
+%CRETA_HOME%/3rdpary/appwrite
+
+# python 사용을 위해서는 
+# python 3.1 을 설치해주자
+# 파이손 path 환경 변수를 설정해주자
+
+PYTHONPATH   %CRETA_HOME%\3rdparty\appwrite\sdk-for-python;C:\Python310\Lib;
+
 ##
 ## skpark
 ## run way
@@ -34,6 +51,8 @@ flutter config --build-dir=../release/cretaTest04
 flutter run -d chrome --web-renderer html
 # or
 flutter run -d chrome --web-renderer canvaskit
+
+
 
 
 ## build and release process
@@ -363,6 +382,43 @@ git upgrade
 
 # python 으로 appwrite database 조회는 다음 web site 를 참조 : 
 # https://dev.to/robimez/python-in-appwrite-378h
+
+
+#python 설정
+#python 3.1 이상 설치하고,
+#PYTHONPATH  <python 설치위치>/Lib 환경변수 추가하고
+# appwrite 설치 디레토리에  appwrite 의 sdk-for-python 을 git clone 으로 설치합니다.
+# https://github.com/orgs/appwrite/repositories 요기서 찾습니다.
+
+# 그다음 PYTHONPATH 에  sdk-for-python path 을 추가해줍니다.
+# 그다음 requests 패키지를 다음과 같은 명령으로 설치한다. (관리자권한으로 powershell 을 열어서 해야한다.)
+pip3 install requests
+
+# 다 끝났으면 function 을 테스트 해보자.
+# appwrite 설치 패스로 가서,
+# cd functions/<function_name>/src 
+
+python index.py 
+
+# index.py 를 실행해 볼 수 있다.
+# 이때 물론 main 함수 호출절을 만들어 주어야 한다.
+
+ex) if __name__ == "__main__":
+  main('','')
+
+# 또한 endPoint 는  localhost 를 인식하지 못하므로 반드시 ip Address 로 바꾸어 적어주어야 한다.
+
+
+### dart 에서 appwrite function 호출하기
+참조
+https://appwrite.io/docs/functions
+
+# 1) 권한주기
+### 우선 Appwrite console 에서, 해당 함수의 Settings 메뉴로 들어가서, 
+# Execute Access 에 "role:all" 을 추가해주어야 한다.
+
+
+
 
 
 

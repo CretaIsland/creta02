@@ -51,7 +51,7 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
     String password = _passwordTextEditingController.text;
     if (await DBUtils.login(email, password)) {
       //Routemaster.of(context).push(AppRoutes.main);
-      Routemaster.of(context).push(AppRoutes.databaseExample);
+      Routemaster.of(context).push(AppRoutes.functionExample);
     } else {
       _errMsg = 'login failed, try again';
       showSnackBar(context, _errMsg);

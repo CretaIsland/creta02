@@ -13,8 +13,9 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
   DeviceInfo.init();
-  myConfig = CretaConfig(enterprise: 'skpark', serverType: ServerType.firebase);
+  myConfig = CretaConfig(enterprise: 'skpark', serverType: ServerType.appwrite);
   HycopFactory.selectDatabase();
   HycopFactory.selectRealTime();
+  HycopFactory.selectFunction();
   runApp(const ProviderScope(child: CretaApp()));
 }
