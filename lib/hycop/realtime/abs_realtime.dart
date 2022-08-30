@@ -49,7 +49,7 @@ abstract class AbsRealtime {
     input['mid'] = mid; //'book=3ecb527f-4f5e-4350-8705-d5742781451b';
     input['userId'] = DBUtils.currentUserId;
     input['deviceId'] = DeviceInfo.deviceId;
-    input['updateTime'] = DateTime.now().toString();
+    input['updateTime'] = DBUtils.dateTimeToDB(DateTime.now());
     input['delta'] = delta != null ? json.encode(delta) : '';
 
     return input;

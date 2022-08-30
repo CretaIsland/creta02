@@ -49,14 +49,14 @@ class DBUtils {
 
   static DateTime dateTimeFromDB(String src) {
     //if (myConfig!.serverType == ServerType.appwrite) {
-    return DateTime.parse(src); // yyyy-mm-dd hh:mm:ss.sss
+    return DateTime.parse(src).toLocal(); // yyyy-mm-dd hh:mm:ss.sss
     //}
     //return src.toDate();
   }
 
   static String dateTimeToDB(DateTime src) {
     //if (myConfig!.serverType == ServerType.appwrite) {
-    return src.toString(); // yyyy-mm-dd hh:mm:ss.sss
+    return src.toUtc().toString(); // yyyy-mm-dd hh:mm:ss.sssZ
     //}
     //return src;
   }

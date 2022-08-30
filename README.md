@@ -265,6 +265,18 @@ body 바로 아래...
    
    index = attr1 ASC + attr2 ASC + updateTime desc
 
+ : 리얼타임에서는 따로 인덱스가 메뉴가 없고, Rule 에 다음과 같이 추가해주어야 한다.
+   (아래 룰에서 creta_delta 부분만 참고)
+ {
+  "rules": {
+    ".read": "true",  // 2022-7-14
+    ".write": "true",  // 2022-7-14
+    "creta_delta": {
+    	".indexOn": ["updateTime"]
+    }
+  }
+}
+
 2. appwrite 
  : where 조건절과 order by 에 사용된  attribute 를 각각 별도의 index 로 잡는다.
  예를 들어 다음과 같은 Query 라면
@@ -343,48 +355,16 @@ _APP_OPTIONS_ABUSE=disable
 
 로 설정해야 한다.
 
-#############################
-# appwrite function 사용법
-#############################
 
-# appwrite cli 가 설치된 디렉토리에서 파워쉘을 연다.
-# 먼저 git 을 최신버전으로 업그레이드 해준다.
+#### 
+#### appwrite function start
+####
 
-git upgrade
-
-# 다음과 같이  function 을 init 해준다.
-
-.\appwrite init function
-
-# 묻은 말에 대답해준다.
-# 여기서는 test2 이라는 함수를 만든다고 했다.  그리고 python 을 쓰겠다고 했다.
-# (아마 로컬 시스템에 파이쎤이 깔려 있어야 하지 않을 까 싶다...)
-# appwrite.json 파일에 test2 function 이 포함된 것을 볼 수 있다.
-# function/test2/src 이라는 폴더가 생기고, index.py 가 생긴것을 볼 수 있다.
-
-# 다음과 같이 이를 deploy 한다.
-# json 파일에 적혀있는 test2 함수가 시스템에 등록되게 한다.
-
-.\appwrite deploy function
-
-# test2 을 space bar 로 선택한 후 enter key 를 누른다.
-# 이제 localhost dashbord 에서 function 에 가보면,,,해당 test2 function 이 만들어져 있고,
-# 실행해 볼 수 있다.
-# 로그 버튼을 눌러보면 실행결과도 볼 수 있다. (오우 예~~)
-
-# 이제 functions/test2/src/index.py 를 수정해서 원하는 로직을 수행한 후에, 다시 deploy를 해주면 된다.
-
-.\appwrite deploy function
-
-# 대쉬보드로 돌아와서 몇초를 인내심을 가지고 기다리면,  과거 function 이 deactivate 상태로 변하는데
-# 그러면 새 함수가 적용된 것이다.
-# 다시 execute 해서 실행해 볼 수 있다.
+#### 1.먼저 python 개발환경을 잡아준다.
 
 # python 으로 appwrite database 조회는 다음 web site 를 참조 : 
 # https://dev.to/robimez/python-in-appwrite-378h
 
-
-#python 설정
 #python 3.1 이상 설치하고,
 #PYTHONPATH  <python 설치위치>/Lib 환경변수 추가하고
 # appwrite 설치 디레토리에  appwrite 의 sdk-for-python 을 git clone 으로 설치합니다.
@@ -394,37 +374,156 @@ git upgrade
 # 그다음 requests 패키지를 다음과 같은 명령으로 설치한다. (관리자권한으로 powershell 을 열어서 해야한다.)
 pip3 install requests
 
-# 다 끝났으면 function 을 테스트 해보자.
-# appwrite 설치 패스로 가서,
-# cd functions/<function_name>/src 
+#### 2. git 을 최신버전으로 업그레이드 해준다.
+git upgrade
 
+#### 3. appwrite cli 로 initilize 한다. (함수당 한번만 해야함. 또 하면 날라감)  
+# appwrite cli 가 설치된 디렉토리에서 파워쉘을 연다.
+# 다음과 같이  function 을 init 해준다.
+
+cd %CRETA_HOME%/3rdpary/appwrite
+.\appwrite init function
+
+# 묻은 말에 대답해준다.
+# 여기서는 removeDelta 이라는 함수를 만든다고 했다.  그리고 python 을 쓰겠다고 했다.
+# appwrite.json 파일에 removeDelta function 이 포함된 것을 볼 수 있다.
+# function/removeDelta/src 이라는 폴더가 생기고, index.py 가 생긴것을 볼 수 있다.
+
+#### 4. index.py 를 원하는데로 고쳐준다.
+# 현재는 example 을 만들어 놨다.
+# where 조건절을 쓸경우, 인덱스를 만들어줘야 한다는 것일 잊지 말자.
+# 다음과 같이 copy 해서 사용할 수 있다.
+copy index_removeDelta_example.py  functions/removeDelta/src/index.py
+
+#### 5.python 으로 테스트
+# 잘되는지 python 으로 테스트 해주자.
+cd functions/removeDelta/src
 python index.py 
 
-# index.py 를 실행해 볼 수 있다.
-# 이때 물론 main 함수 호출절을 만들어 주어야 한다.
-
+# 이때 index.py 에 다음과 같은 절을 추가했기 때문에 가능한 것이다.
+# 새로 함수를 만들때는 아래와 같은 절을 추가해주자
 ex) if __name__ == "__main__":
   main('','')
-
 # 또한 endPoint 는  localhost 를 인식하지 못하므로 반드시 ip Address 로 바꾸어 적어주어야 한다.
 
+#### 6. Deploy 
+# 다음과 같이 이를 deploy 한다.
+cd ../../..
+.\appwrite deploy function
 
-### dart 에서 appwrite function 호출하기
-참조
-https://appwrite.io/docs/functions
+# json 파일에 적혀있는 removeDelta 함수가 시스템에 등록되게 한다.
+# 그러면 대쉬보드에서 새 함수가 적용된 것이다.
 
-# 1) 권한주기
-### 우선 Appwrite console 에서, 해당 함수의 Settings 메뉴로 들어가서, 
+#### 7. 권한 주기
+# 새 함수가 등록되면, 권한을 주어야 한다.
+# Appwrite console 에서, 해당 함수의 Settings 메뉴로 들어가서, 
 # Execute Access 에 "role:all" 을 추가해주어야 한다.
 
+#### 8. console 에서 실행해 보기
+# appwrite console 에서 function 메뉴에서 execute 해서 실행해 볼 수 있다.
+# 이때, 파라메터를 넣는것을 잊지말자.
+# removeDelta 함수의 파라메터는 다음과 같다.
+{"text":"helloworld2","projectId":"62d79f0b36f4029ce40f","databaseId":"62d79f2e5fda513f4807",
+"endPoint":"http://192.168.10.3/v1","apiKey":"163c3964999075adc6b7317f211855832ebb6d464520446280af0f8bbb9e642ffdcd2588a5141ce3ea0011c5780ce10986ed57b742fdb6a641e2ecf7310512cd5349e61385f856eb4789e718d750e2451c1b1519dd20cdf557b5edc1ae066e28430f5cc3e157abc4a13ad6aa112a48b07ce707341edfdc41d2572e95b4728905"}
+
+#### 9. 이제 hyCop 에서 이 함수를 호출하기
+# 참조 https://appwrite.io/docs/functions
+
+
+#### 10. scheduling
+# functions 의 해당 function 의 Settings 에서 아래쪽에 Schedule 항목에 cron syntax 로 적어준다
+# cron syntax
+min(0~59) hour(0~23) day(1~31) month(1~12) week(0~6)
+# removeDelta 의 경우 hour 0 min 01 로 놓으면 새벽 0시 01 분에 동작하게 된다.
 
 
 
 
+#### 
+#### appwrite function end
+####
+
+#### 
+#### Firebase Cloud function start
+####
+
+#### 1. cli 의 설치
+# https://firebase.google.com/docs/cli?authuser=4#install-cli-windows
+# 이름을 firebase.exe 로 바꾸어준다. 반드시 C: 드라이브에 옮겨놔야 한다. 
+# C:\Users\<자기유저이름>\firebase  폴더를 만들고, 여기에 옮겨준다.
+
+move firebase-tools-instant-win.exe  C:\Users\<자기유저이름>\firebase\firebase.exe
+
+# C:\Users\<자기유저이름>\firebase 를 PATH 환경변수에 더해준다.
+
+#### 2. 시작하기
+# https://firebase.google.com/docs/functions/get-started?authuser=4
+
+cd %CRETA_HOME%/3rdpary/firebase
+firebase login  <-- cretacreates@gmail.com 계정으로 로그인한다.>
+firebase init firestore  <-- 처음 한번만 하는것 같다. 기존에 만들어진 Project 로 로그인한다.>
+firebase init functions  <-- functions/index.js 가 만들어진다.>
+
+# functions/index.js 가 코딩을 하는 곳이다.
+# appwrite 와는 달리, 모든 function 을 이 파일 한곳에 때려 박는거 같다.
+# https://firebase.google.com/docs/firestore/quickstart
+# "Cloud Functions에서 초기화" 내용을  index.js 에 넣는다.
+# onRequest, onCall,  schedule,  onChanged(onWrite 등) 등이 있다.
+
+#### 3. 테스트 해보기
+firebase emulators:start
+
+# 를 하면, 포트번호가 쫑난다는 에러가 나는 것이 보통이다.
+# 시키는대로,  firebase.json 파일에 다음 라인을 추가해 준다.
+, 
+"emulators": {
+    "firestore": {
+      "host": "localhost",
+      "port": "4000"
+    }
+  }
+
+# 다시 시도하면  URL 을 뱉어내는데, 이 URL 로 테스트해 볼 수 있다.
+# 단, onRequest 함수만 테스트해볼 수 있다.
+
+#### 4. 배포
+
+firebase deploy --only functions
+firebase deploy --only functions:removeDelta
+
+# 겁나게 오래걸림...다음과 같은 url 이 나올때까지 기다려야함
+
+Function URL (addMessage(us-central1)): https://us-central1-creta01-ef955.cloudfunctions.net/addMessage
+
+# 로그는  Google Cloud Console 로그탐색기에서 찾을 수 있음
 
 
+#### 5. 앱에서의 함수 호출
+# flutter api 
+# https://pub.dev/documentation/cloud_functions/latest/
+# https://firebase.google.com/docs/functions/callable?authuser=4
+# 페이지 중간에...관리자 인증 정보라는 것을 설정해 본다.
 
+# Google Cloud Console의 서비스 계정 창을 엽니다.
+# App Engine 기본 서비스 계정이 선택되어 있는지 확인하고 오른쪽에 있는 옵션 메뉴에서 키 만들기를 선택합니다.
+# 메시지가 나타나면 키 유형으로 JSON을 선택하고 만들기를 클릭합니다.
+# Google 기본 사용자 인증 정보가 다운로드된 키를 가리키도록 설정합니다.
 
+set GOOGLE_APPLICATION_CREDENTIALS=path\to\key.json
+firebase emulators:start
 
+# 이 단계를 완료하면 함수 테스트에서 Admin SDK를 사용하여 Firebase 및 Google API에 액세스할 수 # 있습니다. 예를 들어 인증 트리거를 테스트할 때 에뮬레이션된 함수에서 admin.auth().
+# getUserByEmail(email)을 호출할 수 있습니다.
 
-
+#### 7. Realtime 을 쓰려면 추가 Setting을 해야한다.
+# 프로젝트 셋팅에서  기본GCP 리소스 위치를  asia-northeast2 로 잡아준다. (pubub 을 쓰려면...)
+# 리얼타임 데이터베이스-규칙에서,  아래와 같이 index 를 잡아주어야 Query 효과적으로 동작한다고 # 한다.
+{
+  "rules": {
+    ".read": "true",  // 2022-7-14
+    ".write": "true",  // 2022-7-14
+    "creta_delta": {
+    	".indexOn": ["updateTime"]
+    }
+  }
+}
