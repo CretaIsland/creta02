@@ -26,32 +26,41 @@ exports.deltaChanged = functions.database.ref('/creta_delta/{id}/delta')
         return null;
 });
 
-exports.removeDelta = functions.pubsub.schedule('every 24 hours')
-    .onRun((context) => {
-        let now = new Date();
-        now.setDate(now.getDate() - 1);
-        let yesterday = now.toISOString().replace(/T/, ' ').replace(/\..+/, '.000Z');
-        var counter = 0;
-        database.ref('/creta_delta').orderByChild('updateTime').endBefore(yesterday).once('value').then((snapshot) => {
-            snapshot.forEach((childSnapshot) => {
-                const childKey = childSnapshot.key;
-                const childData = childSnapshot.val();
-                counter++;  
-
-                var key = '/creta_delta/' + childKey +'/';
-                functions.logger.log('skpark start remove =' + key);
-                database.ref(key).remove((error) => {
-                    if(error) {
-                        functions.logger.log('skpark removed =' + key + ' failed : ' + error);
-                    } else {
-                        functions.logger.log('skpark removed =' + key + ' succeed');
-                    }
-                });  
-            });
-            functions.logger.log('skpark listed(' + yesterday + ') = ' + counter);
-        });
-        return '{result: "removeDelta schedule registered"}';
+exports.removeDelta_schedule = functions.pubsub.schedule('every 24 hours').onRun((context) => {
+    return _removeDelta();
 });
+
+exports.removeDelta = functions.https.onCall((data) => {
+    return _removeDelta();
+});
+
+function _removeDelta()
+{
+    let now = new Date();
+    now.setDate(now.getDate() - 1);
+    let yesterday = now.toISOString().replace(/T/, ' ').replace(/\..+/, '.000Z');
+    var counter = 0;
+    return database.ref('/creta_delta').orderByChild('updateTime').endBefore(yesterday).once('value').then((snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+            const childKey = childSnapshot.key;
+            const childData = childSnapshot.val();
+            counter++;  
+
+            var key = '/creta_delta/' + childKey +'/';
+            functions.logger.log('skpark start remove =' + key);
+            database.ref(key).remove((error) => {
+                if(error) {
+                    functions.logger.log('skpark removed =' + key + ' failed : ' + error);
+                } else {
+                    functions.logger.log('skpark removed =' + key + ' succeed');
+                }
+            });  
+        });
+        functions.logger.log('skpark listed(' + yesterday + ') = ' + counter);
+        return '{result: removeDelta_called(' + counter + ' deleted)';
+    });
+    
+}
 
 //oper  : https://us-central1-creta02-1a520.cloudfunctions.net/setTest_req?id=6&text=helloworld4
 exports.setDBTest_req = functions.https.onRequest(async (req, res) => {
@@ -71,36 +80,49 @@ function  _setDBTest(id, text) {
     functions.logger.info("Document written with ID: ", docRef.id);
 }
 
-//oper  : https://us-central1-creta02-1a520.cloudfunctions.net/getTest_req?id=6&text=helloworld4
+//oper  : https://us-central1-creta02-1a520.cloudfunctions.net/getDBTest_req?text=helloworld
 exports.getDBTest_req = functions.https.onRequest(async (req, res) => {
-    result = _getDBTest(req.query.text);
-     res.json({result: `get ${result}`});
+    result = await _getDBTest2(req.query.text);
+     res.json({result: `get=>${result}`});
  }); 
  
- exports.getDBTest = functions.https.onCall((data) => {
+ exports.getDBTest = functions.https.onCall(async (data) => {
     var result = 'null';
-    result = _getDBTest(data.text);
-    return "{result: get " + result + "}";
+    result = await _getDBTest2(data.text);
+    return '{"result": "' + result + '"}';
  }); 
 
  // query 에 대한 자세한 예제는 https://firebase.google.com/docs/firestore/query-data/queries
-function  __getDBTest(text) {
+// function  __getDBTest(text) {
+//     functions.logger.info('skpark __getDBTest invoked');
+//     const db = getFirestore();
+//     return new Promise(function(resolve, reject) {
+//         resolve(db.collection('test_collection').where('text' , '=', text).get());
+//     });
+// }
+
+// function  _getDBTest(text) {
+//     return __getDBTest(text).then(function(querySnapshot) {
+//         var retval = '';
+//         querySnapshot.forEach((doc) => {
+//             functions.logger.info(doc.id, ' => ', doc.data());
+//             retval += doc.data();
+//             return retval;
+//           });
+//     });
+   
+// }
+
+async function  _getDBTest2(text) {
     functions.logger.info('skpark __getDBTest invoked');
     const db = getFirestore();
-    return new Promise(function(resolve, reject) {
-        resolve(db.collection('test_collection').where('text' , '=', text).get());
+    const querySnapshot = await db.collection('test_collection').where('text' , '=', text).get();
+    var retval = '';
+    querySnapshot.forEach((doc) => {
+        functions.logger.info(doc.id, ' => ', doc.data());
+        retval += doc.data().text;
+        retval += ",\n";
     });
-}
-
-function  _getDBTest(text) {
-    return __getDBTest(text).then(function(querySnapshot) {
-        var retval = '';
-        querySnapshot.forEach((doc) => {
-            functions.logger.info(doc.id, ' => ', doc.data());
-            retval += doc.data();
-            return retval;
-          });
-    });
-   
+    return retval;
 }
 

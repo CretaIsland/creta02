@@ -64,44 +64,54 @@ def main(req, res):
   if isTest == False :
     # isTest == false 이면  정식으로 호출된 것이므로, 입력 변수는 req.payload 에서 뽑아낸다.
     # appwrite console 에서 인수를 넣을 때는 다음과 같이 json 구조로 넣되,  space 없이 넣는다.
-    # ex) {"projectId":"62d79f0b36f4029ce40f","databaseId":"62d79f2e5fda513f4807","endPoint":"http://192.168.10.3/v1","apiKey":"163c3964999075adc6b7317f211855832ebb6d464520446280af0f8bbb9e642ffdcd2588a5141ce3ea0011c5780ce10986ed57b742fdb6a641e2ecf7310512cd5349e61385f856eb4789e718d750e2451c1b1519dd20cdf557b5edc1ae066e28430f5cc3e157abc4a13ad6aa112a48b07ce707341edfdc41d2572e95b4728905"}
+    # parameter
+    #{"text":"helloworld2","projectId":"62d79f0b36f4029ce40f","databaseId":"62d79f2e5fda513f4807","endPoint":"http://192.168.10.3/v1","apiKey":"163c3964999075adc6b7317f211855832ebb6d464520446280af0f8bbb9e642ffdcd2588a5141ce3ea0011c5780ce10986ed57b742fdb6a641e2ecf7310512cd5349e61385f856eb4789e718d750e2451c1b1519dd20cdf557b5edc1ae066e28430f5cc3e157abc4a13ad6aa112a48b07ce707341edfdc41d2572e95b4728905"}
     try: 
       payload = req.payload
       jreq = json.loads(payload)
       projectId = jreq["projectId"] 
-      if projectId == None : 
-        return res.json({
-        "errMessage": "projectId not set",
-        "code": 101,
-        })
       databaseId = jreq["databaseId"] 
-      if databaseId == None : 
-        return res.json({
-        "errMessage": "databaseId not set",
-        "code": 102,
-        })
       apiKey = jreq["apiKey"] 
-      if apiKey == None : 
-        return res.json({
-        "errMessage": "apiKey not set",
-        "code": 103,
-        })
       endPoint = jreq["endPoint"] 
-      if endPoint == None : 
-        return res.json({
-        "errMessage": "endPoint not set",
-        "code": 103,
-        })
-    
     except Exception as e:
+      try :
+        projectId = req.env.get("projectId") 
+        databaseId = req.env.get("databaseId") 
+        apiKey = req.env.get("apiKey")
+        endPoint = req.env.get("endPoint")
+      except Exception as e:
         return res.json({
           "Exception type" : type(e),
           "Exception" : e,
           "errMessage": "json parsing error",
           "code": 100,
         })
+      else :
+        print('env case') 
     else :
-      print('req is normal') 
+      print('paramter case')
+
+    
+    if projectId is None : 
+        return res.json({
+        "errMessage": "projectId not set",
+        "code": 101,
+        })
+    if databaseId is None : 
+      return res.json({
+      "errMessage": "databaseId not set",
+      "code": 102,
+      })
+    if apiKey is None : 
+      return res.json({
+      "errMessage": "apiKey not set",
+      "code": 103,
+      })
+    if endPoint is None : 
+      return res.json({
+      "errMessage": "endPoint not set",
+      "code": 103,
+      })
 
   yesterday = time() - 60*60*24
   tm = localtime(yesterday)
