@@ -72,7 +72,10 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
                   ),
                 ),
               ),
-              NameTextField(controller: _nameTextEditingController),
+              NameTextField(
+                controller: _nameTextEditingController,
+                hintText: "Name",
+              ),
               EmailTextField(controller: _emailTextEditingController),
               PasswordTextField(controller: _passwordTextEditingController),
               Padding(

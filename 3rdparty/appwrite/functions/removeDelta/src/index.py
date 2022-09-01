@@ -92,26 +92,28 @@ def main(req, res):
       print('paramter case')
 
     
-    if projectId is None : 
+      if projectId is None : 
+          return res.json({
+          "errMessage": "projectId not set",
+          "code": 101,
+          })
+      if databaseId is None : 
         return res.json({
-        "errMessage": "projectId not set",
-        "code": 101,
+        "errMessage": "databaseId not set",
+        "code": 102,
         })
-    if databaseId is None : 
-      return res.json({
-      "errMessage": "databaseId not set",
-      "code": 102,
-      })
-    if apiKey is None : 
-      return res.json({
-      "errMessage": "apiKey not set",
-      "code": 103,
-      })
-    if endPoint is None : 
-      return res.json({
-      "errMessage": "endPoint not set",
-      "code": 103,
-      })
+      if apiKey is None : 
+        return res.json({
+        "errMessage": "apiKey not set",
+        "code": 103,
+        })
+      if endPoint is None : 
+        return res.json({
+        "errMessage": "endPoint not set",
+        "code": 103,
+        })
+
+    
 
   yesterday = time() - 60*60*24
   tm = localtime(yesterday)
@@ -182,8 +184,8 @@ def main(req, res):
     
   if isTest == False :
     return res.json({
-      "founded" : founded,
-      "deleted" : deleted,
+      "founded..." : founded,
+      "deleted..." : deleted,
     })
   print(f'{deleted} document before {yesterdayStr} deleted')
   return deleted    

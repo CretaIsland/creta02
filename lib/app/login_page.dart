@@ -74,7 +74,7 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text('Welcome to Creta ! 👋🏻',
+                  child: Text('Welcome to HyCop ! 👋🏻',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),

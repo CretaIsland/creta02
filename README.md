@@ -393,7 +393,7 @@ cd %CRETA_HOME%/3rdpary/appwrite
 # 현재는 example 을 만들어 놨다.
 # where 조건절을 쓸경우, 인덱스를 만들어줘야 한다는 것일 잊지 말자.
 # 다음과 같이 copy 해서 사용할 수 있다.
-copy index_removeDelta_example.py  functions/removeDelta/src/index.py
+copy index_removeDelta_example.py  functions/myTest/src/index.py
 
 #### 5.python 으로 테스트
 # 잘되는지 python 으로 테스트 해주자.

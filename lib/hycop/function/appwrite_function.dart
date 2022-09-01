@@ -17,7 +17,7 @@ class AppwriteFunction extends AbsFunction {
   }
 
   @override
-  Future<String> execute({required String functionId, String? params, bool isAsync = true}) async {
+  Future<String> execute({required String functionId, String? params, bool isAsync = false}) async {
     String connectionStr = '"projectId":"${myConfig!.serverConfig!.dbConnInfo.projectId}",';
     connectionStr += '"databaseId":"${myConfig!.serverConfig!.dbConnInfo.appId}",';
     connectionStr += '"endPoint":"${myConfig!.serverConfig!.dbConnInfo.databaseURL}",';

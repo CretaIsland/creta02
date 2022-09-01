@@ -105,6 +105,7 @@ flutter:
       - assets/
       - assets/creta_config.json
       - assets/icons/
+      - assets/hycop_intro.jpg
       - assets/logo_en.png
       - assets/logo.png
       - assets/publish.png

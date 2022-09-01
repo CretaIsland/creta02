@@ -3,6 +3,7 @@
 import '../database_realtime_example_page.dart';
 import '../function_example_page.dart';
 import 'package:routemaster/routemaster.dart';
+import '../intro_page.dart';
 import '../login_page.dart';
 import '../register_page.dart';
 import '../main_page.dart';
@@ -14,11 +15,12 @@ abstract class AppRoutes {
   static const String functionExample = '/functionExample';
   static const String studio = '/studio';
   static const String login = '/login';
+  static const String intro = '/intro';
   static const String register = '/register';
 }
 
 final routesLoggedOut = RouteMap(
-  onUnknownRoute: (_) => const Redirect(AppRoutes.login),
+  onUnknownRoute: (_) => const Redirect(AppRoutes.intro),
   routes: {
     AppRoutes.login: (_) => const TransitionPage(
           child: LoginPage(),
@@ -31,6 +33,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.main: (_) => const TransitionPage(child: MainPage()),
     AppRoutes.databaseExample: (_) => const TransitionPage(child: DatabaseRealtimeExamplePage()),
     AppRoutes.functionExample: (_) => const TransitionPage(child: FunctionExamplePage()),
+    AppRoutes.intro: (_) => const TransitionPage(child: IntroPage()),
   },
 );
 

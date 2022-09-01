@@ -51,18 +51,25 @@ class EmailTextField extends StatelessWidget {
 }
 
 class NameTextField extends StatelessWidget {
+  final double fontSize;
+  final Color color;
   const NameTextField({
     Key? key,
     required this.controller,
+    required this.hintText,
+    this.fontSize = 24,
+    this.color = Colors.black,
   }) : super(key: key);
 
   final TextEditingController controller;
+  final String hintText;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: TextStyle(color: color, fontSize: fontSize),
       controller: controller,
-      decoration: const InputDecoration(hintText: 'Name'),
+      decoration: InputDecoration(hintText: hintText),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Cannot be empty';
