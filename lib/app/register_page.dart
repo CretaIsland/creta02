@@ -72,7 +72,7 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
                   ),
                 ),
               ),
-              NameTextField(
+              OnlyTextField(
                 controller: _nameTextEditingController,
                 hintText: "Name",
               ),

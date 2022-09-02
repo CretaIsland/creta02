@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:creta02/common/widgets/glass_box.dart';
+import 'package:creta02/common/widgets/widget_snippets.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -22,6 +23,7 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   ServerType _serverType = ServerType.firebase;
   final TextEditingController _enterpriseTextEditingController = TextEditingController();
+  final TextEditingController _projectIdController = TextEditingController();
   bool _isFlip = false;
 
   @override
@@ -133,7 +135,7 @@ class _IntroPageState extends State<IntroPage> {
           ),
           SizedBox(
             width: 400,
-            child: NameTextField(
+            child: OnlyTextField(
               controller: _enterpriseTextEditingController,
               hintText: "Demo",
             ),
@@ -162,12 +164,26 @@ class _IntroPageState extends State<IntroPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          _serverType == ServerType.appwrite
+              ? WidgetSnippets.appwriteLogo()
+              : WidgetSnippets.firebaseLogo(),
           const Text(
-            'Second Page',
+            'Connection Infomation',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 30,
+            ),
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: NameTextField(
+              controller: _projectIdController,
+              name: 'projectId',
+              inputSize: 300,
             ),
           ),
           const SizedBox(

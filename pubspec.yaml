@@ -112,7 +112,10 @@ flutter:
       - assets/grid.png      
       - assets/creta_default.png   
       - assets/no_image.png   
-      - assets/youtube.png   
+      - assets/firebase_logo.png   
+      - assets/appwrite_logo.png   
+      - assets/built_with_appwrite.png   
+      - assets/built_with_firebase.png   
   fonts:
     - family: NanumMyeongjo
       fonts:
