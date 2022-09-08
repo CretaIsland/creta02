@@ -6,10 +6,13 @@ import 'package:uuid/uuid.dart';
 
 import '../common/util/logger.dart';
 import '../hycop/hycop_factory.dart';
+import 'drawer_menu_widget.dart';
 import 'navigation/routes.dart';
 
 class FunctionExamplePage extends StatefulWidget {
-  const FunctionExamplePage({Key? key}) : super(key: key);
+  final VoidCallback openDrawer;
+
+  const FunctionExamplePage({Key? key, required this.openDrawer}) : super(key: key);
 
   @override
   State<FunctionExamplePage> createState() => _FunctionExamplePageState();
@@ -37,73 +40,80 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
     String id = const Uuid().v4();
 
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.orange,
+          title: const Text('Serverless function example'),
+          leading: DrawerMenuWidget(
+            onClicked: widget.openDrawer,
+          ),
+        ),
         body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('database and realTime example'),
-          const SizedBox(
-            height: 20,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('database and realTime example'),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    //Navigator.of(context).pop();
+                    Routemaster.of(context).push(AppRoutes.login);
+                  },
+                  child: const Text('logout')),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    _setDBTestResult = '';
+                    try {
+                      _setDBTestResult = await HycopFactory.myFunction!.execute(
+                          functionId: "setDBTest", params: '{"text":"helloworld","id":"$id"}');
+                    } catch (e) {
+                      _setDBTestResult = 'setDBTest test failed $e';
+                      logger.severe(_setDBTestResult);
+                    }
+                    setState(() {});
+                  },
+                  child: const Text('setDBTest')),
+              Text(_setDBTestResult),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    _getDBTestResult = '';
+                    try {
+                      _getDBTestResult = await HycopFactory.myFunction!
+                          .execute(functionId: "getDBTest", params: '{"text":"helloworld"}');
+                    } catch (e) {
+                      _getDBTestResult = 'getDBTest test failed $e';
+                      logger.severe(_getDBTestResult);
+                    }
+                    setState(() {});
+                  },
+                  child: const Text('getDBTest')),
+              Text(_getDBTestResult),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    _removeDeltaResult = '';
+                    try {
+                      _removeDeltaResult =
+                          await HycopFactory.myFunction!.execute(functionId: "removeDelta");
+                    } catch (e) {
+                      _removeDeltaResult = 'removeDelta test failed $e';
+                      logger.severe(_removeDeltaResult);
+                    }
+                    setState(() {});
+                  },
+                  child: const Text('removeDelta Test')),
+              Text(_removeDeltaResult),
+            ],
           ),
-          ElevatedButton(
-              onPressed: () async {
-                //Navigator.of(context).pop();
-                Routemaster.of(context).push(AppRoutes.login);
-              },
-              child: const Text('logout')),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                _setDBTestResult = '';
-                try {
-                  _setDBTestResult = await HycopFactory.myFunction!
-                      .execute(functionId: "setDBTest", params: '{"text":"helloworld","id":"$id"}');
-                } catch (e) {
-                  _setDBTestResult = 'setDBTest test failed $e';
-                  logger.severe(_setDBTestResult);
-                }
-                setState(() {});
-              },
-              child: const Text('setDBTest')),
-          Text(_setDBTestResult),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                _getDBTestResult = '';
-                try {
-                  _getDBTestResult = await HycopFactory.myFunction!
-                      .execute(functionId: "getDBTest", params: '{"text":"helloworld"}');
-                } catch (e) {
-                  _getDBTestResult = 'getDBTest test failed $e';
-                  logger.severe(_getDBTestResult);
-                }
-                setState(() {});
-              },
-              child: const Text('getDBTest')),
-          Text(_getDBTestResult),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                _removeDeltaResult = '';
-                try {
-                  _removeDeltaResult =
-                      await HycopFactory.myFunction!.execute(functionId: "removeDelta");
-                } catch (e) {
-                  _removeDeltaResult = 'removeDelta test failed $e';
-                  logger.severe(_removeDeltaResult);
-                }
-                setState(() {});
-              },
-              child: const Text('removeDelta Test')),
-          Text(_removeDeltaResult),
-        ],
-      ),
-    ));
+        ));
   }
 }

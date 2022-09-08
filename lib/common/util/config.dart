@@ -31,7 +31,7 @@ abstract class AbsServerConfig {
   final String enterprise;
 
   DBConnInfo dbConnInfo = DBConnInfo();
-  DBConnInfo rtConnInfo = DBConnInfo();
+  //DBConnInfo rtConnInfo = DBConnInfo();
 
   // String apiKey = "";
   // String authDomain = "";
@@ -48,41 +48,56 @@ class FirebaseConfig extends AbsServerConfig {
   FirebaseConfig({String enterprise = 'creta'}) : super(enterprise) {
     if (enterprise == 'creta') {
       // database info
-      dbConnInfo.apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
-      dbConnInfo.authDomain = "creta01-ef955.firebaseapp.com";
-      dbConnInfo.databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
-      dbConnInfo.projectId = "creta01-ef955";
-      dbConnInfo.storageBucket = "creta01-ef955.appspot.com";
-      dbConnInfo.messagingSenderId = "878607742856";
-      dbConnInfo.appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
+      // dbConnInfo.apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
+      // dbConnInfo.authDomain = "creta01-ef955.firebaseapp.com";
+      // dbConnInfo.databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
+      // dbConnInfo.projectId = "creta01-ef955";
+      // dbConnInfo.storageBucket = "creta01-ef955.appspot.com";
+      // dbConnInfo.messagingSenderId = "878607742856";
+      // dbConnInfo.appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
 
-      // realTime info
-      rtConnInfo.apiKey = "AIzaSyCq3Ap2QXjMfPptFyHLHNCyVTeQl9G2PoY";
-      rtConnInfo.authDomain = "creta02-1a520.firebaseapp.com";
-      rtConnInfo.databaseURL = "https://creta02-1a520-default-rtdb.firebaseio.com";
-      rtConnInfo.projectId = "creta02-1a520";
-      rtConnInfo.storageBucket = "creta02-1a520.appspot.com";
-      rtConnInfo.messagingSenderId = "352118964959";
-      rtConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
+      // // realTime info
+      // rtConnInfo.apiKey = "AIzaSyCq3Ap2QXjMfPptFyHLHNCyVTeQl9G2PoY";
+      // rtConnInfo.authDomain = "creta02-1a520.firebaseapp.com";
+      // rtConnInfo.databaseURL = "https://creta02-1a520-default-rtdb.firebaseio.com";
+      // rtConnInfo.projectId = "creta02-1a520";
+      // rtConnInfo.storageBucket = "creta02-1a520.appspot.com";
+      // rtConnInfo.messagingSenderId = "352118964959";
+      // rtConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
+      dbConnInfo.apiKey = "AIzaSyCq3Ap2QXjMfPptFyHLHNCyVTeQl9G2PoY";
+      dbConnInfo.authDomain = "creta02-1a520.firebaseapp.com";
+      dbConnInfo.databaseURL = "https://creta02-1a520-default-rtdb.firebaseio.com";
+      dbConnInfo.projectId = "creta02-1a520";
+      dbConnInfo.storageBucket = "creta02-1a520.appspot.com";
+      dbConnInfo.messagingSenderId = "352118964959";
+      dbConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
     }
     if (enterprise == 'Demo') {
       // database info
-      dbConnInfo.apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
-      dbConnInfo.authDomain = "creta01-ef955.firebaseapp.com";
-      dbConnInfo.databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
-      dbConnInfo.projectId = "creta01-ef955";
-      dbConnInfo.storageBucket = "creta01-ef955.appspot.com";
-      dbConnInfo.messagingSenderId = "878607742856";
-      dbConnInfo.appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
+      // dbConnInfo.apiKey = "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg";
+      // dbConnInfo.authDomain = "creta01-ef955.firebaseapp.com";
+      // dbConnInfo.databaseURL = ''; // 일반 Database 에는 이상하게 이 값이 없다.
+      // dbConnInfo.projectId = "creta01-ef955";
+      // dbConnInfo.storageBucket = "creta01-ef955.appspot.com";
+      // dbConnInfo.messagingSenderId = "878607742856";
+      // dbConnInfo.appId = "1:878607742856:web:87e91c3185d1a79980ec3d";
 
       // realTime info
-      rtConnInfo.apiKey = "AIzaSyCq3Ap2QXjMfPptFyHLHNCyVTeQl9G2PoY";
-      rtConnInfo.authDomain = "creta02-1a520.firebaseapp.com";
-      rtConnInfo.databaseURL = "https://creta02-1a520-default-rtdb.firebaseio.com";
-      rtConnInfo.projectId = "creta02-1a520";
-      rtConnInfo.storageBucket = "creta02-1a520.appspot.com";
-      rtConnInfo.messagingSenderId = "352118964959";
-      rtConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
+      // rtConnInfo.apiKey = "AIzaSyCq3Ap2QXjMfPptFyHLHNCyVTeQl9G2PoY";
+      // rtConnInfo.authDomain = "creta02-1a520.firebaseapp.com";
+      // rtConnInfo.databaseURL = "https://creta02-1a520-default-rtdb.firebaseio.com";
+      // rtConnInfo.projectId = "creta02-1a520";
+      // rtConnInfo.storageBucket = "creta02-1a520.appspot.com";
+      // rtConnInfo.messagingSenderId = "352118964959";
+      // rtConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
+
+      dbConnInfo.apiKey = "AIzaSyCq3Ap2QXjMfPptFyHLHNCyVTeQl9G2PoY";
+      dbConnInfo.authDomain = "creta02-1a520.firebaseapp.com";
+      dbConnInfo.databaseURL = "https://creta02-1a520-default-rtdb.firebaseio.com";
+      dbConnInfo.projectId = "creta02-1a520";
+      dbConnInfo.storageBucket = "creta02-1a520.appspot.com";
+      dbConnInfo.messagingSenderId = "352118964959";
+      dbConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
     }
   }
 }
@@ -130,15 +145,15 @@ class AssetConfig {
   }
 }
 
-CretaConfig? myConfig;
+HycopConfig? myConfig;
 
-class CretaConfig {
+class HycopConfig {
   final String enterprise;
   final ServerType serverType;
   late AssetConfig config;
   AbsServerConfig? serverConfig;
 
-  CretaConfig({required this.enterprise, required this.serverType}) {
+  HycopConfig({required this.enterprise, required this.serverType}) {
     config = AssetConfig(enterprise: enterprise);
     if (serverType == ServerType.firebase) {
       serverConfig = FirebaseConfig(enterprise: enterprise);

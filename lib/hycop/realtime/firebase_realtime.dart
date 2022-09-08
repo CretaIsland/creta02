@@ -19,12 +19,12 @@ class FirebaseRealtime extends AbsRealtime {
     AbsRealtime.setFirebaseApp(await Firebase.initializeApp(
         name: "realTime",
         options: FirebaseOptions(
-            databaseURL: myConfig!.serverConfig!.rtConnInfo.databaseURL,
-            apiKey: myConfig!.serverConfig!.rtConnInfo.apiKey,
-            appId: myConfig!.serverConfig!.rtConnInfo.appId,
-            storageBucket: myConfig!.serverConfig!.rtConnInfo.storageBucket,
-            messagingSenderId: myConfig!.serverConfig!.rtConnInfo.messagingSenderId,
-            projectId: myConfig!.serverConfig!.rtConnInfo.projectId)));
+            databaseURL: myConfig!.serverConfig!.dbConnInfo.databaseURL,
+            apiKey: myConfig!.serverConfig!.dbConnInfo.apiKey,
+            appId: myConfig!.serverConfig!.dbConnInfo.appId,
+            storageBucket: myConfig!.serverConfig!.dbConnInfo.storageBucket,
+            messagingSenderId: myConfig!.serverConfig!.dbConnInfo.messagingSenderId,
+            projectId: myConfig!.serverConfig!.dbConnInfo.projectId)));
     logger.finest('realTime initialized');
     _db = FirebaseDatabase.instanceFor(app: AbsRealtime.fbRTApp!).ref();
 
@@ -33,11 +33,11 @@ class FirebaseRealtime extends AbsRealtime {
 
   @override
   void start() {
-    if (_listenTimer == null) return;
+    if (_listenTimer != null) return;
     _listenTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       if (isListenComplete) {
         isListenComplete = false;
-        logger.finest('listener restart');
+        logger.finest('listener restart $lastUpdateTime');
         _deltaStream?.cancel();
         _deltaStream = _db
             .child('creta_delta')
@@ -50,6 +50,7 @@ class FirebaseRealtime extends AbsRealtime {
   }
 
   void _listenCallback(DatabaseEvent event, String hint) {
+    logger.finest('_listenCallback invoked');
     if (event.snapshot.value == null) {
       return;
     }

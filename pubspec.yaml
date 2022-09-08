@@ -59,6 +59,7 @@ dev_dependencies:
   appwrite: ^6.0.0
   routemaster: ^1.0.1
   provider: ^6.0.1
+  font_awesome_flutter: ^10.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -116,6 +117,7 @@ flutter:
       - assets/appwrite_logo.png   
       - assets/built_with_appwrite.png   
       - assets/built_with_firebase.png   
+      - assets/jisoo.png   
   fonts:
     - family: NanumMyeongjo
       fonts:

@@ -155,6 +155,32 @@ const firebaseConfig = {
 
 [콘솔로 이동]
 
+프로젝트가 없다면 [프로젝트 추가]
+프로젝트 이름 입력
+애널리틱스 사용안함
+[프로젝트 만들기]-계속
+App에 Firebase 추가하여 시작하기
+앱등록후,  config 정보 복사해둘것
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCjdF1PEHKCvrEpaRzOqSZHSyunQOB4p9A",
+  authDomain: "hycop-center.firebaseapp.com",
+  projectId: "hycop-center",
+  storageBucket: "hycop-center.appspot.com",
+  messagingSenderId: "609138722632",
+  appId: "1:609138722632:web:400f2176f150bc186fd57d"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+
 좌측 메뉴 증에 [Firestore Database] 선택
 [데이터베이스 만들기]
 

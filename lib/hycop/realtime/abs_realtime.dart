@@ -16,7 +16,7 @@ abstract class AbsRealtime {
   @protected
   static void setFirebaseApp(FirebaseApp fb) => _fbRTApp = fb;
 
-  String lastUpdateTime = DateTime.now().toString(); // used only firebase
+  String lastUpdateTime = DBUtils.dateTimeToDB(DateTime.now()); // used only firebase
 
   void initialize();
   void start();

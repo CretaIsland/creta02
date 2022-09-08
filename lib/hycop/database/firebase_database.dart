@@ -88,7 +88,7 @@ class FirebaseDatabase extends AbsDatabase {
       int? offset,
       List<Object?>? startAfter}) async {
     CollectionReference collectionRef = _db.collection(collectionId);
-    Query<Object?> query = collectionRef.orderBy(orderBy, descending: true);
+    Query<Object?> query = collectionRef.orderBy(orderBy, descending: descending);
     where.map((mid, value) {
       query = query.where(mid, isEqualTo: value);
       return MapEntry(mid, value);

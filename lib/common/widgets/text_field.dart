@@ -55,6 +55,7 @@ class OnlyTextField extends StatelessWidget {
   final Color color;
   final TextEditingController controller;
   final String hintText;
+  final bool readOnly;
 
   const OnlyTextField({
     Key? key,
@@ -62,11 +63,13 @@ class OnlyTextField extends StatelessWidget {
     required this.hintText,
     this.fontSize = 24,
     this.color = Colors.black,
+    this.readOnly = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly,
       style: TextStyle(color: color, fontSize: fontSize),
       controller: controller,
       decoration: InputDecoration(hintText: hintText),
@@ -87,6 +90,7 @@ class NameTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final double inputSize;
+  final bool readOnly;
 
   const NameTextField({
     Key? key,
@@ -96,23 +100,26 @@ class NameTextField extends StatelessWidget {
     this.inputSize = 400,
     this.fontSize = 24,
     this.color = Colors.black,
+    this.readOnly = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           name,
           style: TextStyle(color: color, fontSize: fontSize),
         ),
-        const SizedBox(
-          width: 20,
-        ),
+        // const SizedBox(
+        //   width: 20,
+        // ),
         SizedBox(
           width: inputSize,
           child: TextFormField(
+            readOnly: readOnly,
             style: TextStyle(color: color, fontSize: fontSize),
             controller: controller,
             decoration: InputDecoration(hintText: hintText),

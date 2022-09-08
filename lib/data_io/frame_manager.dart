@@ -1,23 +1,23 @@
 import 'package:creta02/hycop/absModel/abs_model.dart';
 import '../common/util/logger.dart';
 import '../hycop/absModel/abs_manager.dart';
-import '../model/book_model.dart';
+import '../model/frame_model.dart';
 
-BookManager? bookManagerHolder;
+FrameManager? frameManagerHolder;
 
-class BookManager extends AbsManager {
-  BookManager() : super('creta_book');
+class FrameManager extends AbsManager {
+  FrameManager() : super('creta_frame');
   @override
-  AbsModel newModel() => BookModel();
+  AbsModel newModel() => FrameModel();
 
   @override
   void realTimeCallback(String directive, String userId, Map<String, dynamic> dataMap) {
     logger.finest('realTimeCallback invoker($directive, $userId)');
     if (directive == 'create') {
-      BookModel book = BookModel();
-      book.fromMap(dataMap);
-      modelList.insert(0, book);
-      logger.finest('${book.mid} realtime added');
+      FrameModel frame = FrameModel();
+      frame.fromMap(dataMap);
+      modelList.insert(0, frame);
+      logger.finest('${frame.mid} realtime added');
       notifyListeners();
     } else if (directive == 'set') {
       String mid = dataMap["mid"] ?? '';

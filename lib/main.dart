@@ -11,7 +11,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
   DeviceInfo.init();
-  // myConfig = CretaConfig(enterprise: 'skpark', serverType: ServerType.firebase);
+  // myConfig = HycopConfig(enterprise: 'skpark', serverType: ServerType.firebase);
   // HycopFactory.selectDatabase();
   // HycopFactory.selectRealTime();
   // HycopFactory.selectFunction();

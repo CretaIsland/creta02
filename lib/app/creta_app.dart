@@ -18,6 +18,12 @@ class _CretaAppState extends ConsumerState<CretaApp> {
   Widget build(BuildContext context) {
     myConfig?.config.loadAsset(context);
     return MaterialApp.router(
+      title: 'Welcome to hycop world',
+      debugShowCheckedModeBanner: false,
+      // theme: ThemeData.light().copyWith(
+      //   scaffoldBackgroundColor: Colors.black,
+      //   primaryColor: const Color.fromRGBO(21, 30, 61, 1),
+      // ),
       routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
         return routesLoggedOut;
       }),

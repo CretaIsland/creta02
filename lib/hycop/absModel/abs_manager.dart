@@ -64,6 +64,31 @@ abstract class AbsManager extends ChangeNotifier {
     }
   }
 
+  Future<List<AbsModel>> getAllListFromDB() async {
+    modelList.clear();
+    try {
+      Map<String, dynamic> query = {};
+      query['isRemoved'] = false;
+      List resultList = await HycopFactory.myDataBase!.queryData(
+        collectionId,
+        where: query,
+        orderBy: 'updateTime',
+        //limit: 2,
+        //offset: 1, // appwrite only
+        //startAfter: [DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
+      );
+      return resultList.map((ele) {
+        AbsModel model = newModel();
+        model.fromMap(ele);
+        modelList.add(model);
+        return model;
+      }).toList();
+    } catch (e) {
+      logger.severe('databaseError', e);
+      throw CretaException(message: 'databaseError', exception: e as Exception);
+    }
+  }
+
   Future<void> createToDB(AbsModel model) async {
     try {
       //await HycopFactory.myDataBase!.createData(collectionId, model.mid, model.toMap());

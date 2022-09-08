@@ -4,7 +4,7 @@ enum ModelType {
   none,
   book,
   page,
-  acc,
+  frame,
   contents,
   end;
 

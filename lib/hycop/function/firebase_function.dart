@@ -16,11 +16,11 @@ class FirebaseFunction extends AbsFunction {
     FirebaseApp app = await Firebase.initializeApp(
         name: "functions",
         options: FirebaseOptions(
-            apiKey: myConfig!.serverConfig!.rtConnInfo.apiKey,
-            appId: myConfig!.serverConfig!.rtConnInfo.appId,
-            storageBucket: myConfig!.serverConfig!.rtConnInfo.storageBucket,
-            messagingSenderId: myConfig!.serverConfig!.rtConnInfo.messagingSenderId,
-            projectId: myConfig!.serverConfig!.rtConnInfo.projectId));
+            apiKey: myConfig!.serverConfig!.dbConnInfo.apiKey,
+            appId: myConfig!.serverConfig!.dbConnInfo.appId,
+            storageBucket: myConfig!.serverConfig!.dbConnInfo.storageBucket,
+            messagingSenderId: myConfig!.serverConfig!.dbConnInfo.messagingSenderId,
+            projectId: myConfig!.serverConfig!.dbConnInfo.projectId));
 
     functions = FirebaseFunctions.instanceFor(app: app);
   }

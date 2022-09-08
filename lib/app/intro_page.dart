@@ -7,6 +7,7 @@ import 'package:routemaster/routemaster.dart';
 
 import '../common/util/config.dart';
 import '../common/util/logger.dart';
+import '../common/util/util.dart';
 import '../common/widgets/card_flip.dart';
 import '../common/widgets/glowing_button.dart';
 import '../common/widgets/text_field.dart';
@@ -22,22 +23,55 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   ServerType _serverType = ServerType.firebase;
-  final TextEditingController _enterpriseTextEditingController = TextEditingController();
-  final TextEditingController _projectIdController = TextEditingController();
+  String _enterpriseId = '';
+  final TextEditingController _enterpriseCtrl = TextEditingController();
+  final TextEditingController _apiKeyCtrl = TextEditingController();
+  final TextEditingController _authDomainCtrl = TextEditingController();
+  final TextEditingController _databaseURLCtrl = TextEditingController();
+  final TextEditingController _projectIdCtrl = TextEditingController();
+  final TextEditingController _storageBucketCtrl = TextEditingController();
+  final TextEditingController _messagingSenderIdCtrl = TextEditingController();
+  final TextEditingController _appIdCtrl = TextEditingController();
+
+  final Map<String, TextEditingController> _ctrlMap = {};
+  final List<String> propNameList = [
+    'apiKey',
+    'authDomain',
+    'databaseURL',
+    'projectId',
+    'storageBucket',
+    'messagingSenderId',
+    'appId',
+  ];
+  final Map<String, String> propValueMap = {};
+
   bool _isFlip = false;
 
   @override
   void dispose() {
-    _enterpriseTextEditingController.dispose();
+    _enterpriseCtrl.dispose();
+    _apiKeyCtrl.dispose();
+    _authDomainCtrl.dispose();
+    _databaseURLCtrl.dispose();
+    _projectIdCtrl.dispose();
+    _storageBucketCtrl.dispose();
+    _messagingSenderIdCtrl.dispose();
+    _appIdCtrl.dispose();
+
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    if (myConfig != null) {
-      _serverType = myConfig!.serverType;
-    }
+
+    _ctrlMap[propNameList[0]] = _apiKeyCtrl;
+    _ctrlMap[propNameList[1]] = _authDomainCtrl;
+    _ctrlMap[propNameList[2]] = _databaseURLCtrl;
+    _ctrlMap[propNameList[3]] = _projectIdCtrl;
+    _ctrlMap[propNameList[4]] = _storageBucketCtrl;
+    _ctrlMap[propNameList[5]] = _messagingSenderIdCtrl;
+    _ctrlMap[propNameList[6]] = _appIdCtrl;
   }
 
   @override
@@ -123,7 +157,7 @@ class _IntroPageState extends State<IntroPage> {
             height: 40,
           ),
           const Text(
-            'Input your Enterprise ID',
+            'Enterprise ID',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -136,8 +170,9 @@ class _IntroPageState extends State<IntroPage> {
           SizedBox(
             width: 400,
             child: OnlyTextField(
-              controller: _enterpriseTextEditingController,
+              controller: _enterpriseCtrl,
               hintText: "Demo",
+              readOnly: true,
             ),
           ),
           const SizedBox(
@@ -145,6 +180,7 @@ class _IntroPageState extends State<IntroPage> {
           ),
           GlowingButton(
             onPressed: () {
+              _initConnection();
               setState(() {
                 _isFlip = !_isFlip;
               });
@@ -167,27 +203,33 @@ class _IntroPageState extends State<IntroPage> {
           _serverType == ServerType.appwrite
               ? WidgetSnippets.appwriteLogo()
               : WidgetSnippets.firebaseLogo(),
-          const Text(
-            'Connection Infomation',
-            style: TextStyle(
+          Text(
+            _enterpriseId,
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 30,
             ),
           ),
-          const SizedBox(
-            height: 40,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: NameTextField(
-              controller: _projectIdController,
-              name: 'projectId',
-              inputSize: 300,
+          const Text(
+            'Connection Infomation',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
             ),
           ),
           const SizedBox(
-            height: 200,
+            height: 20,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ..._props(),
+            ],
+          ),
+          const SizedBox(
+            height: 40,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -207,7 +249,7 @@ class _IntroPageState extends State<IntroPage> {
               const SizedBox(width: 20),
               GlowingButton(
                 onPressed: () {
-                  _gettingStarted();
+                  Routemaster.of(context).push(AppRoutes.login);
                 },
                 text: 'Next',
               ),
@@ -218,18 +260,49 @@ class _IntroPageState extends State<IntroPage> {
     );
   }
 
-  Future<void> _gettingStarted() async {
-    logger.finest('_gettingStarted');
+  Future<void> _initConnection() async {
+    logger.finest('_initConnection');
 
-    String enterprise = _enterpriseTextEditingController.text;
+    String enterprise = _enterpriseCtrl.text;
     if (enterprise.isEmpty) {
       enterprise = 'Demo';
     }
-    myConfig = CretaConfig(enterprise: enterprise, serverType: _serverType);
+    myConfig = HycopConfig(enterprise: enterprise, serverType: _serverType);
     HycopFactory.selectDatabase();
     HycopFactory.selectRealTime();
     HycopFactory.selectFunction();
 
-    Routemaster.of(context).push(AppRoutes.login);
+    _serverType = myConfig!.serverType;
+    _enterpriseId = myConfig!.enterprise;
+    late DBConnInfo conn;
+    //if (_serverType == ServerType.appwrite) {
+    conn = myConfig!.serverConfig!.dbConnInfo;
+    //} else {
+    //  conn = myConfig!.serverConfig!.rtConnInfo;
+    //}
+
+    propValueMap[propNameList[0]] = Utils.hideString(conn.apiKey, max: 24);
+    propValueMap[propNameList[1]] = Utils.hideString(conn.authDomain, max: 24);
+    propValueMap[propNameList[2]] = Utils.hideString(conn.databaseURL, max: 24);
+    propValueMap[propNameList[3]] = Utils.hideString(conn.projectId, max: 24);
+    propValueMap[propNameList[4]] = Utils.hideString(conn.storageBucket, max: 24);
+    propValueMap[propNameList[5]] = Utils.hideString(conn.messagingSenderId, max: 24);
+    propValueMap[propNameList[6]] = Utils.hideString(conn.appId, max: 24);
+  }
+
+  List _props() {
+    return propNameList.map((name) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 40, right: 40),
+        child: NameTextField(
+          readOnly: true,
+          hintText: propValueMap[name] ?? 'NULL',
+          controller: _ctrlMap[name]!,
+          fontSize: 20,
+          name: name,
+          inputSize: 300,
+        ),
+      );
+    }).toList();
   }
 }

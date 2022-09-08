@@ -7,11 +7,13 @@ class GlassBox extends StatelessWidget {
   final double width;
   final double radius;
   final Widget child;
+  final Color color;
   const GlassBox({
     Key? key,
     required this.width,
     required this.height,
     required this.child,
+    this.color = Colors.white,
     this.radius = 12,
   }) : super(key: key);
 
@@ -22,14 +24,14 @@ class GlassBox extends StatelessWidget {
       child: Container(
           width: width,
           height: height,
-          //color: Colors.white.withOpacity(0.2),
+          //color: color.withOpacity(0.2),
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.white.withOpacity(0.2)),
+              border: Border.all(color: color.withOpacity(0.2)),
               borderRadius: BorderRadius.circular(radius),
               gradient:
                   LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [
-                Colors.white.withOpacity(0.4),
-                Colors.white.withOpacity(0.1),
+                color.withOpacity(0.4),
+                color.withOpacity(0.1),
               ])),
           child: BackdropFilter(
             filter: ImageFilter.blur(
