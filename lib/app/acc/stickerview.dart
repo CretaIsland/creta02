@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
+import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
 enum ImageQuality { low, medium, high }
@@ -14,12 +15,19 @@ enum ImageQuality { low, medium, high }
 /// You can pass any widget to it as Sticker's child
 ///
 class StickerView extends StatefulWidget {
-  final List<Sticker>? stickerList;
+  final List<Sticker> stickerList;
+  final void Function(DragUpdate, String) onUpdate;
+  final void Function(String) onDelete;
   final double? height; // height of the editor view
   final double? width; // width of the editor view
 
   // ignore: use_key_in_widget_constructors
-  const StickerView({this.stickerList, this.height, this.width});
+  const StickerView(
+      {required this.stickerList,
+      required this.onUpdate,
+      required this.onDelete,
+      this.height,
+      this.width});
 
   // Method for saving image of the editor view as Uint8List
   // You have to pass the imageQuality as per your requirement (ImageQuality.low, ImageQuality.medium or ImageQuality.high)
@@ -90,7 +98,9 @@ class StickerViewState extends State<StickerView> {
                   child:
                       //DraggableStickers class in which stickerList is passed
                       DraggableStickers(
-                    stickerList: stickerList,
+                    stickerList: stickerList!,
+                    onUpdate: widget.onUpdate,
+                    onDelete: widget.onDelete,
                   ),
                 ),
               ),
@@ -109,8 +119,20 @@ class Sticker extends StatefulWidget {
   // set isText to true if passed Text widget as child
   bool? isText = false;
   // every sticker must be assigned with unique id
-  String id;
-  Sticker({Key? key, this.child, this.isText, required this.id}) : super(key: key);
+  final String id;
+  late Offset position;
+  late double angle;
+  late Size size;
+
+  Sticker({
+    Key? key,
+    required this.id,
+    required this.position,
+    required this.angle,
+    required this.size,
+    this.isText,
+    this.child,
+  }) : super(key: key);
   @override
   _StickerState createState() => _StickerState();
 }

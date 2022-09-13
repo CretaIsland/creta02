@@ -15,6 +15,19 @@ List<String> sampleImageList = [
   'assets/sample9.jpg',
 ];
 
+List<Color> sampleColorList = [
+  Colors.brown,
+  Colors.orange,
+  Colors.red,
+  Colors.yellow,
+  Colors.green,
+  Colors.blue,
+  Colors.pink,
+  Colors.indigo,
+  Colors.grey,
+  Colors.deepPurple,
+];
+
 List<String> sampleNameList = [
   'Lisa',
   'Jennie',

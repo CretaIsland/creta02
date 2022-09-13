@@ -35,11 +35,8 @@ class AppwriteRealtime extends AbsRealtime {
   void stop() {
     subscription?.close();
     realtimeListener?.cancel();
-  }
-
-  @override
-  void clearListener() {
-    realtimeListener?.cancel();
+    realtimeListener = null;
+    subscription = null;
   }
 
   @override

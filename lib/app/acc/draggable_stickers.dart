@@ -4,10 +4,13 @@ import 'stickerview.dart';
 
 class DraggableStickers extends StatefulWidget {
   //List of stickers (elements)
-  final List<Sticker>? stickerList;
+  final List<Sticker> stickerList;
+  final void Function(DragUpdate, String) onUpdate;
+  final void Function(String) onDelete;
 
   // ignore: use_key_in_widget_constructors
-  const DraggableStickers({this.stickerList});
+  const DraggableStickers(
+      {required this.stickerList, required this.onUpdate, required this.onDelete});
   @override
   State<DraggableStickers> createState() => _DraggableStickersState();
 }
@@ -29,7 +32,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   @override
   Widget build(BuildContext context) {
-    stickers = widget.stickerList ?? [];
+    stickers = widget.stickerList;
     return stickers.isNotEmpty && stickers != []
         ? Stack(
             fit: StackFit.expand,
@@ -41,15 +44,28 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 ),
               ),
               for (final sticker in stickers)
-
                 // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
                 DraggableResizable(
-                  key: Key('stickerPage_${sticker.id}_draggableResizable_asset'),
+                  key: UniqueKey(),
+                  mid: sticker.id,
+                  angle: sticker.angle,
+                  position: sticker.position,
+                  // Size of the sticker
+                  size: sticker.isText == true
+                      ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
+                      //: Size(64 * _initialStickerScale, 64 * _initialStickerScale),
+                      : sticker.size,
+
                   canTransform: selectedAssetId == sticker.id ? true : false
 
                   //  true
                   /*sticker.id == state.selectedAssetId*/,
-                  onUpdate: (update) => {},
+                  onUpdate: (update, mid) {
+                    sticker.angle = update.angle;
+                    sticker.size = update.size;
+                    sticker.position = update.position;
+                    widget.onUpdate.call(update, mid);
+                  },
 
                   // To update the layer (manage position of widget in stack)
                   onLayerTapped: () {
@@ -73,14 +89,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   onDelete: () async {
                     {
                       stickers.remove(sticker);
+                      widget.onDelete.call(sticker.id);
                       setState(() {});
                     }
                   },
-
-                  // Size of the sticker
-                  size: sticker.isText == true
-                      ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
-                      : Size(64 * _initialStickerScale, 64 * _initialStickerScale),
 
                   // Constraints of the sticker
                   constraints: sticker.isText == true

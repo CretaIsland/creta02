@@ -9,6 +9,7 @@ import '../data_io/frame_manager.dart';
 import '../hycop/absModel/abs_model.dart';
 import '../hycop/hycop_factory.dart';
 import '../model/frame_model.dart';
+import 'acc/draggable_resizable.dart';
 import 'acc/stickerview.dart';
 import 'constants.dart';
 import 'drawer_menu_widget.dart';
@@ -24,6 +25,7 @@ class RealTimeExamplePage extends StatefulWidget {
 
 class _RealTimeExamplePageState extends State<RealTimeExamplePage> {
   final Random random = Random();
+  static int randomindex = 0;
 
   @override
   void initState() {
@@ -35,8 +37,9 @@ class _RealTimeExamplePageState extends State<RealTimeExamplePage> {
 
   @override
   void dispose() {
+    logger.finest('_RealTimeExamplePageState dispose');
     super.dispose();
-    HycopFactory.myRealtime!.stop();
+    //HycopFactory.myRealtime!.stop();
   }
 
   @override
@@ -80,7 +83,7 @@ class _RealTimeExamplePageState extends State<RealTimeExamplePage> {
               //   return const Center(child: Text('no frame founded'));
               // }
               return Consumer<FrameManager>(builder: (context, frameManager, child) {
-                return Center(child: createView());
+                return Center(child: createView(frameManager));
               });
             }
             return Container();
@@ -96,45 +99,100 @@ class _RealTimeExamplePageState extends State<RealTimeExamplePage> {
         '${sampleNameList[randomNumber % sampleNameList.length]}_$randomNumber');
 
     frame.hashTag.set('#$randomNumber tag...');
+    frame.bgUrl.set(sampleImageList[(++randomindex) % sampleImageList.length]);
+    frame.bgColor.set(sampleColorList[(++randomindex) % sampleColorList.length]);
 
     await frameManagerHolder!.createToDB(frame);
     frameManagerHolder!.modelList.insert(0, frame);
     frameManagerHolder!.notify();
   }
 
-  Widget createView() {
+  void saveItem(DragUpdate update, FrameManager frameManager, String mid) async {
+    for (var item in frameManager.modelList) {
+      if (item.mid != mid) continue;
+      FrameModel model = item as FrameModel;
+      model.angle.set(update.angle);
+      model.posX.set(update.position.dx);
+      model.posY.set(update.position.dy);
+      model.width.set(update.size.width);
+      model.height.set(update.size.height);
+      await frameManager.setToDB(model);
+    }
+  }
+
+  void removeItem(FrameManager frameManager, String mid) async {
+    for (var item in frameManager.modelList) {
+      if (item.mid != mid) continue;
+      frameManager.modelList.remove(item);
+    }
+    await frameManager.removeToDB(mid);
+  }
+
+  List<Sticker> getStickerList() {
+    logger.finest('getStickerList()');
+    return frameManagerHolder!.modelList.map((e) {
+      FrameModel model = e as FrameModel;
+      return Sticker(
+        id: model.mid,
+        position: Offset(model.posX.value, model.posY.value),
+        angle: model.angle.value,
+        size: Size(model.width.value, model.height.value),
+        child: Container(
+          color: model.bgColor.value,
+          width: model.width.value,
+          height: model.height.value,
+          child: Image.asset(model.bgUrl.value.isEmpty
+              ? sampleImageList[(++randomindex) % sampleImageList.length]
+              : model.bgUrl.value),
+        ),
+      );
+    }).toList();
+  }
+
+  Widget createView(FrameManager frameManager) {
     return StickerView(
       // List of Stickers
+      onUpdate: (update, mid) {
+        saveItem(update, frameManager, mid);
+      },
+      onDelete: (mid) {
+        removeItem(frameManager, mid);
+      },
       stickerList: [
-        Sticker(
-            id: "uniqueId_000",
-            // child: Image.network(
-            //     "https://images.unsplash.com/photo-1640113292801-785c4c678e1e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=736&q=80"),
-            child: Container(
-              color: Colors.red,
-              width: 200,
-              height: 200,
-              child: Image.asset(
-                'assets/jisoo.png',
-                // frameBuilder:
-                //     (BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded) {
-                //   if (wasSynchronouslyLoaded) {
-                //     return child;
-                //   }
-                //   return AnimatedOpacity(
-                //     opacity: frame == null ? 0 : 1,
-                //     duration: const Duration(seconds: 10),
-                //     curve: Curves.easeOut,
-                //     child: child,
-                //   );
-                // },
-              ),
-            )),
-        Sticker(
-          id: "uniqueId_222",
-          isText: true,
-          child: const Text("Hello"),
-        ),
+        ...getStickerList(),
+        // Sticker(
+        //     id: "uniqueId_000",
+        //     position: Offset.zero,
+        //     angle: 0,
+        //     // child: Image.network(
+        //     //     "https://images.unsplash.com/photo-1640113292801-785c4c678e1e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=736&q=80"),
+        //     child: Container(
+        //       color: Colors.red,
+        //       width: 200,
+        //       height: 200,
+        //       child: Image.asset(
+        //         'assets/jisoo.png',
+        //         // frameBuilder:
+        //         //     (BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded) {
+        //         //   if (wasSynchronouslyLoaded) {
+        //         //     return child;
+        //         //   }
+        //         //   return AnimatedOpacity(
+        //         //     opacity: frame == null ? 0 : 1,
+        //         //     duration: const Duration(seconds: 10),
+        //         //     curve: Curves.easeOut,
+        //         //     child: child,
+        //         //   );
+        //         // },
+        //       ),
+        //     )),
+        // Sticker(
+        //   id: "uniqueId_222",
+        //   angle: 0,
+        //   position: const Offset(200, 200),
+        //   isText: true,
+        //   child: const Text("Hello"),
+        // ),
       ],
     );
   }

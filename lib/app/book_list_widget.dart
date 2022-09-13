@@ -10,7 +10,6 @@ class BookListWidget extends StatefulWidget {
   final Animation<double> animation;
   final VoidCallback onDeleteClicked;
   final VoidCallback onSaveClicked;
-  static int randomindex = 0;
   const BookListWidget({
     Key? key,
     required this.item,

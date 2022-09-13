@@ -33,7 +33,9 @@ class FirebaseRealtime extends AbsRealtime {
 
   @override
   void start() {
+    logger.finest('FirebaseRealtime start()');
     if (_listenTimer != null) return;
+    logger.finest('FirebaseRealtime start...()');
     _listenTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       if (isListenComplete) {
         isListenComplete = false;
@@ -67,13 +69,11 @@ class FirebaseRealtime extends AbsRealtime {
 
   @override
   void stop() {
+    logger.finest('listener stop...');
+    isListenComplete = true;
     _deltaStream?.cancel();
     _listenTimer?.cancel();
-  }
-
-  @override
-  void clearListener() {
-    _listenTimer?.cancel();
+    _listenTimer = null;
   }
 
   @override

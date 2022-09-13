@@ -23,10 +23,10 @@ class DatabaseExamplePage extends StatefulWidget {
   const DatabaseExamplePage({Key? key, required this.openDrawer}) : super(key: key);
 
   @override
-  State<DatabaseExamplePage> createState() => _DatabaseRealtimeExamplePageState();
+  State<DatabaseExamplePage> createState() => _DatabaseExamplePageState();
 }
 
-class _DatabaseRealtimeExamplePageState extends State<DatabaseExamplePage> {
+class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
   final listKey = GlobalKey<AnimatedListState>();
   String _bookModelStr = '';
   int counter = 0;
@@ -37,13 +37,13 @@ class _DatabaseRealtimeExamplePageState extends State<DatabaseExamplePage> {
     super.initState();
     bookManagerHolder = BookManager();
     HycopFactory.myRealtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
-    HycopFactory.myRealtime!.start();
   }
 
   @override
   void dispose() {
+    logger.finest('_DatabaseExamplePageState dispose');
     super.dispose();
-    HycopFactory.myRealtime!.stop();
+    //HycopFactory.myRealtime!.stop();
   }
 
   @override
@@ -53,6 +53,8 @@ class _DatabaseRealtimeExamplePageState extends State<DatabaseExamplePage> {
 
   @override
   Widget build(BuildContext context) {
+    HycopFactory.myRealtime!.start();
+
     Size screenSize = MediaQuery.of(context).size;
     return MultiProvider(
       providers: [

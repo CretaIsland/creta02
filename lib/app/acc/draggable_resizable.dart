@@ -41,8 +41,11 @@ class DraggableResizable extends StatefulWidget {
   /// {@macro draggable_resizable}
   DraggableResizable({
     Key? key,
+    required this.mid,
     required this.child,
     required this.size,
+    required this.position,
+    required this.angle,
     BoxConstraints? constraints,
     this.onUpdate,
     this.onLayerTapped,
@@ -58,7 +61,8 @@ class DraggableResizable extends StatefulWidget {
   // final VoidCallback? onTap;
 
   /// Drag/Resize value setter.
-  final ValueSetter<DragUpdate>? onUpdate;
+  //final ValueSetter<DragUpdate>? onUpdate;
+  final void Function(DragUpdate value, String mid)? onUpdate;
 
   /// Delete callback
   final VoidCallback? onDelete;
@@ -70,7 +74,10 @@ class DraggableResizable extends StatefulWidget {
   final bool canTransform;
 
   /// The child's original size.
+  final String mid;
   final Size size;
+  final Offset position;
+  final double angle;
 
   /// The child's constraints.
   /// Defaults to [BoxConstraints.loose(Size.infinite)].
@@ -83,6 +90,7 @@ class DraggableResizable extends StatefulWidget {
 
 class _DraggableResizableState extends State<DraggableResizable> {
   late Size size;
+  late Offset position;
   late BoxConstraints constraints;
   late double angle;
   late double angleDelta;
@@ -90,24 +98,28 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
   bool get isTouchInputSupported => true;
 
-  Offset position = Offset.zero;
-
   @override
   void initState() {
+    logger.finest('_DraggableResizableState.initState()');
     super.initState();
     size = widget.size;
     constraints = const BoxConstraints.expand(width: 1, height: 1);
-    angle = 0;
+    angle = widget.angle;
+    position = widget.position;
     baseAngle = 0;
     angleDelta = 0;
   }
 
   @override
   Widget build(BuildContext context) {
+    // size = widget.size;
+    // angle = widget.angle;
+    // position = widget.position;
+
     final aspectRatio = widget.size.width / widget.size.height;
     return LayoutBuilder(
       builder: (context, constraints) {
-        position = position == Offset.zero
+        position = (position == Offset.zero)
             ? Offset(
                 constraints.maxWidth / 2 - (size.width / 2),
                 constraints.maxHeight / 2 - (size.height / 2),
@@ -118,26 +130,40 @@ class _DraggableResizableState extends State<DraggableResizable> {
         final normalizedHeight = normalizedWidth / aspectRatio;
         final newSize = Size(normalizedWidth, normalizedHeight);
 
-        if (widget.constraints.isSatisfiedBy(newSize)) size = newSize;
+        if (widget.constraints.isSatisfiedBy(newSize)) {
+          logger.info(
+              'size updated old=(${size.width},${size.height}), new=(${newSize.width},${newSize.height})');
+          size = newSize;
+        } else {
+          logger.info('size not updated');
+          //size = newSize;
+        }
 
         final normalizedLeft = position.dx;
         final normalizedTop = position.dy;
 
-        void onUpdate() {
+        void onUpdate(String hint, {bool save = true}) {
+          logger.info('onUpdate($hint)');
           final normalizedPosition = Offset(
             normalizedLeft + (_floatingActionPadding / 2) + (_cornerDiameter / 2),
             normalizedTop + (_floatingActionPadding / 2) + (_cornerDiameter / 2),
           );
-          logger.finest(
-              'onUpdate($angle, ${normalizedPosition.dx},${normalizedPosition.dy}, ${size.width}, ${size.height})');
-          widget.onUpdate?.call(
-            DragUpdate(
-              position: normalizedPosition,
-              size: size,
-              constraints: Size(constraints.maxWidth, constraints.maxHeight),
-              angle: angle,
-            ),
-          );
+
+          if (save) {
+            logger.info(
+                'onUpdate($angle, ${normalizedPosition.dx},${normalizedPosition.dy}, ${size.width}, ${size.height})');
+            widget.onUpdate?.call(
+              DragUpdate(
+                position: normalizedPosition,
+                size: size,
+                constraints: Size(constraints.maxWidth, constraints.maxHeight),
+                angle: angle,
+              ),
+              widget.mid,
+            );
+          }
+
+          //save data here !!!
         }
 
         // void onDragTopLeft(Offset details) {
@@ -174,7 +200,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
             position = updatedPosition;
           });
 
-          onUpdate();
+          onUpdate('onDragTopRight');
         }
 
         // ignore: unused_element
@@ -198,7 +224,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           });
           // }
 
-          onUpdate();
+          onUpdate('onDragBottomLeft');
         }
 
         void onDragBottomRight(Offset details) {
@@ -218,7 +244,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
             });
           }
 
-          onUpdate();
+          onUpdate('onDragBottomRight');
         }
 
         final decoratedChild = Container(
@@ -308,7 +334,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                 angle = offsetFromCenter.direction + angleDelta * 0.5;
               },
             );
-            onUpdate();
+            onUpdate('onScaleUpdate');
           },
           onScaleEnd: (_) => setState(() => baseAngle = angle),
           child: _FloatingActionIcon(
@@ -320,7 +346,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
         if (this.constraints != constraints) {
           this.constraints = constraints;
-          onUpdate();
+          onUpdate('default', save: false);
         }
 
         return Stack(
@@ -335,12 +361,14 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   ..rotateZ(angle),
                 child: _DraggablePoint(
                   key: const Key('draggableResizable_child_draggablePoint'),
-                  onTap: onUpdate,
+                  onTap: () {
+                    onUpdate('onTap', save: false);
+                  },
                   onDrag: (d) {
                     setState(() {
                       position = Offset(position.dx + d.dx, position.dy + d.dy);
                     });
-                    onUpdate();
+                    onUpdate('onDrag');
                   },
                   onScale: (s) {
                     final updatedSize = Size(
@@ -361,11 +389,11 @@ class _DraggableResizableState extends State<DraggableResizable> {
                       size = updatedSize;
                       position = updatedPosition;
                     });
-                    onUpdate();
+                    onUpdate('onScale');
                   },
                   onRotate: (a) {
                     setState(() => angle = a * 0.5);
-                    onUpdate();
+                    onUpdate('onRotate');
                   },
                   child: Stack(
                     children: [

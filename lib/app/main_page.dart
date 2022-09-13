@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 
-import '../hycop/hycop_factory.dart';
 import 'constants.dart';
 import 'drawer_widget.dart';
 import 'navigation/routes.dart';
@@ -66,7 +65,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void dispose() {
     super.dispose();
-    HycopFactory.myRealtime!.stop();
+    //HycopFactory.myRealtime!.stop();
   }
 
   @override
@@ -140,31 +139,38 @@ class _MainPageState extends State<MainPage> {
     switch (item) {
       case DrawerItems.database:
         return DatabaseExamplePage(
+          key: UniqueKey(),
           openDrawer: openDrawer,
         );
       case DrawerItems.realtime:
         return RealTimeExamplePage(
+          key: UniqueKey(),
           openDrawer: openDrawer,
         );
       case DrawerItems.function:
         return FunctionExamplePage(
+          key: UniqueKey(),
           openDrawer: openDrawer,
         );
       case DrawerItems.storage:
         return StorageExamplePage(
+          key: UniqueKey(),
           openDrawer: openDrawer,
         );
       case DrawerItems.socket:
         return SocketIOExamplePage(
+          key: UniqueKey(),
           openDrawer: openDrawer,
         );
       case DrawerItems.user:
         return UserExamplePage(
+          key: UniqueKey(),
           openDrawer: openDrawer,
         );
 
       default:
         return DatabaseExamplePage(
+          key: UniqueKey(),
           openDrawer: openDrawer,
         );
     }

@@ -21,7 +21,9 @@ abstract class AbsRealtime {
   void initialize();
   void start();
   void stop();
-  void clearListener();
+  void clearListener() {
+    listenerMap.clear();
+  }
 
   Future<bool> setDelta({
     required String directive,
