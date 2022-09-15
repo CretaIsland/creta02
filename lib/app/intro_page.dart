@@ -10,6 +10,7 @@ import '../common/util/logger.dart';
 import '../common/util/util.dart';
 import '../common/widgets/card_flip.dart';
 import '../common/widgets/glowing_button.dart';
+import '../common/widgets/glowing_image_button.dart';
 import '../common/widgets/text_field.dart';
 import '../hycop/hycop_factory.dart';
 import 'navigation/routes.dart';
@@ -102,96 +103,127 @@ class _IntroPageState extends State<IntroPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            'Choose your PAS Server',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 30,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            color: Colors.white.withOpacity(0.5),
-            width: 480,
-            child: Column(
-              children: [
-                RadioListTile(
-                    title: Text(
-                      "On Cloud Server(Firebase)",
-                      style: TextStyle(
-                        fontWeight: HycopFactory.serverType == ServerType.firebase
-                            ? FontWeight.bold
-                            : FontWeight.w600,
-                        fontSize: HycopFactory.serverType == ServerType.firebase ? 28 : 20,
-                      ),
-                    ),
-                    value: ServerType.firebase,
-                    groupValue: HycopFactory.serverType,
-                    onChanged: (value) {
-                      setState(() {
-                        HycopFactory.serverType = value as ServerType;
-                      });
-                    }),
-                RadioListTile(
-                    title: Text(
-                      "On Premiss Server(Appwrite)",
-                      style: TextStyle(
-                        fontWeight: HycopFactory.serverType == ServerType.appwrite
-                            ? FontWeight.bold
-                            : FontWeight.w600,
-                        fontSize: HycopFactory.serverType == ServerType.appwrite ? 28 : 20,
-                      ),
-                    ),
-                    value: ServerType.appwrite,
-                    groupValue: HycopFactory.serverType,
-                    onChanged: (value) {
-                      setState(() {
-                        HycopFactory.serverType = value as ServerType;
-                      });
-                    }),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          const Text(
-            'Enterprise ID',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 30,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-            width: 400,
-            child: OnlyTextField(
-              controller: _enterpriseCtrl,
-              hintText: "Demo",
-              readOnly: true,
+          WidgetSnippets.shimmerText(
+            duration: 6000,
+            bgColor: Colors.white,
+            fgColor: Colors.deepPurple,
+            child: const Text(
+              'Choose your PAS Server',
+              style: TextStyle(
+                //color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
             ),
           ),
           const SizedBox(
             height: 50,
           ),
-          GlowingButton(
-            onPressed: () {
-              _initConnection();
-              setState(() {
-                _isFlip = !_isFlip;
-              });
-            },
-            text: 'Next',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              GlowingImageButton(
+                width: 200,
+                height: 200,
+                assetPath: 'assets/firebase_logo.png',
+                onPressed: () {
+                  //setState(() {
+                  HycopFactory.serverType = ServerType.firebase;
+                  flip();
+                  //});
+                },
+              ),
+              GlowingImageButton(
+                width: 200,
+                height: 200,
+                assetPath: 'assets/appwrite_logo.png',
+                onPressed: () {
+                  //setState(() {
+                  HycopFactory.serverType = ServerType.appwrite;
+                  flip();
+                  //});
+                },
+              ),
+              // RadioListTile(
+              //     title: Text(
+              //       "On Cloud Server(Firebase)",
+              //       style: TextStyle(
+              //         fontWeight: HycopFactory.serverType == ServerType.firebase
+              //             ? FontWeight.bold
+              //             : FontWeight.w600,
+              //         fontSize: HycopFactory.serverType == ServerType.firebase ? 28 : 20,
+              //       ),
+              //     ),
+              //     value: ServerType.firebase,
+              //     groupValue: HycopFactory.serverType,
+              //     onChanged: (value) {
+              //       setState(() {
+              //         HycopFactory.serverType = value as ServerType;
+              //       });
+              //     }),
+              // RadioListTile(
+              //     title: Text(
+              //       "On Premiss Server(Appwrite)",
+              //       style: TextStyle(
+              //         fontWeight: HycopFactory.serverType == ServerType.appwrite
+              //             ? FontWeight.bold
+              //             : FontWeight.w600,
+              //         fontSize: HycopFactory.serverType == ServerType.appwrite ? 28 : 20,
+              //       ),
+              //     ),
+              //     value: ServerType.appwrite,
+              //     groupValue: HycopFactory.serverType,
+              //     onChanged: (value) {
+              //       setState(() {
+              //         HycopFactory.serverType = value as ServerType;
+              //       });
+              //     }),
+            ],
           ),
+          // const SizedBox(
+          //   height: 40,
+          // ),
+          // const Text(
+          //   'Enterprise ID',
+          //   style: TextStyle(
+          //     color: Colors.white,
+          //     fontWeight: FontWeight.bold,
+          //     fontSize: 30,
+          //   ),
+          // ),
+          // const SizedBox(
+          //   height: 20,
+          // ),
+          // SizedBox(
+          //   width: 400,
+          //   child: OnlyTextField(
+          //     controller: _enterpriseCtrl,
+          //     hintText: "Demo",
+          //     readOnly: true,
+          //   ),
+          // ),
+          // const SizedBox(
+          //   height: 50,
+          // ),
+          // GlowingButton(
+          //   onPressed: () {
+          //     _initConnection();
+          //     setState(() {
+          //       _isFlip = !_isFlip;
+          //     });
+          //   },
+          //   text: 'Next',
+          // ),
         ],
       ),
     );
+  }
+
+  void flip() {
+    _initConnection();
+    setState(() {
+      _isFlip = !_isFlip;
+    });
   }
 
   Widget secondPage() {

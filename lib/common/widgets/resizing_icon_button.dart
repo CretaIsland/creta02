@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class GlowingIconButton extends StatefulWidget {
+class ResizingIconButton extends StatefulWidget {
   final void Function() onPressed;
   final double width;
   final double height;
   final String assetPath;
 
-  const GlowingIconButton({
+  const ResizingIconButton({
     Key? key,
     required this.onPressed,
     required this.assetPath,
@@ -15,10 +15,10 @@ class GlowingIconButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<GlowingIconButton> createState() => _GlowingIconButtonState();
+  State<ResizingIconButton> createState() => _ResizingIconButtonState();
 }
 
-class _GlowingIconButtonState extends State<GlowingIconButton> {
+class _ResizingIconButtonState extends State<ResizingIconButton> {
   bool glowing = false;
   double scale = 1.0;
   @override

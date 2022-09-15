@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: depend_on_referenced_packages
 
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../hycop/database/db_utils.dart';
 import '../../hycop/hycop_factory.dart';
 import '../util/config.dart';
@@ -86,5 +88,18 @@ class WidgetSnippets {
 
   static Widget builtWithFirebase({double width = 120, double height = 45}) {
     return hyImageIcon('assets/built_with_firebase.png', width, height);
+  }
+
+  static Widget shimmerText(
+      {required int duration,
+      required Color fgColor,
+      required Color bgColor,
+      required Text child}) {
+    return Shimmer.fromColors(
+        //key: ValueKey(key),
+        period: Duration(milliseconds: duration),
+        baseColor: fgColor,
+        highlightColor: bgColor,
+        child: child);
   }
 }
