@@ -22,7 +22,7 @@ abstract class AbsDatabase {
   @protected
   static void setFirebaseApp(FirebaseApp fb) => _fbDBApp = fb;
 
-  void initialize();
+  Future<void> initialize();
 
   Future<Map<String, dynamic>> getData(String collectionId, String mid);
   Future<List> getAllData(String collectionId);

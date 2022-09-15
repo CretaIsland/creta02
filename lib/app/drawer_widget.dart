@@ -11,7 +11,8 @@ class DrawerItem {
 }
 
 class DrawerItems {
-  static const home = DrawerItem(title: 'Home', icon: FontAwesomeIcons.house);
+  static const intro = DrawerItem(title: 'infro', icon: FontAwesomeIcons.wandMagic);
+  static const home = DrawerItem(title: 'home', icon: FontAwesomeIcons.house);
   static const database = DrawerItem(title: 'database', icon: FontAwesomeIcons.database);
   static const realtime = DrawerItem(title: 'realtime', icon: FontAwesomeIcons.cloudBolt);
   static const storage = DrawerItem(title: 'storage', icon: FontAwesomeIcons.file);
@@ -20,7 +21,17 @@ class DrawerItems {
   static const socket = DrawerItem(title: 'socket io', icon: FontAwesomeIcons.computerMouse);
   static const user = DrawerItem(title: 'user account', icon: FontAwesomeIcons.users);
   static const logout = DrawerItem(title: 'logout', icon: FontAwesomeIcons.rightFromBracket);
-  static List<DrawerItem> all = [home, database, realtime, storage, function, socket, user, logout];
+  static List<DrawerItem> all = [
+    intro,
+    home,
+    database,
+    realtime,
+    storage,
+    function,
+    socket,
+    user,
+    logout
+  ];
 }
 
 class DrawerWidget extends StatelessWidget {

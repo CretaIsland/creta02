@@ -4,6 +4,7 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:creta02/common/util/exceptions.dart';
 import 'package:creta02/hycop/database/db_utils.dart';
+import 'package:creta02/hycop/hycop_factory.dart';
 import '../../common/util/logger.dart';
 import 'abs_database.dart';
 import '../../common/util/config.dart';
@@ -12,14 +13,19 @@ class AppwriteDatabase extends AbsDatabase {
   Databases? database;
 
   @override
-  void initialize() {
-    AbsDatabase.setAppWriteApp(Client()
-      ..setProject(myConfig!.serverConfig!.dbConnInfo.projectId)
-      ..setSelfSigned(status: true)
-      ..setEndpoint(myConfig!.serverConfig!.dbConnInfo.databaseURL));
-
-    database =
-        Databases(AbsDatabase.awDBConn!, databaseId: myConfig!.serverConfig!.dbConnInfo.appId);
+  Future<void> initialize() async {
+    if (AbsDatabase.awDBConn == null) {
+      HycopFactory.initAll();
+      AbsDatabase.setAppWriteApp(Client()
+        ..setProject(myConfig!.serverConfig!.dbConnInfo.projectId)
+        ..setSelfSigned(status: true)
+        ..setEndpoint(myConfig!.serverConfig!.dbConnInfo.databaseURL));
+    }
+    // ignore: prefer_conditional_assignment
+    if (database == null) {
+      database =
+          Databases(AbsDatabase.awDBConn!, databaseId: myConfig!.serverConfig!.dbConnInfo.appId);
+    }
   }
 
   @override
@@ -27,6 +33,7 @@ class AppwriteDatabase extends AbsDatabase {
     // List resultList =
     //     await simpleQueryData(collectionId, name: 'mid', value: mid, orderBy: 'updateTime');
     // return resultList.first;
+    await initialize();
     String key = DBUtils.midToKey(mid);
     try {
       final doc = await database!.getDocument(
@@ -48,6 +55,8 @@ class AppwriteDatabase extends AbsDatabase {
 
   @override
   Future<List> getAllData(String collectionId) async {
+    await initialize();
+
     try {
       final result = await database!.listDocuments(collectionId: collectionId);
       return result.documents.map((element) {
@@ -67,6 +76,8 @@ class AppwriteDatabase extends AbsDatabase {
 
   @override
   Future<void> setData(String collectionId, String mid, Object data) async {
+    await initialize();
+
     try {
       String key = DBUtils.midToKey(mid);
       logger.finest('setData($key)');
@@ -89,6 +100,8 @@ class AppwriteDatabase extends AbsDatabase {
 
   @override
   Future<void> createData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
+    await initialize();
+
     try {
       logger.finest('createData($mid)');
       String key = DBUtils.midToKey(mid);
@@ -114,6 +127,8 @@ class AppwriteDatabase extends AbsDatabase {
       bool descending = true,
       int? limit,
       int? offset}) async {
+    await initialize();
+
     try {
       String orderType = descending ? 'DESC' : 'ASC';
       final result = await database!.listDocuments(
@@ -147,6 +162,8 @@ class AppwriteDatabase extends AbsDatabase {
     int? offset, // appwrite only
     List<Object?>? startAfter, // firebase only
   }) async {
+    await initialize();
+
     try {
       String orderType = descending ? 'DESC' : 'ASC';
 
@@ -182,6 +199,7 @@ class AppwriteDatabase extends AbsDatabase {
 
   @override
   Future<void> removeData(String collectionId, String mid) async {
+    await initialize();
     try {
       String key = DBUtils.midToKey(mid);
       database!.deleteDocument(

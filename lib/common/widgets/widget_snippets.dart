@@ -1,21 +1,75 @@
 import 'package:flutter/material.dart';
 
+import '../../hycop/database/db_utils.dart';
+import '../../hycop/hycop_factory.dart';
+import '../util/config.dart';
+import 'resizing_icon_button.dart';
+
 class WidgetSnippets {
-  static Widget hyImageIcon(String asstetPath, double width, double height) {
+  static Widget hyImageIconButton(String assetPath, double width, double height,
+      {required void Function() onPressed}) {
+    return ResizingIconButton(
+      onPressed: onPressed,
+      assetPath: assetPath,
+      width: width,
+      height: height,
+    );
+  }
+
+  static Widget hyImageIcon(
+    String asstetPath,
+    double width,
+    double height,
+  ) {
     return Image(
         image: AssetImage(asstetPath),
         width: width,
         height: height,
         fit: BoxFit.scaleDown,
         alignment: FractionalOffset.center);
+  }
 
-    // return ImageIcon(
-    //   AssetImage(
-    //     asstetPath,
-    //   ),
-    //   //color: bgColor,
-    //   size: size,
-    // );
+  static List<Widget> hyAppBarActions(
+      {required void Function() goHome, required void Function() goLogin}) {
+    return [
+      HycopFactory.serverType == ServerType.appwrite
+          ? WidgetSnippets.appwriteLogoButton(onPressed: goHome)
+          : WidgetSnippets.firebaseLogoButton(onPressed: goHome),
+      Center(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Text(
+          HycopFactory.enterprise,
+          style: const TextStyle(fontSize: 20),
+        ),
+      )),
+      Center(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Text(
+          DBUtils.currentUserId,
+          style: const TextStyle(fontSize: 24),
+        ),
+      )),
+      Center(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: IconButton(
+          icon: const Icon(Icons.logout, size: 36),
+          onPressed: goLogin,
+        ),
+      )),
+    ];
+  }
+
+  static Widget appwriteLogoButton(
+      {required void Function() onPressed, double width = 120, double height = 45}) {
+    return hyImageIconButton(onPressed: onPressed, 'assets/appwrite_logo.png', width, height);
+  }
+
+  static Widget firebaseLogoButton(
+      {required void Function() onPressed, double width = 120, double height = 45}) {
+    return hyImageIconButton(onPressed: onPressed, 'assets/firebase_logo.png', width, height);
   }
 
   static Widget appwriteLogo({double width = 120, double height = 45}) {

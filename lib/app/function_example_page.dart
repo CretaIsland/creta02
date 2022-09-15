@@ -5,14 +5,15 @@ import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
 import '../common/util/logger.dart';
+import '../common/widgets/widget_snippets.dart';
 import '../hycop/hycop_factory.dart';
 import 'drawer_menu_widget.dart';
 import 'navigation/routes.dart';
 
 class FunctionExamplePage extends StatefulWidget {
-  final VoidCallback openDrawer;
+  final VoidCallback? openDrawer;
 
-  const FunctionExamplePage({Key? key, required this.openDrawer}) : super(key: key);
+  const FunctionExamplePage({Key? key, this.openDrawer}) : super(key: key);
 
   @override
   State<FunctionExamplePage> createState() => _FunctionExamplePageState();
@@ -41,11 +42,23 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.orange,
-          title: const Text('Serverless function example'),
-          leading: DrawerMenuWidget(
-            onClicked: widget.openDrawer,
+          actions: WidgetSnippets.hyAppBarActions(
+            goHome: () {
+              Routemaster.of(context).push(AppRoutes.intro);
+            },
+            goLogin: () {
+              Routemaster.of(context).push(AppRoutes.login);
+            },
           ),
+          backgroundColor: Colors.orange,
+          title: const Text('Function Example'),
+          leading: DrawerMenuWidget(onClicked: () {
+            if (widget.openDrawer != null) {
+              widget.openDrawer!();
+            } else {
+              Routemaster.of(context).push(AppRoutes.main);
+            }
+          }),
         ),
         body: Center(
           child: Column(

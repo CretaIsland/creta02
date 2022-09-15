@@ -22,8 +22,8 @@ class IntroPage extends StatefulWidget {
 }
 
 class _IntroPageState extends State<IntroPage> {
-  ServerType _serverType = ServerType.firebase;
-  String _enterpriseId = '';
+  //ServerType _serverType = ServerType.firebase;
+  //String _enterpriseId = '';
   final TextEditingController _enterpriseCtrl = TextEditingController();
   final TextEditingController _apiKeyCtrl = TextEditingController();
   final TextEditingController _authDomainCtrl = TextEditingController();
@@ -122,32 +122,34 @@ class _IntroPageState extends State<IntroPage> {
                     title: Text(
                       "On Cloud Server(Firebase)",
                       style: TextStyle(
-                        fontWeight:
-                            _serverType == ServerType.firebase ? FontWeight.bold : FontWeight.w600,
-                        fontSize: _serverType == ServerType.firebase ? 28 : 20,
+                        fontWeight: HycopFactory.serverType == ServerType.firebase
+                            ? FontWeight.bold
+                            : FontWeight.w600,
+                        fontSize: HycopFactory.serverType == ServerType.firebase ? 28 : 20,
                       ),
                     ),
                     value: ServerType.firebase,
-                    groupValue: _serverType,
+                    groupValue: HycopFactory.serverType,
                     onChanged: (value) {
                       setState(() {
-                        _serverType = value as ServerType;
+                        HycopFactory.serverType = value as ServerType;
                       });
                     }),
                 RadioListTile(
                     title: Text(
                       "On Premiss Server(Appwrite)",
                       style: TextStyle(
-                        fontWeight:
-                            _serverType == ServerType.appwrite ? FontWeight.bold : FontWeight.w600,
-                        fontSize: _serverType == ServerType.appwrite ? 28 : 20,
+                        fontWeight: HycopFactory.serverType == ServerType.appwrite
+                            ? FontWeight.bold
+                            : FontWeight.w600,
+                        fontSize: HycopFactory.serverType == ServerType.appwrite ? 28 : 20,
                       ),
                     ),
                     value: ServerType.appwrite,
-                    groupValue: _serverType,
+                    groupValue: HycopFactory.serverType,
                     onChanged: (value) {
                       setState(() {
-                        _serverType = value as ServerType;
+                        HycopFactory.serverType = value as ServerType;
                       });
                     }),
               ],
@@ -200,11 +202,11 @@ class _IntroPageState extends State<IntroPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _serverType == ServerType.appwrite
+          HycopFactory.serverType == ServerType.appwrite
               ? WidgetSnippets.appwriteLogo()
               : WidgetSnippets.firebaseLogo(),
           Text(
-            _enterpriseId,
+            HycopFactory.enterprise,
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -263,17 +265,20 @@ class _IntroPageState extends State<IntroPage> {
   Future<void> _initConnection() async {
     logger.finest('_initConnection');
 
-    String enterprise = _enterpriseCtrl.text;
-    if (enterprise.isEmpty) {
-      enterprise = 'Demo';
+    HycopFactory.enterprise = _enterpriseCtrl.text;
+    if (HycopFactory.enterprise.isEmpty) {
+      HycopFactory.enterprise = 'Demo';
     }
-    myConfig = HycopConfig(enterprise: enterprise, serverType: _serverType);
-    HycopFactory.selectDatabase();
-    HycopFactory.selectRealTime();
-    HycopFactory.selectFunction();
 
-    _serverType = myConfig!.serverType;
-    _enterpriseId = myConfig!.enterprise;
+    HycopFactory.initAll();
+    //myConfig = HycopConfig(enterprise: HycopFactory.enterprise, serverType: _serverType);
+    // myConfig = HycopConfig();
+    // HycopFactory.selectDatabase();
+    // HycopFactory.selectRealTime();
+    // HycopFactory.selectFunction();
+
+    //_serverType = myConfig!.serverType;
+    //_enterpriseId = myConfig!.enterprise;
     late DBConnInfo conn;
     //if (_serverType == ServerType.appwrite) {
     conn = myConfig!.serverConfig!.dbConnInfo;

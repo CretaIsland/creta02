@@ -1,10 +1,15 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
+import 'package:routemaster/routemaster.dart';
+import '../common/widgets/widget_snippets.dart';
 import 'drawer_menu_widget.dart';
+import 'navigation/routes.dart';
 
 class UserExamplePage extends StatefulWidget {
-  final VoidCallback openDrawer;
+  final VoidCallback? openDrawer;
 
-  const UserExamplePage({Key? key, required this.openDrawer}) : super(key: key);
+  const UserExamplePage({Key? key, this.openDrawer}) : super(key: key);
 
   @override
   State<UserExamplePage> createState() => _UserExamplePageState();
@@ -25,11 +30,23 @@ class _UserExamplePageState extends State<UserExamplePage> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        backgroundColor: Colors.orange,
-        title: const Text('User Example'),
-        leading: DrawerMenuWidget(
-          onClicked: widget.openDrawer,
+        actions: WidgetSnippets.hyAppBarActions(
+          goHome: () {
+            Routemaster.of(context).push(AppRoutes.intro);
+          },
+          goLogin: () {
+            Routemaster.of(context).push(AppRoutes.login);
+          },
         ),
+        backgroundColor: Colors.orange,
+        title: const Text('User Account Example'),
+        leading: DrawerMenuWidget(onClicked: () {
+          if (widget.openDrawer != null) {
+            widget.openDrawer!();
+          } else {
+            Routemaster.of(context).push(AppRoutes.main);
+          }
+        }),
       ),
       body: Container(),
     );

@@ -1,3 +1,4 @@
+import '../common/util/logger.dart';
 import 'database/firebase_database.dart';
 import 'database/appwrite_database.dart';
 import 'database/abs_database.dart';
@@ -10,9 +11,11 @@ import 'function/firebase_function.dart';
 import '../common/util/config.dart';
 
 class HycopFactory {
+  static String enterprise = 'Demo';
+  static ServerType serverType = ServerType.firebase;
   static AbsDatabase? myDataBase;
   static void selectDatabase() {
-    if (myConfig!.serverType == ServerType.appwrite) {
+    if (HycopFactory.serverType == ServerType.appwrite) {
       myDataBase = AppwriteDatabase();
     } else {
       myDataBase = FirebaseDatabase();
@@ -23,7 +26,7 @@ class HycopFactory {
 
   static AbsRealtime? myRealtime;
   static void selectRealTime() {
-    if (myConfig!.serverType == ServerType.appwrite) {
+    if (HycopFactory.serverType == ServerType.appwrite) {
       myRealtime = AppwriteRealtime();
     } else {
       myRealtime = FirebaseRealtime();
@@ -34,12 +37,21 @@ class HycopFactory {
 
   static AbsFunction? myFunction;
   static void selectFunction() {
-    if (myConfig!.serverType == ServerType.appwrite) {
+    if (HycopFactory.serverType == ServerType.appwrite) {
       myFunction = AppwriteFunction();
     } else {
       myFunction = FirebaseFunction();
     }
     myFunction!.initialize();
     return;
+  }
+
+  static void initAll() {
+    if (myConfig != null) return;
+    logger.info('initAll()');
+    myConfig = HycopConfig();
+    HycopFactory.selectDatabase();
+    HycopFactory.selectRealTime();
+    HycopFactory.selectFunction();
   }
 }

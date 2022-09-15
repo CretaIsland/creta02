@@ -3,27 +3,41 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../../common/util/logger.dart';
 import '../../common/util/config.dart';
+import '../hycop_factory.dart';
 import 'abs_database.dart';
 
 class FirebaseDatabase extends AbsDatabase {
-  late FirebaseFirestore _db;
+  FirebaseFirestore? _db;
 
   @override
-  void initialize() async {
-    AbsDatabase.setFirebaseApp(await Firebase.initializeApp(
-        name: "database",
-        options: FirebaseOptions(
-            apiKey: myConfig!.serverConfig!.dbConnInfo.apiKey,
-            appId: myConfig!.serverConfig!.dbConnInfo.appId,
-            storageBucket: myConfig!.serverConfig!.dbConnInfo.storageBucket,
-            messagingSenderId: myConfig!.serverConfig!.dbConnInfo.messagingSenderId,
-            projectId: myConfig!.serverConfig!.dbConnInfo.projectId)));
-    _db = FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!); // for database
+  Future<void> initialize() async {
+    if (AbsDatabase.fbDBApp == null) {
+      HycopFactory.initAll();
+      logger.info('initialize');
+      AbsDatabase.setFirebaseApp(await Firebase.initializeApp(
+          name: 'database',
+          options: FirebaseOptions(
+              apiKey: myConfig!.serverConfig!.dbConnInfo.apiKey,
+              appId: myConfig!.serverConfig!.dbConnInfo.appId,
+              storageBucket: myConfig!.serverConfig!.dbConnInfo.storageBucket,
+              messagingSenderId: myConfig!.serverConfig!.dbConnInfo.messagingSenderId,
+              projectId: myConfig!.serverConfig!.dbConnInfo.projectId)));
+
+      //_db = null;
+    }
+    // ignore: prefer_conditional_assignment
+    if (_db == null) {
+      logger.info('_db init');
+      _db = FirebaseFirestore.instanceFor(app: AbsDatabase.fbDBApp!);
+    }
+    assert(_db != null);
   }
 
   @override
   Future<Map<String, dynamic>> getData(String collectionId, String mid) async {
-    CollectionReference collectionRef = _db.collection(collectionId);
+    await initialize();
+
+    CollectionReference collectionRef = _db!.collection(collectionId);
 
     DocumentSnapshot<Object?> result = await collectionRef.doc(mid).get();
     return result.data() as Map<String, dynamic>;
@@ -31,8 +45,10 @@ class FirebaseDatabase extends AbsDatabase {
 
   @override
   Future<List> getAllData(String collectionId) async {
+    await initialize();
+
     final List resultList = [];
-    CollectionReference collectionRef = _db.collection(collectionId);
+    CollectionReference collectionRef = _db!.collection(collectionId);
     await collectionRef.get().then((snapshot) {
       for (var result in snapshot.docs) {
         resultList.add(result);
@@ -43,15 +59,19 @@ class FirebaseDatabase extends AbsDatabase {
 
   @override
   Future<void> setData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
-    CollectionReference collectionRef = _db.collection(collectionId);
+    await initialize();
+
+    CollectionReference collectionRef = _db!.collection(collectionId);
     await collectionRef.doc(mid).set(data, SetOptions(merge: false));
     logger.finest('$mid saved');
   }
 
   @override
   Future<void> createData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
+    await initialize();
+
     logger.finest('createData $mid!');
-    CollectionReference collectionRef = _db.collection(collectionId);
+    CollectionReference collectionRef = _db!.collection(collectionId);
     await collectionRef.doc(mid).set(data, SetOptions(merge: false));
     //await collectionRef.add(data);
     logger.finest('$mid! created');
@@ -65,8 +85,10 @@ class FirebaseDatabase extends AbsDatabase {
       bool descending = true,
       int? limit,
       int? offset}) async {
+    await initialize();
+
     final List resultList = [];
-    CollectionReference collectionRef = _db.collection(collectionId);
+    CollectionReference collectionRef = _db!.collection(collectionId);
     await collectionRef
         .orderBy(orderBy, descending: true)
         .where(name, isEqualTo: value)
@@ -87,7 +109,11 @@ class FirebaseDatabase extends AbsDatabase {
       int? limit,
       int? offset,
       List<Object?>? startAfter}) async {
-    CollectionReference collectionRef = _db.collection(collectionId);
+    logger.info('before');
+    await initialize();
+    logger.info('after');
+    assert(_db != null);
+    CollectionReference collectionRef = _db!.collection(collectionId);
     Query<Object?> query = collectionRef.orderBy(orderBy, descending: descending);
     where.map((mid, value) {
       query = query.where(mid, isEqualTo: value);
@@ -107,7 +133,9 @@ class FirebaseDatabase extends AbsDatabase {
 
   @override
   Future<void> removeData(String collectionId, String mid) async {
-    CollectionReference collectionRef = _db.collection(collectionId);
+    await initialize();
+
+    CollectionReference collectionRef = _db!.collection(collectionId);
     await collectionRef.doc(mid).delete();
     logger.finest('$mid deleted');
 

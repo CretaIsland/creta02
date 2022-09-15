@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import '../../hycop/hycop_factory.dart';
 import 'logger.dart';
 
 enum ServerType {
@@ -148,17 +149,18 @@ class AssetConfig {
 HycopConfig? myConfig;
 
 class HycopConfig {
-  final String enterprise;
-  final ServerType serverType;
+  //final String enterprise;
+  //final ServerType serverType;
   late AssetConfig config;
   AbsServerConfig? serverConfig;
 
-  HycopConfig({required this.enterprise, required this.serverType}) {
-    config = AssetConfig(enterprise: enterprise);
-    if (serverType == ServerType.firebase) {
-      serverConfig = FirebaseConfig(enterprise: enterprise);
-    } else if (serverType == ServerType.appwrite) {
-      serverConfig = AppwriteConfig(enterprise: enterprise);
+  //HycopConfig({required this.enterprise, required this.serverType}) {
+  HycopConfig() {
+    config = AssetConfig(enterprise: HycopFactory.enterprise);
+    if (HycopFactory.serverType == ServerType.firebase) {
+      serverConfig = FirebaseConfig(enterprise: HycopFactory.enterprise);
+    } else if (HycopFactory.serverType == ServerType.appwrite) {
+      serverConfig = AppwriteConfig(enterprise: HycopFactory.enterprise);
     }
   }
 }

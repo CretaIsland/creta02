@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:routemaster/routemaster.dart';
 
 import '../common/util/logger.dart';
+import '../common/widgets/widget_snippets.dart';
 import '../data_io/frame_manager.dart';
 import '../hycop/absModel/abs_model.dart';
 import '../hycop/hycop_factory.dart';
@@ -13,11 +15,12 @@ import 'acc/draggable_resizable.dart';
 import 'acc/stickerview.dart';
 import 'constants.dart';
 import 'drawer_menu_widget.dart';
+import 'navigation/routes.dart';
 
 class RealTimeExamplePage extends StatefulWidget {
-  final VoidCallback openDrawer;
+  final VoidCallback? openDrawer;
 
-  const RealTimeExamplePage({Key? key, required this.openDrawer}) : super(key: key);
+  const RealTimeExamplePage({Key? key, this.openDrawer}) : super(key: key);
 
   @override
   State<RealTimeExamplePage> createState() => _RealTimeExamplePageState();
@@ -57,11 +60,23 @@ class _RealTimeExamplePageState extends State<RealTimeExamplePage> {
           child: const Icon(Icons.add),
         ),
         appBar: AppBar(
-          backgroundColor: Colors.orange,
-          title: const Text('RealTime Example'),
-          leading: DrawerMenuWidget(
-            onClicked: widget.openDrawer,
+          actions: WidgetSnippets.hyAppBarActions(
+            goHome: () {
+              Routemaster.of(context).push(AppRoutes.intro);
+            },
+            goLogin: () {
+              Routemaster.of(context).push(AppRoutes.login);
+            },
           ),
+          backgroundColor: Colors.orange,
+          title: const Text('Realtime Example'),
+          leading: DrawerMenuWidget(onClicked: () {
+            if (widget.openDrawer != null) {
+              widget.openDrawer!();
+            } else {
+              Routemaster.of(context).push(AppRoutes.main);
+            }
+          }),
         ),
         body: FutureBuilder<List<AbsModel>>(
           future: frameManagerHolder!.getAllListFromDB(),

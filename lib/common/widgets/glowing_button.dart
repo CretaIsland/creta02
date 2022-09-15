@@ -7,6 +7,9 @@ class GlowingButton extends StatefulWidget {
   final IconData icon1;
   final IconData icon2;
   final void Function() onPressed;
+  final double width;
+  final double height;
+  final double fontSize;
 
   const GlowingButton({
     Key? key,
@@ -16,6 +19,9 @@ class GlowingButton extends StatefulWidget {
     this.icon2 = Icons.lightbulb_outline,
     this.color1 = Colors.cyan,
     this.color2 = Colors.greenAccent,
+    this.width = 160,
+    this.height = 40,
+    this.fontSize = 16,
   }) : super(key: key);
 
   @override
@@ -47,8 +53,8 @@ class _GlowingButtonState extends State<GlowingButton> {
         child: AnimatedContainer(
           transform: Matrix4.identity()..scale(scale),
           duration: const Duration(milliseconds: 200),
-          height: 40,
-          width: 160,
+          height: widget.height,
+          width: widget.width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(40),
             gradient: LinearGradient(
@@ -86,11 +92,18 @@ class _GlowingButtonState extends State<GlowingButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(glowing ? widget.icon2 : widget.icon2, color: Colors.white),
+              Icon(
+                glowing ? widget.icon2 : widget.icon2,
+                color: Colors.white,
+                size: widget.fontSize,
+              ),
+              SizedBox(
+                width: widget.fontSize,
+              ),
               Text(
                 widget.text,
-                style:
-                    const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                    color: Colors.white, fontSize: widget.fontSize, fontWeight: FontWeight.w600),
               )
             ],
           ),

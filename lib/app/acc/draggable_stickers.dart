@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../common/util/logger.dart';
 import 'draggable_resizable.dart';
 import 'stickerview.dart';
 
@@ -40,7 +41,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
               Positioned.fill(
                 child: GestureDetector(
                   key: const Key('stickersView_background_gestureDetector'),
-                  onTap: () {},
+                  onTap: () {
+                    logger.info('GestureDetector.onTap');
+                  },
                 ),
               ),
               for (final sticker in stickers)
@@ -61,10 +64,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   //  true
                   /*sticker.id == state.selectedAssetId*/,
                   onUpdate: (update, mid) {
+                    logger.info(
+                        "oldposition=${sticker.position.toString()}, new=${update.position.toString()}");
+
                     sticker.angle = update.angle;
                     sticker.size = update.size;
                     sticker.position = update.position;
                     widget.onUpdate.call(update, mid);
+                    logger.info("saved");
                   },
 
                   // To update the layer (manage position of widget in stack)
@@ -79,6 +86,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     }
 
                     selectedAssetId = sticker.id;
+                    logger.info('onLayerTapped');
                     setState(() {});
                   },
 
@@ -115,6 +123,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     onTap: () {
                       // To update the selected widget
                       selectedAssetId = sticker.id;
+                      logger.info('onTap...');
                       setState(() {});
                     },
                     child: SizedBox(

@@ -1,23 +1,37 @@
 // ignore_for_file: depend_on_referenced_packages, equal_keys_in_map
 
-import '../database_example_page.dart';
-import '../function_example_page.dart';
+//import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
+import '../database_example_page.dart';
+//import '../drawer_menu_page.dart';
+import '../function_example_page.dart';
 import '../intro_page.dart';
 import '../login_page.dart';
+import '../realtime_example_page.dart';
 import '../register_page.dart';
 import '../main_page.dart';
+import '../socketio_example_page.dart';
+import '../storage_example_page.dart';
+import '../user_example_page.dart';
 //import '../../common/util/logger.dart';
 
 abstract class AppRoutes {
+  //static const String menu = '/menu';
   static const String main = '/main';
   static const String databaseExample = '/databaseExample';
+  static const String realtimeExample = '/realTimeExample';
   static const String functionExample = '/functionExample';
+  static const String storageExample = '/storageExample';
+  static const String socketioExample = '/socketioExample';
+  static const String userExample = '/userExample';
   static const String studio = '/studio';
   static const String login = '/login';
   static const String intro = '/intro';
   static const String register = '/register';
 }
+
+//final menuKey = GlobalKey<DrawerMenuPageState>();
+//DrawerMenuPage menuWidget = DrawerMenuPage(key: menuKey);
 
 final routesLoggedOut = RouteMap(
   onUnknownRoute: (_) => const Redirect(AppRoutes.intro),
@@ -30,15 +44,14 @@ final routesLoggedOut = RouteMap(
           child: RegisterPage(),
           pushTransition: PageTransition.fadeUpwards,
         ),
+    //AppRoutes.menu: (_) => TransitionPage(child: menuWidget),
     AppRoutes.main: (_) => const TransitionPage(child: MainPage()),
-    AppRoutes.databaseExample: (_) => TransitionPage(
-            child: DatabaseExamplePage(
-          openDrawer: () {},
-        )),
-    AppRoutes.functionExample: (_) => TransitionPage(
-            child: FunctionExamplePage(
-          openDrawer: () {},
-        )),
+    AppRoutes.databaseExample: (_) => const TransitionPage(child: DatabaseExamplePage()),
+    AppRoutes.realtimeExample: (_) => const TransitionPage(child: RealTimeExamplePage()),
+    AppRoutes.functionExample: (_) => const TransitionPage(child: FunctionExamplePage()),
+    AppRoutes.storageExample: (_) => const TransitionPage(child: StorageExamplePage()),
+    AppRoutes.socketioExample: (_) => const TransitionPage(child: SocketIOExamplePage()),
+    AppRoutes.userExample: (_) => const TransitionPage(child: UserExamplePage()),
     AppRoutes.intro: (_) => const TransitionPage(child: IntroPage()),
   },
 );
@@ -46,6 +59,7 @@ final routesLoggedOut = RouteMap(
 final routesLoggedIn = RouteMap(
   onUnknownRoute: (_) => const Redirect(AppRoutes.main),
   routes: {
+    //AppRoutes.menu: (_) => TransitionPage(child: menuWidget),
     AppRoutes.main: (_) => const TransitionPage(child: MainPage()),
   },
 );

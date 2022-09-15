@@ -2,6 +2,7 @@
 
 import 'package:appwrite/appwrite.dart';
 import 'package:creta02/common/util/exceptions.dart';
+import 'package:creta02/hycop/hycop_factory.dart';
 
 import '../../common/util/config.dart';
 import '../../common/util/logger.dart';
@@ -9,15 +10,20 @@ import '../database/abs_database.dart';
 import 'abs_function.dart';
 
 class AppwriteFunction extends AbsFunction {
-  late Functions functions;
+  Functions? functions;
 
   @override
-  void initialize() {
-    functions = Functions(AbsDatabase.awDBConn!);
+  Future<void> initialize() async {
+    // ignore: prefer_conditional_assignment
+    if (functions == null) {
+      HycopFactory.initAll();
+      functions = Functions(AbsDatabase.awDBConn!);
+    }
   }
 
   @override
   Future<String> execute({required String functionId, String? params, bool isAsync = false}) async {
+    await initialize();
     String connectionStr = '"projectId":"${myConfig!.serverConfig!.dbConnInfo.projectId}",';
     connectionStr += '"databaseId":"${myConfig!.serverConfig!.dbConnInfo.appId}",';
     connectionStr += '"endPoint":"${myConfig!.serverConfig!.dbConnInfo.databaseURL}",';
@@ -34,7 +40,7 @@ class AppwriteFunction extends AbsFunction {
     }
     logger.finest('$functionId executed with $realParams');
     final result =
-        await functions.createExecution(functionId: functionId, data: realParams, xasync: false);
+        await functions!.createExecution(functionId: functionId, data: realParams, xasync: false);
     logger.finest('$functionId finished, ${result.statusCode}, ${result.response}');
 
     return result.response;

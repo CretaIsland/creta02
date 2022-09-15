@@ -14,12 +14,14 @@ class AppwriteRealtime extends AbsRealtime {
   RealtimeSubscription? subscription;
 
   @override
-  void initialize() async {
+  Future<void> initialize() async {
+    HycopFactory.initAll();
     // 일반 reealTime DB 사용의 경우.
   }
 
   @override
-  void start() {
+  Future<void> start() async {
+    await initialize();
     if (subscription != null) {
       return;
     }
@@ -45,6 +47,7 @@ class AppwriteRealtime extends AbsRealtime {
     required String mid,
     required Map<String, dynamic>? delta,
   }) async {
+    await initialize();
     Map<String, dynamic> input = makeData(directive: directive, mid: mid, delta: delta);
     try {
       final Map<String, dynamic> target =

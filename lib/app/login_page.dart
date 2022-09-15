@@ -50,6 +50,7 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
     String email = _emailTextEditingController.text;
     String password = _passwordTextEditingController.text;
     if (await DBUtils.login(email, password)) {
+      //Routemaster.of(context).push(AppRoutes.menu);
       Routemaster.of(context).push(AppRoutes.main);
       //Routemaster.of(context).push(AppRoutes.databaseExample);
     } else {

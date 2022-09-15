@@ -18,8 +18,8 @@ abstract class AbsRealtime {
 
   String lastUpdateTime = DBUtils.dateTimeToDB(DateTime.now()); // used only firebase
 
-  void initialize();
-  void start();
+  Future<void> initialize();
+  Future<void> start();
   void stop();
   void clearListener() {
     listenerMap.clear();

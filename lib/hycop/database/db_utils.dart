@@ -5,19 +5,20 @@ import 'package:uuid/uuid.dart';
 import '../../common/util/config.dart';
 import '../../common/util/logger.dart';
 import '../absModel/model_enums.dart';
+import '../hycop_factory.dart';
 import 'abs_database.dart';
 
 class DBUtils {
   static String currentUserId = 'b49@sqisoft.com'; // 임시로 사용
 
   static Future<bool> login(String email, String password) async {
-    if (myConfig!.serverType == ServerType.appwrite) {
-      logger.finest('login($email, $password)');
+    if (HycopFactory.serverType == ServerType.appwrite) {
       try {
         Account account = Account(AbsDatabase.awDBConn!);
         //await account.create(userId: userId, email: email, password: password);
         await account.createEmailSession(email: email, password: password);
         currentUserId = email;
+        logger.info('login($email, $password)');
       } catch (e) {
         logger.severe('authentication error', e);
         return false;

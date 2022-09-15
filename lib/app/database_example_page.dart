@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
 
+import '../common/widgets/widget_snippets.dart';
 import '../data_io/book_manager.dart';
 import '../hycop/absModel/abs_model.dart';
 import '../hycop/hycop_factory.dart';
@@ -18,9 +19,9 @@ import 'navigation/routes.dart';
 import 'drawer_menu_widget.dart';
 
 class DatabaseExamplePage extends StatefulWidget {
-  final VoidCallback openDrawer;
+  final VoidCallback? openDrawer;
 
-  const DatabaseExamplePage({Key? key, required this.openDrawer}) : super(key: key);
+  const DatabaseExamplePage({Key? key, this.openDrawer}) : super(key: key);
 
   @override
   State<DatabaseExamplePage> createState() => _DatabaseExamplePageState();
@@ -36,6 +37,8 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
   void initState() {
     super.initState();
     bookManagerHolder = BookManager();
+    logger.info('initState');
+    HycopFactory.initAll();
     HycopFactory.myRealtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
   }
 
@@ -68,11 +71,24 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
           child: const Icon(Icons.add),
         ),
         appBar: AppBar(
+          actions: WidgetSnippets.hyAppBarActions(
+            goHome: () {
+              Routemaster.of(context).push(AppRoutes.intro);
+            },
+            goLogin: () {
+              Routemaster.of(context).push(AppRoutes.login);
+            },
+          ),
           backgroundColor: Colors.orange,
           title: const Text('Database Example'),
-          leading: DrawerMenuWidget(
-            onClicked: widget.openDrawer,
-          ),
+          leading: DrawerMenuWidget(onClicked: () {
+            if (widget.openDrawer != null) {
+              widget.openDrawer!();
+            } else {
+              //Routemaster.of(context).push(AppRoutes.menu);
+              Routemaster.of(context).push(AppRoutes.main);
+            }
+          }),
         ),
         body: FutureBuilder<List<AbsModel>>(
             future: bookManagerHolder!.getListFromDB(DBUtils.currentUserId),
@@ -83,7 +99,7 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
                 return const Center(child: Text('data fetch error'));
               }
               if (snapshot.hasData == false) {
-                logger.severe("No data founded");
+                logger.severe("No data founded(${DBUtils.currentUserId})");
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
@@ -103,7 +119,7 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
                         height: 50,
                         //width: 100,
                         child: Text(
-                          '${bookManager.modelList.length} data founded',
+                          '${bookManager.modelList.length} data founded(${DBUtils.currentUserId})',
                           style: const TextStyle(fontSize: 24),
                         ),
                       ),
