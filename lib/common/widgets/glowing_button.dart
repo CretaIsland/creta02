@@ -93,7 +93,7 @@ class _GlowingButtonState extends State<GlowingButton> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                glowing ? widget.icon2 : widget.icon2,
+                glowing ? widget.icon1 : widget.icon2,
                 color: Colors.white,
                 size: widget.fontSize,
               ),

@@ -62,6 +62,8 @@ function _removeDelta()
     
 }
 
+
+
 //oper  : https://us-central1-creta02-1a520.cloudfunctions.net/setTest_req?id=6&text=helloworld4
 exports.setDBTest_req = functions.https.onRequest(async (req, res) => {
    _setDBTest(req.query.id, req.query.text);
@@ -86,13 +88,75 @@ exports.getDBTest_req = functions.https.onRequest(async (req, res) => {
      res.json({result: `get=>${result}`});
  }); 
  
- exports.getDBTest = functions.https.onCall(async (data) => {
+exports.getDBTest = functions.https.onCall(async (data) => {
     var result = 'null';
     result = await _getDBTest2(data.text);
     return '{"result": "' + result + '"}';
  }); 
+async function  _getDBTest2(text) {
+    functions.logger.info('skpark __getDBTest invoked');
+    const db = getFirestore();
+    const querySnapshot = await db.collection('test_collection').where('text' , '=', text).get();
+    var retval = '';
+    querySnapshot.forEach((doc) => {
+        functions.logger.info(doc.id, ' => ', doc.data());
+        retval += doc.data().text;
+        retval += ",\n";
+    });
+    return retval;
+}
 
- // query 에 대한 자세한 예제는 https://firebase.google.com/docs/firestore/query-data/queries
+exports.getDisUsage_req = functions.https.onRequest(async (req, res) => {
+    var result = await _getDiskUsage();
+     res.json({result: `${result}`});
+ }); 
+exports.getDisUsage = functions.https.onCall((data) => {
+    return _getDiskUsage();
+}); 
+
+async function  _getDiskUsage() {
+    functions.logger.info('skpark _getDiskUsage invoked');
+    const db = getFirestore();
+    const ref = db.collection('disk_usage').doc('simulator');
+    const doc = await ref.get();
+    if (!doc.exists) {
+        functions.logger.log('No such document!');
+        return 20;
+    } else {
+        functions.logger.log('Document data:', doc.data());
+        return doc.data().usage;
+    }
+}
+
+exports.setDisUsage_schedule = functions.pubsub.schedule('every 9 hours').onRun(async (context) => {
+    var usage = await _getDiskUsage();
+    if(usage > 98) {
+        usage = 98;
+    }
+    return _setDiskUsage(usage+1);
+});
+exports.setDisUsage_req = functions.https.onRequest(async (req, res) => {
+    //var rand = Math.floor(Math.random() * 80) + 20;
+    var result = await _setDiskUsage(req.query.usage);
+    var result = await _setDiskUsage(rand);
+    res.json({result: `${rand}`});
+ }); 
+exports.setDisUsage = functions.https.onCall((data) => {
+    //var rand = Math.floor(Math.random() * 80) + 20;
+    return _setDiskUsage(data.usage);
+}); 
+async function  _setDiskUsage(usage) {
+    functions.logger.info('skpark _setDiskUsage($val) invoked');
+    const db = getFirestore();
+    const ref = db.collection('disk_usage').doc('simulator');
+    ref.set({'usage' : usage});
+    functions.logger.log('skpark _setDiskUsage($val) end');
+    return usage;
+}
+
+
+
+// query 에 대한 자세한 예제는 https://firebase.google.com/docs/firestore/query-data/queries
 // function  __getDBTest(text) {
 //     functions.logger.info('skpark __getDBTest invoked');
 //     const db = getFirestore();
@@ -112,17 +176,3 @@ exports.getDBTest_req = functions.https.onRequest(async (req, res) => {
 //     });
    
 // }
-
-async function  _getDBTest2(text) {
-    functions.logger.info('skpark __getDBTest invoked');
-    const db = getFirestore();
-    const querySnapshot = await db.collection('test_collection').where('text' , '=', text).get();
-    var retval = '';
-    querySnapshot.forEach((doc) => {
-        functions.logger.info(doc.id, ' => ', doc.data());
-        retval += doc.data().text;
-        retval += ",\n";
-    });
-    return retval;
-}
-
