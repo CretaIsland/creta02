@@ -1,7 +1,10 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:uuid/uuid.dart';
 
 import '../common/util/logger.dart';
 import '../common/widgets/glowing_button.dart';
@@ -43,7 +46,7 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
 
   @override
   Widget build(BuildContext context) {
-    //String id = const Uuid().v4();
+    String id = const Uuid().v4();
 
     return Scaffold(
         appBar: AppBar(
@@ -67,6 +70,7 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
         ),
         body: FutureBuilder<double>(
           future: getDiskUsage(),
+          //future: nullFunction(),
           builder: (context, AsyncSnapshot<double> snapshot) {
             if (snapshot.hasError) {
               //error가 발생하게 될 경우 반환하게 되는 부분
@@ -84,6 +88,7 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
               _guageValue = snapshot.data!;
             }
             return guageExample();
+            //return oldExample(id);
           },
         ));
   }
@@ -91,12 +96,32 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
   Future<double> getDiskUsage() async {
     String result = '0';
     try {
-      result = await HycopFactory.myFunction!.execute(functionId: "getDisUsage");
+      result = await HycopFactory.myFunction!.execute(functionId: "getDiskUsage");
     } catch (e) {
-      logger.severe('setDisUsage test failed $e');
+      logger.severe('getDiskUsage test failed $e');
     }
-    logger.info('getDiskUsage end');
-    return double.parse(result);
+    return parseResult(result);
+  }
+
+  Future<double> nullFunction() async {
+    return 0.0;
+  }
+
+  double parseResult(String result) {
+    double usage = 0;
+    int pos1 = result.indexOf(':');
+    if (pos1 > 0) {
+      // 리턴이 json 으로 온 경우 {"usage":22}
+      logger.info('params=($result)');
+      Map<String, dynamic>? jsonParams = jsonDecode(result);
+      usage = jsonParams?['usage'] as double;
+      logger.info('getDiskUsage <$usage>');
+    } else {
+      // 리턴이 그냥 숫자로 온경우
+      logger.info('getDiskUsage end <$result>');
+      usage = double.parse(result);
+    }
+    return usage;
   }
 
   Widget guageExample() {
@@ -134,13 +159,14 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
                 String result = '0';
                 try {
                   result = await HycopFactory.myFunction!
-                      .execute(functionId: "setDisUsage", params: '{"usage":20}');
+                      .execute(functionId: "setDiskUsage", params: '{"usage":20}');
                 } catch (e) {
-                  logger.severe('setDisUsage test failed $e');
+                  logger.severe('setDiskUsage test failed $e');
                 }
                 logger.info('clean disk end');
+                double usage = parseResult(result);
                 setState(() {
-                  _guageValue = double.parse(result);
+                  _guageValue = usage;
                 });
                 guageKey.currentState?.reset();
               },

@@ -106,11 +106,11 @@ async function  _getDBTest2(text) {
     return retval;
 }
 
-exports.getDisUsage_req = functions.https.onRequest(async (req, res) => {
+exports.getDiskUsage_req = functions.https.onRequest(async (req, res) => {
     var result = await _getDiskUsage();
      res.json({result: `${result}`});
  }); 
-exports.getDisUsage = functions.https.onCall((data) => {
+exports.getDiskUsage = functions.https.onCall((data) => {
     return _getDiskUsage();
 }); 
 
@@ -128,20 +128,20 @@ async function  _getDiskUsage() {
     }
 }
 
-exports.setDisUsage_schedule = functions.pubsub.schedule('every 9 hours').onRun(async (context) => {
+exports.setDiskUsage_schedule = functions.pubsub.schedule('every 9 hours').onRun(async (context) => {
     var usage = await _getDiskUsage();
     if(usage > 98) {
         usage = 98;
     }
     return _setDiskUsage(usage+1);
 });
-exports.setDisUsage_req = functions.https.onRequest(async (req, res) => {
+exports.setDiskUsage_req = functions.https.onRequest(async (req, res) => {
     //var rand = Math.floor(Math.random() * 80) + 20;
     var result = await _setDiskUsage(req.query.usage);
     var result = await _setDiskUsage(rand);
     res.json({result: `${rand}`});
  }); 
-exports.setDisUsage = functions.https.onCall((data) => {
+exports.setDiskUsage = functions.https.onCall((data) => {
     //var rand = Math.floor(Math.random() * 80) + 20;
     return _setDiskUsage(data.usage);
 }); 

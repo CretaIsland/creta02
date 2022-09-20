@@ -462,7 +462,14 @@ cd ../../..
 min(0~59) hour(0~23) day(1~31) month(1~12) week(0~6)
 # removeDelta 의 경우 hour 0 min 01 로 놓으면 새벽 0시 01 분에 동작하게 된다.
 
+#### Node js 로 함수 만들기
 
+1. 과정
+https://appwrite.io/docs/functions?keyword=appwrite&utm_source=google&utm_medium=cpc&utm_term=appwrite&utm_campaign=HD-Appwrite-Search-NA-Brand&gclid=CjwKCAjwpqCZBhAbEiwAa7pXeR8Vla5CrrSGPxP3yzS6GfLs_OxknRnIZSz95MTQLTzZS3Vt_wP7PhoCYfMQAvD_BwE
+
+2. database 접근
+
+https://appwrite.io/docs/server/databases
 
 
 #### 

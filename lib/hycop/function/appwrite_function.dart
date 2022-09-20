@@ -38,10 +38,10 @@ class AppwriteFunction extends AbsFunction {
         throw const CretaException(message: "params should start with '{'");
       }
     }
-    logger.finest('$functionId executed with $realParams');
+    logger.info('$functionId executed with $realParams');
     final result =
         await functions!.createExecution(functionId: functionId, data: realParams, xasync: false);
-    logger.finest('$functionId finished, ${result.statusCode}, ${result.response}');
+    logger.info('$functionId finished, ${result.statusCode}, ${result.response}');
 
     return result.response;
   }
