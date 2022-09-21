@@ -28,11 +28,28 @@ class DBConnInfo {
   String appId = ""; // appwrite databaseId
 }
 
+class StorageConnInfo {
+  String apiKey = "";
+  String appId = "";
+  String storageURL = "";   // appwrite endpoint
+  String projectId = "";    // appwrite projectId
+  String bucketId = "";     // appwrite storage bucketId, firebase user folder path
+  String messagingSenderId = "";
+}
+
+class SocketConnInfo {
+  String serverUrl = "";
+  String serverPort = "";
+  String roomId = ''; 
+}
+
 abstract class AbsServerConfig {
   final String enterprise;
 
   DBConnInfo dbConnInfo = DBConnInfo();
   //DBConnInfo rtConnInfo = DBConnInfo();
+  StorageConnInfo storageConnInfo = StorageConnInfo();
+  SocketConnInfo socketConnInfo = SocketConnInfo();
 
   // String apiKey = "";
   // String authDomain = "";
@@ -72,6 +89,16 @@ class FirebaseConfig extends AbsServerConfig {
       dbConnInfo.storageBucket = "creta02-1a520.appspot.com";
       dbConnInfo.messagingSenderId = "352118964959";
       dbConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
+
+      storageConnInfo.apiKey = "AIzaSyCOmmEEjgWjgqcl2GFfsD4KP2G_WiThVn4";
+      storageConnInfo.appId = "1:93171668117:web:e0105cd1713392cf64f79c";
+      storageConnInfo.projectId = "creta-dev";
+      storageConnInfo.storageURL = "creta-dev.appspot.com";
+      storageConnInfo.messagingSenderId = "93171668117";
+
+      socketConnInfo.serverUrl = "ws://127.0.0.1";
+      socketConnInfo.serverPort = "4432";
+
     }
     if (enterprise == 'Demo') {
       // database info
@@ -99,6 +126,15 @@ class FirebaseConfig extends AbsServerConfig {
       dbConnInfo.storageBucket = "creta02-1a520.appspot.com";
       dbConnInfo.messagingSenderId = "352118964959";
       dbConnInfo.appId = "1:352118964959:web:6b9d9378aad1b7c9261f6a";
+
+      storageConnInfo.apiKey = "AIzaSyCOmmEEjgWjgqcl2GFfsD4KP2G_WiThVn4";
+      storageConnInfo.appId = "1:93171668117:web:e0105cd1713392cf64f79c";
+      storageConnInfo.projectId = "creta-dev";
+      storageConnInfo.storageURL = "creta-dev.appspot.com";
+      storageConnInfo.messagingSenderId = "93171668117";
+
+      socketConnInfo.serverUrl = "ws://127.0.0.1";
+      socketConnInfo.serverPort = "4432";
     }
   }
 }
@@ -111,6 +147,13 @@ class AppwriteConfig extends AbsServerConfig {
       dbConnInfo.databaseURL = "http://192.168.10.3/v1"; // endPoint
       dbConnInfo.projectId = "62d79f0b36f4029ce40f";
       dbConnInfo.appId = "62d79f2e5fda513f4807"; // databaseId
+
+      storageConnInfo.storageURL = "http://localhost:3307/v1";
+      storageConnInfo.projectId = "62fee22718a67d077012";
+      storageConnInfo.apiKey = "2b99b89f2ad015511fa3a8787806993d535e26e739876e002aaf29280b5b844174a9a4d545f90f91fa8047553a035df68461b4eda951c8a225feccd7641049dee230c2d16917da57bc74ac9de1965663f0db1885b2a5e7d586b5e423c26c63f70eb21c5bb5bb87f215d3e52aaa243e0222fdf2f6613764875aa42c0d5eadb464";
+
+      socketConnInfo.serverUrl = "ws://127.0.0.1";
+      socketConnInfo.serverPort = "4432";
     }
     if (enterprise == 'Demo') {
       dbConnInfo.apiKey =
@@ -118,6 +161,13 @@ class AppwriteConfig extends AbsServerConfig {
       dbConnInfo.databaseURL = "http://192.168.10.3/v1"; // endPoint
       dbConnInfo.projectId = "62d79f0b36f4029ce40f";
       dbConnInfo.appId = "62d79f2e5fda513f4807"; // databaseId
+
+      storageConnInfo.storageURL = "http://localhost:3307/v1";
+      storageConnInfo.projectId = "62fee22718a67d077012";
+      storageConnInfo.apiKey = "2b99b89f2ad015511fa3a8787806993d535e26e739876e002aaf29280b5b844174a9a4d545f90f91fa8047553a035df68461b4eda951c8a225feccd7641049dee230c2d16917da57bc74ac9de1965663f0db1885b2a5e7d586b5e423c26c63f70eb21c5bb5bb87f215d3e52aaa243e0222fdf2f6613764875aa42c0d5eadb464";
+
+      socketConnInfo.serverUrl = "ws://127.0.0.1";
+      socketConnInfo.serverPort = "4432";
     }
   }
 }
