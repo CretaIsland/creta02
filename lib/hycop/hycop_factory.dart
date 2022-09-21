@@ -1,3 +1,7 @@
+import 'package:creta02/hycop/storage/abs_storage.dart';
+import 'package:creta02/hycop/storage/appwrite_storage.dart';
+import 'package:creta02/hycop/storage/firebase_storage.dart';
+
 import '../common/util/logger.dart';
 import 'database/firebase_database.dart';
 import 'database/appwrite_database.dart';
@@ -46,6 +50,17 @@ class HycopFactory {
     return;
   }
 
+  static AbsStorage? myStorage;
+  static void selectStorage() {
+    if (HycopFactory.serverType == ServerType.appwrite) {
+      myStorage = AppwriteStorage();
+    } else {
+      myStorage = FirebaseAppStorage();
+    }
+    myStorage!.initialize();
+    return;
+  }
+
   static void initAll() {
     if (myConfig != null) return;
     logger.info('initAll()');
@@ -53,5 +68,6 @@ class HycopFactory {
     HycopFactory.selectDatabase();
     HycopFactory.selectRealTime();
     HycopFactory.selectFunction();
+    HycopFactory.selectStorage();
   }
 }
