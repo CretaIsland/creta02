@@ -31,22 +31,16 @@ class StorageExamplePage extends StatefulWidget {
 }
 
 class _StorageExamplePageState extends State<StorageExamplePage> with TickerProviderStateMixin {
-
-
   late TabController _tabController;
   // late DropzoneViewController _dropZonecontroller;
   late html.File dropFile;
   html.FileReader fileReader = html.FileReader();
 
-
   @override
   void initState() {
     super.initState();
     fileManagerHolder = FileManager();
-    _tabController = TabController(
-      length: 3,
-      vsync: this
-    );
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -54,24 +48,14 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
     if (mounted) super.setState(fn);
   }
 
-
   @override
   Widget build(BuildContext context) {
     //Size screenSize = MediaQuery.of(context).size;
     return MultiProvider(
-      providers: [ 
-        ChangeNotifierProvider<FileManager>.value(value: fileManagerHolder!)
-      ],
+      providers: [ChangeNotifierProvider<FileManager>.value(value: fileManagerHolder!)],
       child: Scaffold(
         appBar: AppBar(
-          actions: WidgetSnippets.hyAppBarActions(
-            goHome: () {
-              Routemaster.of(context).push(AppRoutes.intro);
-            },
-            goLogin: () {
-              Routemaster.of(context).push(AppRoutes.login);
-            },
-          ),
+          actions: WidgetSnippets.hyAppBarActions(context),
           backgroundColor: Colors.orange,
           title: const Text('Storage Example'),
           leading: DrawerMenuWidget(onClicked: () {
@@ -85,49 +69,42 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
         body: Row(
           children: [
             Expanded(
-              flex: 6, 
-              child: Container(
-                color: Colors.yellow[600],
-                child: dropZoneWidget(context),
-              )
-            ),
+                flex: 6,
+                child: Container(
+                  color: Colors.yellow[600],
+                  child: dropZoneWidget(context),
+                )),
             Expanded(
-              flex: 4, 
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * .1,
-                    child: TabBar(
-                      controller: _tabController,
-                      labelColor: Colors.grey,
-                      indicatorColor: Colors.grey,
-                      tabs: const [
-                        Tab(text: "image"),
-                        Tab(text: "video"),
-                        Tab(text: "etc")
-                      ],
+                flex: 4,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .1,
+                      child: TabBar(
+                        controller: _tabController,
+                        labelColor: Colors.grey,
+                        indicatorColor: Colors.grey,
+                        tabs: const [Tab(text: "image"), Tab(text: "video"), Tab(text: "etc")],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * .8,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        imgFileListView(ContentsType.image),
-                        videoFileListView(ContentsType.video),
-                        etcFileListView(ContentsType.octetstream)
-                      ],
-                    ),
-                  )
-                ],
-              )
-            ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .8,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          imgFileListView(ContentsType.image),
+                          videoFileListView(ContentsType.video),
+                          etcFileListView(ContentsType.octetstream)
+                        ],
+                      ),
+                    )
+                  ],
+                )),
           ],
         ),
       ),
     );
   }
-
 
   Widget dropZoneWidget(BuildContext context) {
     return Builder(
@@ -140,29 +117,30 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
         onLeave: () => logger.finest("dropZone leave"),
         onError: (err) => throw CretaException(message: err.toString()),
         onDrop: (ev) async {
-
           logger.finest("drop");
 
           dropFile = ev as html.File;
 
           fileReader.onLoadEnd.listen((event) {
-            HycopFactory.myStorage!.uploadFile(dropFile.name, dropFile.type, fileReader.result as Uint8List).then((value) async {
-              switch(ContentsType.getContentTypes(dropFile.type)) {
-                case ContentsType.image :
+            HycopFactory.myStorage!
+                .uploadFile(dropFile.name, dropFile.type, fileReader.result as Uint8List)
+                .then((value) async {
+              switch (ContentsType.getContentTypes(dropFile.type)) {
+                case ContentsType.image:
                   await fileManagerHolder!.getImgFileList();
                   break;
-                case ContentsType.video : 
+                case ContentsType.video:
                   await fileManagerHolder!.getVideoFileList();
                   break;
-                case ContentsType.octetstream :
+                case ContentsType.octetstream:
                   await fileManagerHolder!.getEtcFileList();
                   break;
-                default :
+                default:
                   break;
               }
             });
           });
-          
+
           fileReader.onError.listen((err) {
             throw CretaException(message: err.toString());
           });
@@ -175,75 +153,72 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
 
   Widget imgFileListView(ContentsType contentsType) {
     return FutureBuilder(
-      future: fileManagerHolder!.getImgFileList(),
-      builder: (context, AsyncSnapshot snapshot) {
-        if(snapshot.hasError) {
-          logger.severe("data fetch error");
-          return const Center(child: Text('data fetch error'));
-        }
-        if(snapshot.hasData) {
-          logger.severe("No data founded");
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        if(snapshot.connectionState == ConnectionState.done) {
-          logger.finest("done!");
-          return Consumer<FileManager>(builder: (context, fileManager, child) {
-            return fileListTileView(fileManager.imgFileList, contentsType);
-          });        
-        }
-        return Container();
-      }
-    );
+        future: fileManagerHolder!.getImgFileList(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            logger.severe("data fetch error");
+            return const Center(child: Text('data fetch error'));
+          }
+          if (snapshot.hasData) {
+            logger.severe("No data founded");
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            logger.finest("done!");
+            return Consumer<FileManager>(builder: (context, fileManager, child) {
+              return fileListTileView(fileManager.imgFileList, contentsType);
+            });
+          }
+          return Container();
+        });
   }
 
-   Widget videoFileListView(ContentsType contentsType) {
+  Widget videoFileListView(ContentsType contentsType) {
     return FutureBuilder(
-      future: fileManagerHolder!.getVideoFileList(),
-      builder: (context, AsyncSnapshot snapshot) {
-        if(snapshot.hasError) {
-          logger.severe("data fetch error");
-          return const Center(child: Text('data fetch error'));
-        }
-        if(snapshot.hasData) {
-          logger.severe("No data founded");
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        if(snapshot.connectionState == ConnectionState.done) {
-          return Consumer<FileManager>(builder: (context, fileManager, child) {
-            return fileListTileView(fileManager.videoFileList, contentsType);
-          });        
-        }
-        return Container();
-      }
-    );
+        future: fileManagerHolder!.getVideoFileList(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            logger.severe("data fetch error");
+            return const Center(child: Text('data fetch error'));
+          }
+          if (snapshot.hasData) {
+            logger.severe("No data founded");
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Consumer<FileManager>(builder: (context, fileManager, child) {
+              return fileListTileView(fileManager.videoFileList, contentsType);
+            });
+          }
+          return Container();
+        });
   }
 
-   Widget etcFileListView(ContentsType contentsType) {
+  Widget etcFileListView(ContentsType contentsType) {
     return FutureBuilder(
-      future: fileManagerHolder!.getEtcFileList(),
-      builder: (context, AsyncSnapshot snapshot) {
-        if(snapshot.hasError) {
-          logger.severe("data fetch error");
-          return const Center(child: Text('data fetch error'));
-        }
-        if(snapshot.hasData) {
-          logger.severe("No data founded");
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        if(snapshot.connectionState == ConnectionState.done) {
-          return Consumer<FileManager>(builder: (context, fileManager, child) {
-            return fileListTileView(fileManager.etcFileList, contentsType);
-          });        
-        }
-        return Container();
-      }
-    );
+        future: fileManagerHolder!.getEtcFileList(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            logger.severe("data fetch error");
+            return const Center(child: Text('data fetch error'));
+          }
+          if (snapshot.hasData) {
+            logger.severe("No data founded");
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Consumer<FileManager>(builder: (context, fileManager, child) {
+              return fileListTileView(fileManager.etcFileList, contentsType);
+            });
+          }
+          return Container();
+        });
   }
 
   Widget fileListTileView(List<FileModel> fileList, ContentsType contentsType) {
@@ -257,28 +232,25 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
             Container(
               width: MediaQuery.of(context).size.width * .18,
               height: MediaQuery.of(context).size.width * .1,
-              decoration: contentsType == ContentsType.image ? BoxDecoration(
-                image: DecorationImage(
-                  image: HycopFactory.serverType == ServerType.appwrite ?
-                   Image.memory(fileList[index].fileView).image : 
-                   NetworkImage(fileList[index].fileView),
-                  fit: BoxFit.cover
-                ),
-                borderRadius: BorderRadius.circular(10)
-              ) : BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(10)
-              ),
+              decoration: contentsType == ContentsType.image
+                  ? BoxDecoration(
+                      image: DecorationImage(
+                          image: HycopFactory.serverType == ServerType.appwrite
+                              ? Image.memory(fileList[index].fileView).image
+                              : NetworkImage(fileList[index].fileView),
+                          fit: BoxFit.cover),
+                      borderRadius: BorderRadius.circular(10))
+                  : BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(10)),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.delete_rounded, size: MediaQuery.of(context).size.width * .02), 
-                    onPressed: () {
-                      fileManagerHolder!.deleteFile(fileList[index].fileId, contentsType);
-                    }
-                  )
+                      icon:
+                          Icon(Icons.delete_rounded, size: MediaQuery.of(context).size.width * .02),
+                      onPressed: () {
+                        fileManagerHolder!.deleteFile(fileList[index].fileId, contentsType);
+                      })
                 ],
               ),
             ),
@@ -291,23 +263,10 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
         );
       },
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: MediaQuery.of(context).size.width * .2,
-        crossAxisSpacing: 3,
-        mainAxisSpacing: 3,
-        childAspectRatio: 2 / 1.3
-      ), 
+          maxCrossAxisExtent: MediaQuery.of(context).size.width * .2,
+          crossAxisSpacing: 3,
+          mainAxisSpacing: 3,
+          childAspectRatio: 2 / 1.3),
     );
   }
-
-
-
-
-
-
-
-
-
-
-
-
 }

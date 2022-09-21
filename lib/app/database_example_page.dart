@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:creta02/hycop/database/db_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
@@ -11,6 +10,7 @@ import '../common/widgets/widget_snippets.dart';
 import '../data_io/book_manager.dart';
 import '../hycop/absModel/abs_model.dart';
 import '../hycop/hycop_factory.dart';
+import '../hycop/hycop_user.dart';
 import '../model/book_model.dart';
 import '../common/util/logger.dart';
 import 'book_list_widget.dart';
@@ -71,14 +71,7 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
           child: const Icon(Icons.add),
         ),
         appBar: AppBar(
-          actions: WidgetSnippets.hyAppBarActions(
-            goHome: () {
-              Routemaster.of(context).push(AppRoutes.intro);
-            },
-            goLogin: () {
-              Routemaster.of(context).push(AppRoutes.login);
-            },
-          ),
+          actions: WidgetSnippets.hyAppBarActions(context),
           backgroundColor: Colors.orange,
           title: const Text('Database Example'),
           leading: DrawerMenuWidget(onClicked: () {
@@ -91,7 +84,7 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
           }),
         ),
         body: FutureBuilder<List<AbsModel>>(
-            future: bookManagerHolder!.getListFromDB(DBUtils.currentUserId),
+            future: bookManagerHolder!.getListFromDB(HycopUser.currentLoginUser.email),
             builder: (context, AsyncSnapshot<List<AbsModel>> snapshot) {
               if (snapshot.hasError) {
                 //error가 발생하게 될 경우 반환하게 되는 부분
@@ -99,7 +92,7 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
                 return const Center(child: Text('data fetch error'));
               }
               if (snapshot.hasData == false) {
-                logger.severe("No data founded(${DBUtils.currentUserId})");
+                logger.severe("No data founded(${HycopUser.currentLoginUser.email})");
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
@@ -119,7 +112,7 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
                         height: 50,
                         //width: 100,
                         child: Text(
-                          '${bookManager.modelList.length} data founded(${DBUtils.currentUserId})',
+                          '${bookManager.modelList.length} data founded(${HycopUser.currentLoginUser.email})',
                           style: const TextStyle(fontSize: 24),
                         ),
                       ),
@@ -177,7 +170,7 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
     int randomNumber = random.nextInt(1000);
     BookModel book = BookModel.withName(
         '${sampleNameList[randomNumber % sampleNameList.length]}_$randomNumber',
-        DBUtils.currentUserId);
+        HycopUser.currentLoginUser.email);
 
     book.hashTag.set('#$randomNumber tag...');
 
@@ -218,7 +211,8 @@ class _DatabaseExamplePageState extends State<DatabaseExamplePage> {
         ElevatedButton(
             onPressed: () async {
               if (bookManager.modelList.isEmpty) {
-                BookModel book = BookModel.withName('sample($counter)', DBUtils.currentUserId);
+                BookModel book =
+                    BookModel.withName('sample($counter)', HycopUser.currentLoginUser.email);
                 await bookManager.createToDB(book);
               } else {
                 BookModel book = BookModel();

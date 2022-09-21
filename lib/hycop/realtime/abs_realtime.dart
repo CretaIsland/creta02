@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import '../../common/util/device_info.dart';
 import '../../common/util/logger.dart';
 import '../database/db_utils.dart';
+import '../hycop_user.dart';
 
 abstract class AbsRealtime {
   //connection info
@@ -49,7 +50,7 @@ abstract class AbsRealtime {
     input['directive'] = directive;
     input['collectionId'] = DBUtils.collectionFromMid(mid);
     input['mid'] = mid; //'book=3ecb527f-4f5e-4350-8705-d5742781451b';
-    input['userId'] = DBUtils.currentUserId;
+    input['userId'] = HycopUser.currentLoginUser.email;
     input['deviceId'] = DeviceInfo.deviceId;
     input['updateTime'] = DBUtils.dateTimeToDB(DateTime.now());
     input['delta'] = delta != null ? json.encode(delta) : '';

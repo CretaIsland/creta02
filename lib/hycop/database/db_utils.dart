@@ -1,34 +1,29 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:appwrite/appwrite.dart';
 import 'package:uuid/uuid.dart';
-import '../../common/util/config.dart';
-import '../../common/util/logger.dart';
 import '../absModel/model_enums.dart';
-import '../hycop_factory.dart';
-import 'abs_database.dart';
 
 class DBUtils {
-  static String currentUserId = 'b49@sqisoft.com'; // 임시로 사용
+  //static String HycopUser.currentLoginUser = 'b49@sqisoft.com'; // 임시로 사용
 
-  static Future<bool> login(String email, String password) async {
-    if (HycopFactory.serverType == ServerType.appwrite) {
-      try {
-        Account account = Account(AbsDatabase.awDBConn!);
-        //await account.create(userId: userId, email: email, password: password);
-        await account.createEmailSession(email: email, password: password);
-        currentUserId = email;
-        logger.info('login($email, $password)');
-      } catch (e) {
-        logger.severe('authentication error', e);
-        return false;
-        //throw CretaException(message: 'authentication error', exception: e as Exception);
-      }
-    } else {
-      if (email.isNotEmpty) currentUserId = email;
-    }
-    return true;
-  }
+  // static Future<bool> login(String email, String password) async {
+  //   if (HycopFactory.serverType == ServerType.appwrite) {
+  //     try {
+  //       Account account = Account(AbsDatabase.awDBConn!);
+  //       //await account.create(userId: userId, email: email, password: password);
+  //       await account.createEmailSession(email: email, password: password);
+  //       //HycopUser.currentLoginUser = email;
+  //       logger.info('login($email, $password)');
+  //     } catch (e) {
+  //       logger.severe('authentication error', e);
+  //       return false;
+  //       //throw CretaException(message: 'authentication error', exception: e as Exception);
+  //     }
+  //   } else {
+  //     //if (email.isNotEmpty) HycopUser.currentLoginUser = email;
+  //   }
+  //   return true;
+  // }
 
   static String midToKey(String mid) {
     int pos = mid.indexOf('=');

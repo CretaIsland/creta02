@@ -3,6 +3,8 @@
 // import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:routemaster/routemaster.dart';
+
 // import 'package:routemaster/routemaster.dart';
 // import '../hycop/database/db_utils.dart';
 // import 'navigation/routes.dart';
@@ -10,8 +12,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../common/util/logger.dart';
 // import 'package:creta02/common/util/exceptions.dart';
 
+import '../common/widgets/glowing_button.dart';
 import '../hycop/utils/hycop_exceptions.dart';
 import '../hycop/hycop_user.dart';
+import 'navigation/routes.dart';
 
 class UserInfoPage extends StatelessWidget {
   const UserInfoPage({Key? key}) : super(key: key);
@@ -56,7 +60,6 @@ class _UserInfoFormState extends ConsumerState<_UserInfoForm> {
     updateUserInfo['imagefile'] = 'imagefile test';
     updateUserInfo['userType'] = 'userType test';
 
-
     HycopUser.updateAccountInfo(updateUserInfo).then((value) {
       //logger.finest('new account=${HycopUser.currentLoginUser.allUserData}');
       setState(() {});
@@ -75,7 +78,7 @@ class _UserInfoFormState extends ConsumerState<_UserInfoForm> {
   Future<void> _updateUserPassword() async {
     // Map<String, dynamic> updateUserInfo = {};
 
-    HycopUser.updateAccountPassword('5678tyui','1234qwer').then((value) {
+    HycopUser.updateAccountPassword('5678tyui', '1234qwer').then((value) {
       //logger.finest('new account=${HycopUser.currentLoginUser.allUserData}');
       setState(() {});
     }).onError((error, stackTrace) {
@@ -171,11 +174,21 @@ class _UserInfoFormState extends ConsumerState<_UserInfoForm> {
                   child: const Text('logout'),
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   onPressed: _deleteAccount,
                   child: const Text('delete account'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GlowingButton(
+                  onPressed: () {
+                    Routemaster.of(context).push(AppRoutes.main);
+                  },
+                  text: 'Next',
                 ),
               ),
               _errMsg.isNotEmpty

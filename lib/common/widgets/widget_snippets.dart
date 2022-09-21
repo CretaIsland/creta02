@@ -2,8 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../hycop/database/db_utils.dart';
+import 'package:routemaster/routemaster.dart';
+
+//import '../../hycop/database/db_utils.dart';
+import '../../app/navigation/routes.dart';
 import '../../hycop/hycop_factory.dart';
+import '../../hycop/hycop_user.dart';
 import '../util/config.dart';
 import 'resizing_icon_button.dart';
 
@@ -31,12 +35,22 @@ class WidgetSnippets {
         alignment: FractionalOffset.center);
   }
 
-  static List<Widget> hyAppBarActions(
-      {required void Function() goHome, required void Function() goLogin}) {
+  static List<Widget> hyAppBarActions(BuildContext context,
+      {void Function()? goHome, void Function()? goLogin}) {
     return [
       HycopFactory.serverType == ServerType.appwrite
-          ? WidgetSnippets.appwriteLogoButton(onPressed: goHome)
-          : WidgetSnippets.firebaseLogoButton(onPressed: goHome),
+          ? WidgetSnippets.appwriteLogoButton(
+              onPressed: goHome ??
+                  () {
+                    HycopUser.logout();
+                    Routemaster.of(context).push(AppRoutes.intro);
+                  })
+          : WidgetSnippets.firebaseLogoButton(
+              onPressed: goHome ??
+                  () {
+                    HycopUser.logout();
+                    Routemaster.of(context).push(AppRoutes.intro);
+                  }),
       Center(
           child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -49,7 +63,7 @@ class WidgetSnippets {
           child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Text(
-          DBUtils.currentUserId,
+          HycopUser.currentLoginUser.email,
           style: const TextStyle(fontSize: 24),
         ),
       )),
@@ -58,7 +72,11 @@ class WidgetSnippets {
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: IconButton(
           icon: const Icon(Icons.logout, size: 36),
-          onPressed: goLogin,
+          onPressed: goLogin ??
+              () {
+                HycopUser.logout();
+                Routemaster.of(context).push(AppRoutes.login);
+              },
         ),
       )),
     ];

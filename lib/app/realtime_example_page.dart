@@ -60,14 +60,7 @@ class _RealTimeExamplePageState extends State<RealTimeExamplePage> {
           child: const Icon(Icons.add),
         ),
         appBar: AppBar(
-          actions: WidgetSnippets.hyAppBarActions(
-            goHome: () {
-              Routemaster.of(context).push(AppRoutes.intro);
-            },
-            goLogin: () {
-              Routemaster.of(context).push(AppRoutes.login);
-            },
-          ),
+          actions: WidgetSnippets.hyAppBarActions(context),
           backgroundColor: Colors.orange,
           title: const Text('Realtime Example'),
           leading: DrawerMenuWidget(onClicked: () {

@@ -13,7 +13,6 @@ import '../hycop/hycop_user.dart';
 //import 'package:creta02/common/util/exceptions.dart';
 import '../hycop/utils/hycop_exceptions.dart';
 
-
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -78,8 +77,7 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
         showSnackBar(context, _errMsg);
         setState(() {});
       });
-    })
-    .onError((error, stackTrace) {
+    }).onError((error, stackTrace) {
       if (error is HycopException) {
         HycopException ex = error;
         _errMsg = ex.message;
@@ -123,18 +121,19 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
     userData['password'] = email;
     userData['accountSignUpType'] = AccountSignUpType.google.index;
     HycopUser.createAccount(userData).then((value) {
-        Routemaster.of(context).push(AppRoutes.userinfo);
-      }).onError((error, stackTrace) {
-        if (error is HycopException) {
-          HycopException ex = error;
-          _errMsg = ex.message;
-        } else {
-          _errMsg = 'Unknown DB Error !!!';
-        }
-        showSnackBar(context, _errMsg);
-        setState(() {});
-      });
+      Routemaster.of(context).push(AppRoutes.userinfo);
+    }).onError((error, stackTrace) {
+      if (error is HycopException) {
+        HycopException ex = error;
+        _errMsg = ex.message;
+      } else {
+        _errMsg = 'Unknown DB Error !!!';
+      }
+      showSnackBar(context, _errMsg);
+      setState(() {});
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -163,7 +162,7 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
                   ),
                 ),
               ),
-              NameTextField(name:'name', controller: _nameTextEditingController),
+              OnlyTextField(hintText: 'name', controller: _nameTextEditingController),
               EmailTextField(controller: _emailTextEditingController),
               PasswordTextField(controller: _passwordTextEditingController),
               Padding(
@@ -182,12 +181,12 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
               ),
               _errMsg.isNotEmpty
                   ? Text(
-                _errMsg,
-                style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
-              )
+                      _errMsg,
+                      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                    )
                   : const SizedBox(
-                height: 10,
-              ),
+                      height: 10,
+                    ),
               Text.rich(
                 TextSpan(
                   text: 'Already have an account? ',

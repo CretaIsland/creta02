@@ -30,14 +30,7 @@ class _SocketIOExamplePageState extends State<SocketIOExamplePage> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        actions: WidgetSnippets.hyAppBarActions(
-          goHome: () {
-            Routemaster.of(context).push(AppRoutes.intro);
-          },
-          goLogin: () {
-            Routemaster.of(context).push(AppRoutes.login);
-          },
-        ),
+        actions: WidgetSnippets.hyAppBarActions(context),
         backgroundColor: Colors.orange,
         title: const Text('Socket IO Example'),
         leading: DrawerMenuWidget(onClicked: () {

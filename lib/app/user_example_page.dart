@@ -30,14 +30,7 @@ class _UserExamplePageState extends State<UserExamplePage> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        actions: WidgetSnippets.hyAppBarActions(
-          goHome: () {
-            Routemaster.of(context).push(AppRoutes.intro);
-          },
-          goLogin: () {
-            Routemaster.of(context).push(AppRoutes.login);
-          },
-        ),
+        actions: WidgetSnippets.hyAppBarActions(context),
         backgroundColor: Colors.orange,
         title: const Text('User Account Example'),
         leading: DrawerMenuWidget(onClicked: () {

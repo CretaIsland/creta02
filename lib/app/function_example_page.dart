@@ -50,14 +50,7 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
 
     return Scaffold(
         appBar: AppBar(
-          actions: WidgetSnippets.hyAppBarActions(
-            goHome: () {
-              Routemaster.of(context).push(AppRoutes.intro);
-            },
-            goLogin: () {
-              Routemaster.of(context).push(AppRoutes.login);
-            },
-          ),
+          actions: WidgetSnippets.hyAppBarActions(context),
           backgroundColor: Colors.orange,
           title: const Text('Function Example'),
           leading: DrawerMenuWidget(onClicked: () {
