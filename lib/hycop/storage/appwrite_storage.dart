@@ -72,12 +72,12 @@ class AppwriteStorage extends AbsStorage {
     ).onError((error, stackTrace) => throw CretaException(message: stackTrace.toString()));
 
     return FileModel(
-      fileId: res["\$id"], 
-      fileName: res["name"], 
-      fileView:  await _storage.getFileView(bucketId: myConfig!.serverConfig!.storageConnInfo.bucketId, fileId: res["\$id"]), 
-      fileMd5: res["signature"], 
-      fileSize: res["sizeOriginal"], 
-      fileType: ContentsType.getContentTypes(res["mimeType"])
+      fileId: res.$id,//res["\$id"],
+      fileName: res.name,//res["name"],
+      fileView:  await _storage.getFileView(bucketId: myConfig!.serverConfig!.storageConnInfo.bucketId, fileId: res.$id/*res["\$id"]*/),
+      fileMd5: res.signature,//res["signature"],
+      fileSize: res.sizeOriginal,//res["sizeOriginal"],
+      fileType: ContentsType.getContentTypes(res.mimeType/*res["mimeType"]*/)
     );
   }
 
@@ -95,17 +95,17 @@ class AppwriteStorage extends AbsStorage {
       orderType: orderType
     );
 
-    for(var element in res['files']) {
+    for(var element in res.files/*res['files']*/) {
 
-      Uint8List fileData = await _storage.getFileView(bucketId: myConfig!.serverConfig!.storageConnInfo.bucketId, fileId: element["\$id"]);
+      Uint8List fileData = await _storage.getFileView(bucketId: myConfig!.serverConfig!.storageConnInfo.bucketId, fileId: element.$id/*element["\$id"]*/);
 
       fileInfoList.add(FileModel(
-        fileId: element['\$id'], 
-        fileName: element['name'], 
+        fileId: element.$id,//element['\$id'],
+        fileName: element.name,//element['name'],
         fileView: fileData, 
-        fileMd5: element['signature'],
-        fileSize: element['sizeOriginal'], 
-        fileType: ContentsType.getContentTypes(element['mimeType']))
+        fileMd5: element.signature,//element['signature'],
+        fileSize: element.sizeOriginal,//element['sizeOriginal'],
+        fileType: ContentsType.getContentTypes(element.mimeType/*element['mimeType']*/))
       );
     }
     return fileInfoList;

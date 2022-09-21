@@ -8,6 +8,12 @@ import 'navigation/routes.dart';
 import '../common/widgets/text_field.dart';
 import 'package:routemaster/routemaster.dart';
 
+import '../common/util/logger.dart';
+import '../hycop/hycop_user.dart';
+//import 'package:creta02/common/util/exceptions.dart';
+import '../hycop/utils/hycop_exceptions.dart';
+
+
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -34,6 +40,8 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
 
+  String _errMsg = '';
+
   @override
   void dispose() {
     _nameTextEditingController.dispose();
@@ -42,8 +50,91 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
     super.dispose();
   }
 
-  Future<void> createAccount() async {}
+  Future<void> createAccount() async {
+    logger.finest('createAccount pressed');
+    _errMsg = '';
 
+    String name = _nameTextEditingController.text;
+    String email = _emailTextEditingController.text;
+    String password = _passwordTextEditingController.text;
+
+    HycopUser.isExistAccount(email).then((value) {
+      Map<String, dynamic> userData = {};
+      userData['name'] = name;
+      userData['email'] = email;
+      userData['password'] = password;
+      logger.finest('register start');
+      HycopUser.createAccount(userData).then((value) {
+        logger.finest('register end');
+        Routemaster.of(context).push(AppRoutes.userinfo);
+        logger.finest('goto user-info-page');
+      }).onError((error, stackTrace) {
+        if (error is HycopException) {
+          HycopException ex = error;
+          _errMsg = ex.message;
+        } else {
+          _errMsg = 'Unknown DB Error !!!';
+        }
+        showSnackBar(context, _errMsg);
+        setState(() {});
+      });
+    })
+    .onError((error, stackTrace) {
+      if (error is HycopException) {
+        HycopException ex = error;
+        _errMsg = ex.message;
+      } else {
+        _errMsg = 'Unknown DB Error !!!';
+      }
+      showSnackBar(context, _errMsg);
+      setState(() {});
+    });
+  }
+
+  Future<void> createAccountByGoogle() async {
+    logger.finest('createAccountByGoogle pressed');
+    _errMsg = '';
+
+    String name = _nameTextEditingController.text;
+    String email = _emailTextEditingController.text;
+    //String password = _passwordTextEditingController.text;
+
+    await HycopUser.isExistAccount(email).catchError((error, stackTrace) {
+      if (error is HycopException) {
+        HycopException ex = error;
+        _errMsg = ex.message;
+      } else {
+        _errMsg = 'Unknown DB Error !!!';
+      }
+      showSnackBar(context, _errMsg);
+      setState(() {});
+    }).then((value) {
+      if (value == true) {
+        _errMsg = 'Already exist user !!!';
+        showSnackBar(context, _errMsg);
+        setState(() {});
+      }
+    });
+
+    //
+    Map<String, dynamic> userData = {};
+    userData['name'] = name;
+    userData['email'] = email;
+    userData['password'] = email;
+    userData['accountSignUpType'] = AccountSignUpType.google.index;
+    HycopUser.createAccount(userData).then((value) {
+        Routemaster.of(context).push(AppRoutes.userinfo);
+      }).onError((error, stackTrace) {
+        if (error is HycopException) {
+          HycopException ex = error;
+          _errMsg = ex.message;
+        } else {
+          _errMsg = 'Unknown DB Error !!!';
+        }
+        showSnackBar(context, _errMsg);
+        setState(() {});
+      });
+  }
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -72,10 +163,7 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
                   ),
                 ),
               ),
-              OnlyTextField(
-                controller: _nameTextEditingController,
-                hintText: "Name",
-              ),
+              NameTextField(name:'name', controller: _nameTextEditingController),
               EmailTextField(controller: _emailTextEditingController),
               PasswordTextField(controller: _passwordTextEditingController),
               Padding(
@@ -84,6 +172,21 @@ class _RegisterFormState extends ConsumerState<_RegisterForm> {
                   onPressed: createAccount,
                   child: const Text('Create'),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: createAccountByGoogle,
+                  child: const Text('Sign-up by google'),
+                ),
+              ),
+              _errMsg.isNotEmpty
+                  ? Text(
+                _errMsg,
+                style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+              )
+                  : const SizedBox(
+                height: 10,
               ),
               Text.rich(
                 TextSpan(

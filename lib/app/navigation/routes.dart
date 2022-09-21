@@ -14,6 +14,8 @@ import '../socketio_example_page.dart';
 import '../storage_example_page.dart';
 import '../user_example_page.dart';
 //import '../../common/util/logger.dart';
+import '../user_info_page.dart';
+import '../reset_password_confirm_page.dart';
 
 abstract class AppRoutes {
   //static const String menu = '/menu';
@@ -28,6 +30,9 @@ abstract class AppRoutes {
   static const String login = '/login';
   static const String intro = '/intro';
   static const String register = '/register';
+
+  static const String userinfo  = '/userinfo';
+  static const String resetPasswordConfirm  = '/resetPasswordConfirm';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();
@@ -53,6 +58,8 @@ final routesLoggedOut = RouteMap(
     AppRoutes.socketioExample: (_) => const TransitionPage(child: SocketIOExamplePage()),
     AppRoutes.userExample: (_) => const TransitionPage(child: UserExamplePage()),
     AppRoutes.intro: (_) => const TransitionPage(child: IntroPage()),
+    AppRoutes.userinfo: (_) => const TransitionPage(child: UserInfoPage()),
+    AppRoutes.resetPasswordConfirm: (_) => const TransitionPage(child: ResetPasswordConfirmPage()),
   },
 );
 
