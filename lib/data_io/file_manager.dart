@@ -21,7 +21,7 @@ class FileManager extends ChangeNotifier {
     imgFileList = [];
     
     final res = (await HycopFactory.myStorage!.getFileInfoList());
-    for(var element in res!) {
+    for(var element in res) {
       if(element.fileType == ContentsType.image) {
         imgFileList.add(FileModel(fileId: element.fileId, fileName: element.fileName, fileView: element.fileView, fileMd5: element.fileMd5, fileSize: element.fileSize, fileType: element.fileType));
       }

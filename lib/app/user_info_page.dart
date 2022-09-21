@@ -1,14 +1,14 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/gestures.dart';
+// import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:routemaster/routemaster.dart';
-import '../hycop/database/db_utils.dart';
-import 'navigation/routes.dart';
-import '../common/widgets/text_field.dart';
+// import 'package:routemaster/routemaster.dart';
+// import '../hycop/database/db_utils.dart';
+// import 'navigation/routes.dart';
+// import '../common/widgets/text_field.dart';
 import '../common/util/logger.dart';
-import 'package:creta02/common/util/exceptions.dart';
+// import 'package:creta02/common/util/exceptions.dart';
 
 import '../hycop/utils/hycop_exceptions.dart';
 import '../hycop/hycop_user.dart';
@@ -73,7 +73,7 @@ class _UserInfoFormState extends ConsumerState<_UserInfoForm> {
   }
 
   Future<void> _updateUserPassword() async {
-    Map<String, dynamic> updateUserInfo = {};
+    // Map<String, dynamic> updateUserInfo = {};
 
     HycopUser.updateAccountPassword('5678tyui','1234qwer').then((value) {
       //logger.finest('new account=${HycopUser.currentLoginUser.allUserData}');

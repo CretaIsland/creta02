@@ -1,6 +1,7 @@
 
 import 'package:creta02/common/util/config.dart';
 import 'package:creta02/common/util/exceptions.dart';
+import 'package:creta02/common/util/logger.dart';
 import 'package:creta02/data_io/user_cursor_manager.dart';
 import 'package:creta02/hycop/socket/socket_utils.dart';
 // ignore: depend_on_referenced_packages
@@ -36,10 +37,10 @@ class SocketClient {
 
 
     socket.on("connect", (data) {
-      print("connect");
+      logger.finest("connect");
     });
     socket.on("disconnect", (data) {
-      print("disconnect");
+      logger.finest("disconnect");
       disconnect();
     });
     socket.on("joinUser", (data) {

@@ -1,13 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:creta02/hycop/absModel/abs_model.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:creta02/hycop/absModel/abs_model.dart';
 import 'package:creta02/model/abs_object.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 //import 'package:creta02/common/util/exceptions.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 //import 'package:creta02/model/abs_model.dart';
 import '../../common/util/logger.dart';
 import 'abs_user_db.dart';
-import '../database/abs_database.dart';
+// import '../database/abs_database.dart';
 import '../hycop_factory.dart';
 import '../utils/hycop_exceptions.dart';
 import '../utils/hycop_utils.dart';
@@ -86,7 +86,8 @@ class FirebaseUserDb extends AbsUserDb {
 
   @override
   Future<bool> isExistAccount(String email) async {
-    final getUserData = await HycopFactory.myDataBase!
+    // final getUserData = 
+    await HycopFactory.myDataBase!
         .simpleQueryData('hycop_users', name: 'email', value: email, orderBy: 'name')
         .catchError((error, stackTrace) =>
             throw HycopUtils.getHycopException(error: error, defaultMessage: 'not exist account(email:$email) !!!'))
@@ -180,7 +181,7 @@ class FirebaseUserDb extends AbsUserDb {
     }
     for (var result in getUserData) {
       final type = AccountSignUpType.fromInt(
-          int.parse(result['accountSignUpType'].toString() ?? AccountSignUpType.none.index.toString()));
+          int.parse(result['accountSignUpType'].toString()));
       if (type != accountSignUpType) {
         logger.severe('not [${accountSignUpType.name}] sign-up user !!!');
         throw HycopUtils.getHycopException(defaultMessage: 'not [${accountSignUpType.name}] sign-up user !!!');

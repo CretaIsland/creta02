@@ -12,12 +12,12 @@ import 'package:creta02/model/file_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:appwrite/appwrite.dart';
 // ignore: depend_on_referenced_packages
-import 'package:dart_appwrite/dart_appwrite.dart' as awServer;
+import 'package:dart_appwrite/dart_appwrite.dart' as aw_server;
 
 class AppwriteStorage extends AbsStorage {
 
   late Storage _storage;
-  late awServer.Storage _serverStorage;
+  late aw_server.Storage _serverStorage;
 
 
 
@@ -30,7 +30,7 @@ class AppwriteStorage extends AbsStorage {
     );
     _storage = Storage(AbsStorage.awStorageConn!);
 
-    _serverStorage = awServer.Storage(awServer.Client()
+    _serverStorage = aw_server.Storage(aw_server.Client()
       ..setEndpoint(myConfig!.serverConfig!.storageConnInfo.storageURL)
       ..setProject(myConfig!.serverConfig!.storageConnInfo.projectId)
       ..setKey(myConfig!.serverConfig!.storageConnInfo.apiKey)

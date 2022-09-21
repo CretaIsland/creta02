@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 
 import '../common/util/logger.dart';
 import '../common/widgets/glowing_button.dart';
@@ -46,7 +46,7 @@ class _FunctionExamplePageState extends State<FunctionExamplePage> {
 
   @override
   Widget build(BuildContext context) {
-    String id = const Uuid().v4();
+    //String id = const Uuid().v4();
 
     return Scaffold(
         appBar: AppBar(

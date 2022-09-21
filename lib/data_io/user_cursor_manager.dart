@@ -21,8 +21,8 @@ class UserManager extends ChangeNotifier {
   }
 
   void changePosition(int index, double dx, double dy) {
-    userCursorList[index].cursor_x = dx;
-    userCursorList[index].cursor_y = dy;
+    userCursorList[index].cursorX = dx;
+    userCursorList[index].cursorY = dy;
     notifyListeners();
   }
 
@@ -34,13 +34,13 @@ class UserManager extends ChangeNotifier {
 
 class UserCursor {
   String userID = "";
-  double cursor_x = 0.0;
-  double cursor_y = 0.0;
+  double cursorX = 0.0;
+  double cursorY = 0.0;
 
-  UserCursor(this.userID, this.cursor_x, this.cursor_y);
+  UserCursor(this.userID, this.cursorX, this.cursorY);
 
   void changePosition(double dx, double dy) {
-    cursor_x = dx;
-    cursor_y = dy;
+    cursorX = dx;
+    cursorY = dy;
   }
 }

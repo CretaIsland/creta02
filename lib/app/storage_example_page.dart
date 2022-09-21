@@ -1,3 +1,4 @@
+// ignore: duplicate_ignore
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:typed_data';
@@ -18,7 +19,6 @@ import 'package:provider/provider.dart';
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
-// ignore: depend_on_referenced_packages
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 
 class StorageExamplePage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
 
 
   late TabController _tabController;
-  late DropzoneViewController _dropZonecontroller;
+  // late DropzoneViewController _dropZonecontroller;
   late html.File dropFile;
   html.FileReader fileReader = html.FileReader();
 
@@ -108,7 +108,7 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
                       ],
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     height: MediaQuery.of(context).size.height * .8,
                     child: TabBarView(
                       controller: _tabController,
@@ -134,14 +134,14 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
       builder: (context) => DropzoneView(
         operation: DragOperation.copy,
         cursor: CursorType.grab,
-        onCreated: (ctrl) => _dropZonecontroller = ctrl,
-        onLoaded: () => print("dropZone load"),
-        onHover: () => print("dropZone hover"),
-        onLeave: () => print("dropZone leave"),
+        // onCreated: (ctrl) => _dropZonecontroller = ctrl,
+        onLoaded: () => logger.finest("dropZone load"),
+        onHover: () => logger.finest("dropZone hover"),
+        onLeave: () => logger.finest("dropZone leave"),
         onError: (err) => throw CretaException(message: err.toString()),
         onDrop: (ev) async {
 
-          print("drop");
+          logger.finest("drop");
 
           dropFile = ev as html.File;
 
@@ -149,7 +149,6 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
             HycopFactory.myStorage!.uploadFile(dropFile.name, dropFile.type, fileReader.result as Uint8List).then((value) async {
               switch(ContentsType.getContentTypes(dropFile.type)) {
                 case ContentsType.image :
-                  print("dropzone에서 호출");
                   await fileManagerHolder!.getImgFileList();
                   break;
                 case ContentsType.video : 
@@ -189,8 +188,7 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
           );
         }
         if(snapshot.connectionState == ConnectionState.done) {
-          print("done!");
-          print(fileManagerHolder!.imgFileList.length);
+          logger.finest("done!");
           return Consumer<FileManager>(builder: (context, fileManager, child) {
             return fileListTileView(fileManager.imgFileList, contentsType);
           });        
@@ -278,14 +276,13 @@ class _StorageExamplePageState extends State<StorageExamplePage> with TickerProv
                   IconButton(
                     icon: Icon(Icons.delete_rounded, size: MediaQuery.of(context).size.width * .02), 
                     onPressed: () {
-                      print("삭제");
                       fileManagerHolder!.deleteFile(fileList[index].fileId, contentsType);
                     }
                   )
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * .2,
               height: MediaQuery.of(context).size.width * .02,
               child: Text(fileList[index].fileName, textAlign: TextAlign.center),

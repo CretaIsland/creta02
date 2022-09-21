@@ -6,6 +6,7 @@ import 'package:creta02/hycop/absModel/model_enums.dart';
 import 'package:creta02/hycop/storage/abs_storage.dart';
 import 'package:creta02/model/file_model.dart';
 
+// ignore: depend_on_referenced_packages
 import 'package:firebase_core/firebase_core.dart';
 // ignore: depend_on_referenced_packages
 import 'package:firebase_storage/firebase_storage.dart';
@@ -39,7 +40,7 @@ class FirebaseAppStorage extends AbsStorage {
 
   @override
   Future<void> uploadFile(String fileName, String fileType, Uint8List fileBytes) async {
-    final uploadFile = _storage.ref().child("${myConfig!.serverConfig!.storageConnInfo.bucketId}/${fileName}");
+    final uploadFile = _storage.ref().child("${myConfig!.serverConfig!.storageConnInfo.bucketId}/$fileName");
 
     try {
       await uploadFile.getDownloadURL();

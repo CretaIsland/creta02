@@ -4,13 +4,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
-import '../hycop/database/db_utils.dart';
+// import '../hycop/database/db_utils.dart';
 import 'navigation/routes.dart';
 import '../common/widgets/text_field.dart';
 import '../common/util/logger.dart';
 
 import '../hycop/hycop_user.dart';
-import '../hycop/utils/hycop_utils.dart';
+// import '../hycop/utils/hycop_utils.dart';
 import '../hycop/utils/hycop_exceptions.dart';
 
 class LoginPage extends StatelessWidget {
@@ -75,7 +75,7 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
     _errMsg = '';
 
     String email = _emailTextEditingController.text;
-    String password = _passwordTextEditingController.text;
+    // String password = _passwordTextEditingController.text;
 
     HycopUser.loginByService(email, AccountSignUpType.google)
         .then((value) {
@@ -97,7 +97,7 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
     _errMsg = '';
 
     String email = _emailTextEditingController.text;
-    String password = _passwordTextEditingController.text;
+    // String password = _passwordTextEditingController.text;
     // if (await DBUtils.login(email, password)) {
     //   //Routemaster.of(context).push(AppRoutes.main);
     //   Routemaster.of(context).push(AppRoutes.databaseExample);

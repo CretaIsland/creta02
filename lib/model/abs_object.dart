@@ -1,14 +1,14 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_final_fields, must_be_immutable
 
 import 'package:uuid/uuid.dart';
-import 'package:equatable/equatable.dart';
+// import 'package:equatable/equatable.dart';
 
 //import '../common/util/logger.dart';
 //import '../common/undo/save_manager.dart';
 //import '../common/undo/undo.dart';
-import '../common/util/config.dart';
-import '../hycop/absModel/model_enums.dart';
-import '../hycop/absModel/abs_model.dart';
+// import '../common/util/config.dart';
+// import '../hycop/absModel/model_enums.dart';
+// import '../hycop/absModel/abs_model.dart';
 
 enum ObjectType {
   none,

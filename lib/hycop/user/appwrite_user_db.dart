@@ -1,14 +1,13 @@
+// ignore: depend_on_referenced_packages
 import 'package:appwrite/appwrite.dart';
-import 'package:appwrite/models.dart' as models;
 //import 'package:creta02/common/util/exceptions.dart';
+// ignore: depend_on_referenced_packages
 import 'package:uuid/uuid.dart';
 //import 'package:creta02/model/abs_model.dart';
 import '../../common/util/logger.dart';
 import 'abs_user_db.dart';
 import '../database/abs_database.dart';
 import '../hycop_factory.dart';
-import '../../common/util/config.dart';
-import '../utils/hycop_exceptions.dart';
 import '../utils/hycop_utils.dart';
 import '../hycop_user.dart';
 
@@ -108,7 +107,8 @@ class AppwriteUserDb extends AbsUserDb {
 
   @override
   Future<bool> isExistAccount(String email) async {
-    final getUserData = await HycopFactory.myDataBase!
+    //final getUserData = 
+    await HycopFactory.myDataBase!
         .simpleQueryData('hycop_users', name: 'email', value: email, orderBy: 'email')
         .catchError((error, stackTrace) =>
             throw HycopUtils.getHycopException(error: error, defaultMessage: 'not exist account(email:$email) !!!'))
@@ -213,7 +213,7 @@ class AppwriteUserDb extends AbsUserDb {
         throw HycopUtils.getHycopException(defaultMessage: 'getData failed !!!');
       }
       final type = AccountSignUpType.fromInt(
-          int.parse(resultUserData['accountSignUpType'].toString() ?? AccountSignUpType.none.index.toString()));
+          int.parse(resultUserData['accountSignUpType'].toString()));
       if (type != accountSignUpType) {
         logger.severe('not [${accountSignUpType.name}] sign-up user !!!');
         throw HycopUtils.getHycopException(defaultMessage: 'not [${accountSignUpType.name}] sign-up user !!!');
@@ -223,7 +223,7 @@ class AppwriteUserDb extends AbsUserDb {
         logger.severe('removed user !!!');
         throw HycopUtils.getHycopException(defaultMessage: 'removed user !!!');
       }
-      returnUserData?.addAll(resultUserData);
+      returnUserData.addAll(resultUserData);
       logger.finest('loginByEmail success ($resultUserData)');
     }
   }
@@ -238,7 +238,8 @@ class AppwriteUserDb extends AbsUserDb {
   Future<void> logout() async {
     logger.finest('logout');
     Account account = Account(AbsDatabase.awDBConn!);
-    Future result = account.deleteSession(sessionId: 'current').catchError((error, stackTrace) =>
+    //Future result = 
+    account.deleteSession(sessionId: 'current').catchError((error, stackTrace) =>
         throw HycopUtils.getHycopException(error: error, defaultMessage: 'deleteSession failed !!!'));
   }
 
@@ -246,7 +247,8 @@ class AppwriteUserDb extends AbsUserDb {
   Future<void> resetPassword(String email) async {
     logger.finest('resetPassword($email)');
     Account account = Account(AbsDatabase.awDBConn!);
-    Future result = account.createRecovery(email: email, url: 'http://localhost/#/resetPasswordConfirm').catchError(
+    //Future result = 
+    account.createRecovery(email: email, url: 'http://localhost/#/resetPasswordConfirm').catchError(
         (error, stackTrace) =>
             throw HycopUtils.getHycopException(error: error, defaultMessage: 'createRecovery failed !!!'));
   }
